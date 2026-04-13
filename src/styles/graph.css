@@ -1,0 +1,66 @@
+.graph-canvas {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at top, rgba(123, 97, 255, 0.06), transparent 60%),
+    radial-gradient(ellipse at bottom right, rgba(0, 245, 212, 0.04), transparent 60%),
+    var(--bg-primary);
+  cursor: grab;
+}
+.graph-canvas:active {
+  cursor: grabbing;
+}
+
+.graph-node {
+  cursor: pointer;
+  transition: filter 200ms ease;
+}
+
+.graph-node-body {
+  fill: var(--bg-elevated);
+  stroke: var(--node-color, var(--glow-analysis));
+  stroke-width: 1.5;
+  transition:
+    filter 200ms ease,
+    stroke-width 200ms ease;
+}
+
+.graph-node:hover .graph-node-body,
+.graph-node.is-selected .graph-node-body {
+  filter: drop-shadow(0 0 12px var(--node-color))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--node-color) 55%, transparent));
+  stroke-width: 2.25;
+}
+
+.graph-node.is-selected .graph-node-body {
+  stroke-width: 2.5;
+}
+
+.graph-node-label {
+  fill: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.graph-node-type {
+  fill: var(--node-color);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.graph-edge {
+  fill: none;
+  stroke: var(--edge-default);
+  stroke-width: 1.5;
+  transition: stroke 200ms ease;
+}
+
+.graph-edge.is-active {
+  stroke: var(--edge-active);
+  stroke-width: 2;
+}

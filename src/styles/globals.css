@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Base surfaces */
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-surface: #1a2035;
+  --bg-elevated: #1e2a45;
+
+  /* Node glow colors — mapped to ReasoningNodeType */
+  --glow-hypothesis: #00f5d4;
+  --glow-analysis: #7b61ff;
+  --glow-conclusion: #fee440;
+  --glow-question: #f72585;
+  --glow-comparison: #4cc9f0;
+  --glow-evidence: #80ffdb;
+  --glow-revision: #ff6b35;
+  --glow-decision: #b5e48c;
+
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --text-on-glow: #0a0e17;
+
+  /* Edges */
+  --edge-default: rgba(148, 163, 184, 0.2);
+  --edge-active: rgba(148, 163, 184, 0.6);
+  --edge-highlight: var(--glow-analysis);
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-active: rgba(255, 255, 255, 0.15);
+
+  /* Glow */
+  --glow-intensity: 0.6;
+  --glow-radius: 20px;
+  --glow-spread: 40px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--glow-analysis);
+  color: var(--text-on-glow);
+}
