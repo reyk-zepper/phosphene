@@ -1,18 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Settings } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
+import { useSettingsStore } from '@/core/store/settingsStore';
 import { DEMO_GRAPH } from '@/constants/demoGraph';
 import { PromptInput } from '@/components/prompt/PromptInput';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { DetailPanel } from '@/components/detail/DetailPanel';
+import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 
 export function App() {
-  const setGraph = useSessionStore((s) => s.setGraph);
   const graph = useSessionStore((s) => s.currentGraph);
+  const setGraph = useSessionStore((s) => s.setGraph);
+  const hasKey = useSettingsStore((s) =>
+    Object.values(s.encodedKeys).some(Boolean)
+  );
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
-    if (!graph) setGraph(DEMO_GRAPH);
-  }, [graph, setGraph]);
+    if (!graph && !hasKey) setGraph(DEMO_GRAPH);
+  }, [graph, hasKey, setGraph]);
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden">
@@ -33,11 +40,21 @@ export function App() {
               v0.0.1
             </span>
           </div>
-          <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-            See how AI thinks
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
+              See how AI thinks
+            </span>
+            <button
+              type="button"
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Open settings"
+              className="rounded-md border border-[color:var(--border-subtle)] p-1.5 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-analysis)] hover:text-[color:var(--glow-analysis)]"
+            >
+              <Settings size={14} />
+            </button>
+          </div>
         </div>
-        <PromptInput />
+        <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
       </header>
 
       <main className="relative h-full w-full">
@@ -49,6 +66,8 @@ export function App() {
       </div>
 
       <DetailPanel />
+
+      <ApiKeyModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }

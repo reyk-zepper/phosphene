@@ -1,0 +1,27 @@
+import type { ModelIdentifier } from '@/core/parser/types';
+
+export type ProviderId = 'anthropic' | 'openai' | 'google' | 'ollama' | 'demo';
+
+export interface PromptParams {
+  prompt: string;
+  model: string;
+  apiKey?: string;
+  maxTokens?: number;
+  thinkingBudget?: number;
+  signal?: AbortSignal;
+}
+
+export type ReasoningChunk =
+  | { type: 'thinking'; content: string; timestamp: number }
+  | { type: 'text'; content: string; timestamp: number }
+  | { type: 'error'; content: string; timestamp: number }
+  | { type: 'done'; content: ''; timestamp: number };
+
+export interface LLMAdapter {
+  id: ProviderId;
+  name: string;
+  requiresApiKey: boolean;
+  supportedModels: ModelIdentifier[];
+  sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>;
+  validateKey?(key: string): Promise<boolean>;
+}
