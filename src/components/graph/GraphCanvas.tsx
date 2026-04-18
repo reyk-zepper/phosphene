@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { layoutGraph, type LaidOutEdge } from '@/core/graph/layout';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
+import { NodeTooltip } from './NodeTooltip';
+import { flattenGraph } from '@/constants/demoGraph';
+import type { ReasoningNode } from '@/core/parser/types';
 
 const NODE_RADIUS = 14;
 
@@ -23,6 +26,29 @@ export function GraphCanvas() {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
+
+  const [hoverNode, setHoverNode] = useState<ReasoningNode | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+
+  const nodeMap = useMemo(() => {
+    if (!graph) return new Map<string, ReasoningNode>();
+    const m = new Map<string, ReasoningNode>();
+    for (const n of flattenGraph(graph.rootNode)) m.set(n.id, n);
+    return m;
+  }, [graph]);
+
+  const handleNodeHover = useCallback(
+    (e: React.MouseEvent, nodeId: string) => {
+      const node = nodeMap.get(nodeId);
+      if (!node) return;
+      const rect = (e.currentTarget as SVGGElement).getBoundingClientRect();
+      setTooltipPos({ x: rect.right + 12, y: rect.top });
+      setHoverNode(node);
+    },
+    [nodeMap]
+  );
+
+  const handleNodeLeave = useCallback(() => setHoverNode(null), []);
 
   const layout = useMemo(() => (graph ? layoutGraph(graph) : null), [graph]);
 
@@ -113,6 +139,8 @@ export function GraphCanvas() {
                   e.stopPropagation();
                   selectNode(isSelected ? null : ln.node.id);
                 }}
+                onMouseEnter={(e) => handleNodeHover(e, ln.node.id)}
+                onMouseLeave={handleNodeLeave}
               >
                 <rect
                   className="graph-node-body"
@@ -155,6 +183,7 @@ export function GraphCanvas() {
         pointerEvents="none"
       />
       <circle r={NODE_RADIUS} fill="transparent" pointerEvents="none" />
+      <NodeTooltip node={hoverNode} x={tooltipPos.x} y={tooltipPos.y} />
     </svg>
   );
 }

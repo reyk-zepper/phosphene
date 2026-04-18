@@ -3,11 +3,14 @@ import type {
   ModelIdentifier,
   ReasoningGraph,
   ReasoningNode,
+  ReasoningNodeType,
 } from '@/core/parser/types';
 import { parseText, type ParsedSegment } from '@/core/parser/heuristic';
 import { uuid } from '@/utils/id';
 
 const MIN_SEGMENT_LENGTH = 8;
+
+const BRANCHING_TYPES = new Set<ReasoningNodeType>(['revision', 'comparison']);
 
 export interface BuildInput {
   id: string;
@@ -18,7 +21,12 @@ export interface BuildInput {
   startTime: number;
 }
 
-function buildNodesLinear(
+function assignDepths(node: ReasoningNode, depth: number) {
+  node.depth = depth;
+  for (const child of node.children) assignDepths(child, depth + 1);
+}
+
+function buildNodesTree(
   parsed: ParsedSegment[],
   baseTimestamp: number,
   startTime: number
@@ -31,16 +39,25 @@ function buildNodesLinear(
     content: seg.text,
     summary: seg.summary,
     children: [],
-    depth: seg.depth,
+    depth: 0,
     tokenCount: Math.max(1, Math.ceil(seg.text.length / 4)),
     timestamp: baseTimestamp - startTime + idx * 80,
   }));
 
-  for (let i = 0; i < nodes.length - 1; i++) {
-    nodes[i].children = [nodes[i + 1]];
+  const root = nodes[0];
+  const stack: ReasoningNode[] = [root];
+
+  for (let i = 1; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (BRANCHING_TYPES.has(node.type) && stack.length > 1) {
+      stack.pop();
+    }
+    stack[stack.length - 1].children.push(node);
+    stack.push(node);
   }
 
-  return nodes[0];
+  assignDepths(root, 0);
+  return root;
 }
 
 export function buildGraph(input: BuildInput): ReasoningGraph | null {
@@ -50,7 +67,7 @@ export function buildGraph(input: BuildInput): ReasoningGraph | null {
 
   const parsed = parseText(thinkingBuffer).filter((p) => p.text.length >= MIN_SEGMENT_LENGTH);
 
-  let root = buildNodesLinear(parsed, Date.now(), startTime);
+  let root = buildNodesTree(parsed, Date.now(), startTime);
 
   if (outputBuffer.trim()) {
     const finalNode: ReasoningNode = {

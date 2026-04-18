@@ -62,3 +62,109 @@ body,
   background: var(--glow-analysis);
   color: var(--text-on-glow);
 }
+
+/* Markdown prose inside DetailPanel */
+.prose-phosphene {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.prose-phosphene p {
+  margin-bottom: 0.75em;
+}
+
+.prose-phosphene strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.prose-phosphene em {
+  font-style: italic;
+}
+
+.prose-phosphene code {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.15em 0.35em;
+  font-size: 0.9em;
+}
+
+.prose-phosphene pre {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+.prose-phosphene pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.prose-phosphene ul,
+.prose-phosphene ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.prose-phosphene li {
+  margin-bottom: 0.25em;
+}
+
+.prose-phosphene ul li::marker {
+  color: var(--text-muted);
+}
+
+.prose-phosphene h1,
+.prose-phosphene h2,
+.prose-phosphene h3 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.prose-phosphene h1 { font-size: 1.2em; }
+.prose-phosphene h2 { font-size: 1.1em; }
+.prose-phosphene h3 { font-size: 1em; }
+
+.prose-phosphene blockquote {
+  border-left: 2px solid var(--glow-analysis);
+  padding-left: 1em;
+  margin: 0.75em 0;
+  color: var(--text-muted);
+}
+
+.prose-phosphene a {
+  color: var(--glow-hypothesis);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.prose-phosphene table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.9em;
+}
+
+.prose-phosphene th,
+.prose-phosphene td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.4em 0.75em;
+  text-align: left;
+}
+
+.prose-phosphene th {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 500;
+}

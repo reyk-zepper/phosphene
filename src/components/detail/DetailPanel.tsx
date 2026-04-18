@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useMemo } from 'react';
+import { ChevronLeft, ChevronRight, Copy, Check, X } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { flattenGraph } from '@/constants/demoGraph';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
@@ -9,11 +11,34 @@ export function DetailPanel() {
   const graph = useSessionStore((s) => s.currentGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
   const selectNode = useSessionStore((s) => s.selectNode);
+  const [copied, setCopied] = useState(false);
 
-  const node = useMemo(() => {
-    if (!graph || !selectedNodeId) return null;
-    return flattenGraph(graph.rootNode).find((n) => n.id === selectedNodeId) ?? null;
-  }, [graph, selectedNodeId]);
+  const allNodes = useMemo(
+    () => (graph ? flattenGraph(graph.rootNode) : []),
+    [graph]
+  );
+
+  const nodeIndex = useMemo(
+    () => allNodes.findIndex((n) => n.id === selectedNodeId),
+    [allNodes, selectedNodeId]
+  );
+
+  const node = nodeIndex >= 0 ? allNodes[nodeIndex] : null;
+
+  const goPrev = useCallback(() => {
+    if (nodeIndex > 0) selectNode(allNodes[nodeIndex - 1].id);
+  }, [nodeIndex, allNodes, selectNode]);
+
+  const goNext = useCallback(() => {
+    if (nodeIndex < allNodes.length - 1) selectNode(allNodes[nodeIndex + 1].id);
+  }, [nodeIndex, allNodes, selectNode]);
+
+  const handleCopy = useCallback(async () => {
+    if (!node) return;
+    await navigator.clipboard.writeText(node.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, [node]);
 
   return (
     <AnimatePresence>
@@ -26,12 +51,13 @@ export function DetailPanel() {
           transition={{ type: 'spring', stiffness: 260, damping: 30 }}
           className="pointer-events-auto absolute top-4 right-4 bottom-4 z-20 flex w-[420px] max-w-[90vw] flex-col overflow-hidden rounded-2xl border backdrop-blur-xl"
           style={{
-            background: 'color-mix(in srgb, var(--bg-elevated) 92%, transparent)',
+            background:
+              'color-mix(in srgb, var(--bg-elevated) 92%, transparent)',
             borderColor: 'var(--border-active)',
             boxShadow: `0 0 40px color-mix(in srgb, ${NODE_TYPE_CONFIG[node.type].cssVar} 25%, transparent)`,
           }}
         >
-          <header className="flex items-center justify-between border-b border-[color:var(--border-subtle)] px-5 py-4">
+          <header className="flex items-center justify-between border-b border-[color:var(--border-subtle)] px-5 py-3">
             <div className="flex items-center gap-3">
               <span
                 className="h-2.5 w-2.5 rounded-full"
@@ -46,15 +72,46 @@ export function DetailPanel() {
               >
                 {NODE_TYPE_CONFIG[node.type].label}
               </span>
+              <span className="font-mono text-[10px] text-[color:var(--text-muted)]">
+                {nodeIndex + 1}/{allNodes.length}
+              </span>
             </div>
-            <button
-              type="button"
-              className="rounded-md p-1 text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)]"
-              onClick={() => selectNode(null)}
-              aria-label="Close detail panel"
-            >
-              <X size={16} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={goPrev}
+                disabled={nodeIndex <= 0}
+                aria-label="Previous node"
+                className="rounded-md p-1 text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)] disabled:opacity-30"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                disabled={nodeIndex >= allNodes.length - 1}
+                aria-label="Next node"
+                className="rounded-md p-1 text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)] disabled:opacity-30"
+              >
+                <ChevronRight size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={handleCopy}
+                aria-label="Copy content"
+                className="rounded-md p-1 text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)]"
+              >
+                {copied ? <Check size={14} className="text-[color:var(--glow-evidence)]" /> : <Copy size={14} />}
+              </button>
+              <button
+                type="button"
+                className="rounded-md p-1 text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)]"
+                onClick={() => selectNode(null)}
+                aria-label="Close detail panel"
+              >
+                <X size={16} />
+              </button>
+            </div>
           </header>
 
           <div className="flex-1 overflow-y-auto px-5 py-5">
@@ -62,16 +119,20 @@ export function DetailPanel() {
               {node.summary}
             </h2>
 
-            <p className="mt-4 font-[family-name:var(--font-mono)] text-[13px] leading-relaxed text-[color:var(--text-secondary)]">
-              {node.content}
-            </p>
+            <div className="prose-phosphene mt-4">
+              <Markdown remarkPlugins={[remarkGfm]}>{node.content}</Markdown>
+            </div>
 
             <dl className="mt-6 grid grid-cols-3 gap-3">
               <Stat label="Tokens" value={String(node.tokenCount)} />
               <Stat label="Depth" value={String(node.depth)} />
               <Stat
                 label="Confidence"
-                value={node.confidence != null ? `${Math.round(node.confidence * 100)}%` : '—'}
+                value={
+                  node.confidence != null
+                    ? `${Math.round(node.confidence * 100)}%`
+                    : '—'
+                }
               />
             </dl>
           </div>

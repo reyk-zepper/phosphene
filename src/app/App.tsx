@@ -8,6 +8,8 @@ import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
+import { SearchOverlay } from '@/components/search/SearchOverlay';
+import { useGraphNavigation } from '@/hooks/useGraphNavigation';
 
 export function App() {
   const graph = useSessionStore((s) => s.currentGraph);
@@ -16,10 +18,23 @@ export function App() {
     Object.values(s.encodedKeys).some(Boolean)
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  useGraphNavigation();
 
   useEffect(() => {
     if (!graph && !hasKey) setGraph(DEMO_GRAPH);
   }, [graph, hasKey, setGraph]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((o) => !o);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden">
@@ -67,6 +82,7 @@ export function App() {
 
       <DetailPanel />
 
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
       <ApiKeyModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
