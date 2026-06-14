@@ -11,6 +11,7 @@ export type ReasoningNodeType =
 export interface ReasoningNode {
   id: string;
   type: ReasoningNodeType;
+  label?: string;
   content: string;
   summary: string;
   children: ReasoningNode[];
@@ -18,6 +19,7 @@ export interface ReasoningNode {
   tokenCount: number;
   confidence?: number;
   timestamp: number;
+  metadata?: Record<string, string>;
 }
 
 export interface GraphMetadata {

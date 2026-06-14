@@ -129,6 +129,7 @@ export function GraphCanvas() {
             const isSelected = selectedNodeId === ln.node.id;
             const x = ln.x - ln.width / 2;
             const y = ln.y - ln.height / 2;
+            const nodeLabel = ln.node.label ?? cfg.label;
             return (
               <g
                 key={ln.node.id}
@@ -151,7 +152,7 @@ export function GraphCanvas() {
                 />
                 <circle cx={18} cy={18} r={6} fill={cfg.cssVar} />
                 <text className="graph-node-type" x={32} y={22}>
-                  {cfg.label}
+                  {nodeLabel}
                 </text>
                 <text className="graph-node-label" x={18} y={46}>
                   {truncate(ln.node.summary, 28)}

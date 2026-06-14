@@ -24,6 +24,7 @@ export function DetailPanel() {
   );
 
   const node = nodeIndex >= 0 ? allNodes[nodeIndex] : null;
+  const nodeLabel = node ? (node.label ?? NODE_TYPE_CONFIG[node.type].label) : '';
 
   const goPrev = useCallback(() => {
     if (nodeIndex > 0) selectNode(allNodes[nodeIndex - 1].id);
@@ -70,7 +71,7 @@ export function DetailPanel() {
                 className="font-mono text-[11px] tracking-widest uppercase"
                 style={{ color: NODE_TYPE_CONFIG[node.type].cssVar }}
               >
-                {NODE_TYPE_CONFIG[node.type].label}
+                {nodeLabel}
               </span>
               <span className="font-mono text-[10px] text-[color:var(--text-muted)]">
                 {nodeIndex + 1}/{allNodes.length}
@@ -122,6 +123,24 @@ export function DetailPanel() {
             <div className="prose-phosphene mt-4">
               <Markdown remarkPlugins={[remarkGfm]}>{node.content}</Markdown>
             </div>
+
+            {node.metadata && Object.keys(node.metadata).length > 0 && (
+              <div className="mt-5 grid grid-cols-2 gap-2">
+                {Object.entries(node.metadata).slice(0, 6).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="rounded-lg border border-[color:var(--border-subtle)] px-3 py-2"
+                  >
+                    <dt className="font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                      {key}
+                    </dt>
+                    <dd className="mt-1 truncate font-mono text-[11px] text-[color:var(--text-secondary)]">
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <dl className="mt-6 grid grid-cols-3 gap-3">
               <Stat label="Tokens" value={String(node.tokenCount)} />

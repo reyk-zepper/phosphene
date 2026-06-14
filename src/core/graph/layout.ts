@@ -27,7 +27,7 @@ const NODE_WIDTH = 220;
 const NODE_HEIGHT = 72;
 
 export function layoutGraph(graph: ReasoningGraph): LaidOutGraph {
-  const g = new dagre.graphlib.Graph<{}>();
+  const g = new dagre.graphlib.Graph<object>();
   g.setGraph({
     rankdir: 'TB',
     nodesep: 60,

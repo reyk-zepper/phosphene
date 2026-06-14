@@ -10,6 +10,10 @@ import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { useGraphNavigation } from '@/hooks/useGraphNavigation';
+import { DEMO_TRACES } from '@/constants/demoTraces';
+import { traceToGraph } from '@/core/traces/toGraph';
+import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
+import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
 
 export function App() {
   const graph = useSessionStore((s) => s.currentGraph);
@@ -19,11 +23,20 @@ export function App() {
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mode, setMode] = useState<AppMode>('observer');
+  const [selectedTraceId, setSelectedTraceId] = useState(DEMO_TRACES[0].id);
   useGraphNavigation();
 
   useEffect(() => {
-    if (!graph && !hasKey) setGraph(DEMO_GRAPH);
-  }, [graph, hasKey, setGraph]);
+    if (mode !== 'observer') return;
+    const trace = DEMO_TRACES.find((item) => item.id === selectedTraceId) ?? DEMO_TRACES[0];
+    setGraph(traceToGraph(trace));
+  }, [mode, selectedTraceId, setGraph]);
+
+  useEffect(() => {
+    if (mode !== 'reasoning') return;
+    if ((!graph || graph.model.model === 'ai-node-trace') && !hasKey) setGraph(DEMO_GRAPH);
+  }, [graph, hasKey, mode, setGraph]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -39,7 +52,7 @@ export function App() {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden">
       <header className="pointer-events-none absolute top-0 right-0 left-0 z-10 px-6 pt-5">
-        <div className="pointer-events-auto mb-4 flex items-center justify-between">
+        <div className="pointer-events-auto mb-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span
               className="h-2.5 w-2.5 rounded-full"
@@ -55,6 +68,7 @@ export function App() {
               v0.0.1
             </span>
           </div>
+          <ModeSwitch mode={mode} onChange={setMode} />
           <div className="flex items-center gap-3">
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
               See how AI thinks
@@ -69,7 +83,15 @@ export function App() {
             </button>
           </div>
         </div>
-        <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+        {mode === 'reasoning' ? (
+          <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+        ) : (
+          <NodeObserverBar
+            traces={DEMO_TRACES}
+            selectedTraceId={selectedTraceId}
+            onSelectTrace={setSelectedTraceId}
+          />
+        )}
       </header>
 
       <main className="relative h-full w-full">
@@ -77,7 +99,7 @@ export function App() {
       </main>
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10">
-        <GraphLegend />
+        <GraphLegend variant={mode === 'observer' ? 'observer' : 'reasoning'} />
       </div>
 
       <DetailPanel />
