@@ -1,0 +1,55 @@
+[
+  {
+    "trace_id": "gmail-draft-1",
+    "run_id": "run-gmail-draft-demo",
+    "source": "hermes",
+    "event_type": "run.started",
+    "actor": "hermes",
+    "status": "running",
+    "timestamp": "2026-06-14T08:30:00Z",
+    "summary": "Hermes starts a redacted Gmail draft workflow",
+    "parent_event_id": null,
+    "links": [{ "label": "Demo boundary", "href": "/docs/product/phosphene-node-observer-v0.1" }]
+  },
+  {
+    "trace_id": "gmail-draft-2",
+    "run_id": "run-gmail-draft-demo",
+    "source": "hermes",
+    "event_type": "agent.plan",
+    "actor": "hermes",
+    "status": "running",
+    "timestamp": "2026-06-14T08:30:06Z",
+    "summary": "Plan draft creation without sending mail",
+    "parent_event_id": "gmail-draft-1"
+  },
+  {
+    "trace_id": "gmail-draft-3",
+    "run_id": "run-gmail-draft-demo",
+    "source": "aag",
+    "event_type": "aag.decision",
+    "actor": "aag",
+    "tool": "gmail.draft.create",
+    "decision": "require_approval",
+    "risk": "medium",
+    "status": "needs_approval",
+    "timestamp": "2026-06-14T08:30:12Z",
+    "summary": "AAG gates the Gmail draft behind approval",
+    "redacted_payload_hash": "sha256:redacted-gmail-draft",
+    "parent_event_id": "gmail-draft-2"
+  },
+  {
+    "trace_id": "gmail-draft-4",
+    "run_id": "run-gmail-draft-demo",
+    "source": "aag",
+    "event_type": "approval.required",
+    "actor": "operator",
+    "tool": "gmail.draft.create",
+    "decision": "pending_operator_review",
+    "risk": "medium",
+    "status": "needs_approval",
+    "timestamp": "2026-06-14T08:30:17Z",
+    "summary": "Operator approval is pending; no email is sent",
+    "redacted_payload_hash": "sha256:redacted-gmail-draft",
+    "parent_event_id": "gmail-draft-3"
+  }
+]

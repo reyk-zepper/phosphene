@@ -4,8 +4,8 @@
 
 ### See how AI thinks.
 
-**An open-source AI reasoning visualizer.**
-Transform invisible thought processes of language models — chain-of-thought, extended thinking, reasoning traces — into interactive, navigable graphs.
+**An open-source AI reasoning and node-run visualizer.**
+Explore two modes: **Reasoning Lab** for model reasoning graphs, and **Node Observer** for redacted AI-node demo traces. v0.1 does not claim live AI-node telemetry; live integration is a later adapter step.
 
 [English](#english) · [Deutsch](#deutsch)
 
@@ -17,7 +17,12 @@ Transform invisible thought processes of language models — chain-of-thought, e
 
 ### What is Phosphene?
 
-Phosphene turns the hidden reasoning of large language models into an **interactive visual graph**. Instead of scrolling through walls of raw "thinking" text, you see each step of the model's thought process as a glowing node — categorized by type (hypothesis, analysis, revision, decision…), connected by organic edges, explorable with click, zoom, and pan.
+Phosphene has two modes:
+
+- **Reasoning Lab** turns model reasoning traces into an **interactive visual graph**. Instead of scrolling through walls of raw "thinking" text, you see each step of the model's thought process as a glowing node — categorized by type (hypothesis, analysis, revision, decision…), connected by organic edges, explorable with click, zoom, and pan.
+- **Node Observer** renders redacted AI-node demo traces so runs, events, systems, statuses, risks, decisions, and recovery steps are understandable without exposing private payloads.
+
+Node Observer v0.1 uses **synthetic/redacted demo traces only**. It is not a live Hermes/AAG/OpenClaw/Sentinel telemetry integration yet.
 
 **The metaphor:** Phosphenes are the light patterns you see when you close your eyes and press on them — light generated *by the brain itself*, not by anything external. That's exactly what this tool does: it makes the inner light of AI reasoning visible.
 
@@ -37,20 +42,22 @@ Built for:
 
 ### Status
 
-> **🚧 Early development — v0.0.1.** The first interactive prototype runs. A full roadmap is below.
+> **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted demo traces, not live AI-node telemetry.
 
 Currently working:
 
-- Bioluminescent dark UI shell (prompt bar, graph canvas, detail panel, legend)
+- Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
+- Reasoning Lab demo graph for model reasoning exploration
+- Node Observer mode with four redacted AI-node demo traces
+- JSON import / adapter boundary for trace events before they become internal graph data
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
-- Hardcoded demo reasoning trace for a classic logic puzzle, rendered end-to-end
 - Click to inspect, zoom & pan the canvas
 - Strict TypeScript, Tailwind 4, React 19
 
 Not yet built:
 
-- Live API adapters (Claude, OpenAI, Gemini)
+- Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
 - Streaming reasoning parser
 - API key management
 - Graph export, search, comparison
@@ -163,7 +170,12 @@ MIT — see [LICENSE](./LICENSE).
 
 ### Was ist Phosphene?
 
-Phosphene macht den verborgenen Denkprozess großer Sprachmodelle zu einem **interaktiven visuellen Graphen**. Statt endlose "Thinking"-Textblöcke zu scrollen, siehst du jeden Schritt des Reasonings als leuchtenden Node — kategorisiert nach Typ (Hypothese, Analyse, Korrektur, Entscheidung…), verbunden durch organische Kanten, explorierbar mit Klick, Zoom und Pan.
+Phosphene hat zwei Modi:
+
+- **Reasoning Lab** macht den verborgenen Denkprozess großer Sprachmodelle zu einem **interaktiven visuellen Graphen**. Statt endlose "Thinking"-Textblöcke zu scrollen, siehst du jeden Schritt des Reasonings als leuchtenden Node — kategorisiert nach Typ (Hypothese, Analyse, Korrektur, Entscheidung…), verbunden durch organische Kanten, explorierbar mit Klick, Zoom und Pan.
+- **Node Observer** rendert redigierte AI-Node-Demo-Traces, damit Runs, Events, beteiligte Systeme, Status, Risiko, Entscheidungen und Recovery-Schritte verständlich werden, ohne private Payloads offenzulegen.
+
+Node Observer v0.1 nutzt **synthetische/redigierte Demo-Traces**. Es ist noch keine Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
 
 **Die Metapher:** Phosphene sind die Lichterscheinungen, die du siehst, wenn du die Augen schließt und darauf drückst — Licht, das vom *Gehirn selbst* erzeugt wird, nicht von außen. Genau das tut dieses Tool: es macht das innere Licht der KI sichtbar.
 
@@ -183,20 +195,22 @@ Gebaut für:
 
 ### Status
 
-> **🚧 Frühe Entwicklung — v0.0.1.** Der erste interaktive Prototyp läuft. Die vollständige Roadmap findest du weiter unten.
+> **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Demo-Traces, keine Live-AI-Node-Telemetrie.
 
 Funktioniert bereits:
 
-- Bioluminescent-Dark UI-Shell (Prompt-Leiste, Graph-Canvas, Detail-Panel, Legende)
+- Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
+- Reasoning-Lab-Demo-Graph für Reasoning-Exploration
+- Node Observer mit vier redigierten AI-Node-Demo-Traces
+- JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe
-- Hardcodierter Demo-Reasoning-Trace zum klassischen Flussüberquerungs-Rätsel
 - Klick zum Inspizieren, Zoom und Pan auf dem Canvas
 - TypeScript Strict, Tailwind 4, React 19
 
 Noch nicht gebaut:
 
-- Live-API-Adapter (Claude, OpenAI, Gemini)
+- Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
 - Streaming Reasoning-Parser
 - API-Key-Management
 - Graph Export, Suche, Vergleich

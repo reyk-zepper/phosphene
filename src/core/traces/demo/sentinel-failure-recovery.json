@@ -1,0 +1,52 @@
+[
+  {
+    "trace_id": "sentinel-recovery-1",
+    "run_id": "run-sentinel-recovery-demo",
+    "source": "sentinel",
+    "event_type": "health.check",
+    "actor": "worker-sentinel",
+    "status": "running",
+    "timestamp": "2026-06-14T11:45:00Z",
+    "summary": "Sentinel runs a synthetic health check",
+    "parent_event_id": null
+  },
+  {
+    "trace_id": "sentinel-recovery-2",
+    "run_id": "run-sentinel-recovery-demo",
+    "source": "sentinel",
+    "event_type": "sentinel.alert",
+    "actor": "worker-sentinel",
+    "decision": "raise_operator_alert",
+    "risk": "high",
+    "status": "failed",
+    "timestamp": "2026-06-14T11:45:03Z",
+    "summary": "Worker path reports failed without exposing payloads",
+    "redacted_payload_hash": "sha256:redacted-sentinel-failure",
+    "parent_event_id": "sentinel-recovery-1"
+  },
+  {
+    "trace_id": "sentinel-recovery-3",
+    "run_id": "run-sentinel-recovery-demo",
+    "source": "sentinel",
+    "event_type": "sentinel.recovery",
+    "actor": "worker-sentinel",
+    "decision": "record_recovery",
+    "risk": "low",
+    "status": "recovered",
+    "timestamp": "2026-06-14T11:57:42Z",
+    "summary": "A later check records recovery of the worker path",
+    "redacted_payload_hash": "sha256:redacted-sentinel-recovery",
+    "parent_event_id": "sentinel-recovery-2"
+  },
+  {
+    "trace_id": "sentinel-recovery-4",
+    "run_id": "run-sentinel-recovery-demo",
+    "source": "sentinel",
+    "event_type": "run.completed",
+    "actor": "worker-sentinel",
+    "status": "recovered",
+    "timestamp": "2026-06-14T11:58:02Z",
+    "summary": "Recovery status is visible to the operator",
+    "parent_event_id": "sentinel-recovery-3"
+  }
+]

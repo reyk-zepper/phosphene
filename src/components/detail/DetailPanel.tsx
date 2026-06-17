@@ -125,20 +125,25 @@ export function DetailPanel() {
             </div>
 
             {node.metadata && Object.keys(node.metadata).length > 0 && (
-              <div className="mt-5 grid grid-cols-2 gap-2">
-                {Object.entries(node.metadata).slice(0, 6).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="rounded-lg border border-[color:var(--border-subtle)] px-3 py-2"
-                  >
-                    <dt className="font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
-                      {key}
-                    </dt>
-                    <dd className="mt-1 truncate font-mono text-[11px] text-[color:var(--text-secondary)]">
-                      {value}
-                    </dd>
-                  </div>
-                ))}
+              <div className="mt-5">
+                <p className="mb-2 font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                  Node Observer event fields
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(node.metadata).map(([key, value]) => (
+                    <div
+                      key={key}
+                      className="rounded-lg border border-[color:var(--border-subtle)] px-3 py-2"
+                    >
+                      <dt className="font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                        {key}
+                      </dt>
+                      <dd className="mt-1 break-words font-mono text-[11px] text-[color:var(--text-secondary)]">
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

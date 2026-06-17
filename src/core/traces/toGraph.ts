@@ -58,7 +58,10 @@ function eventMetadata(event: NodeTraceEvent): Record<string, string> {
   if (event.tool) metadata.tool = event.tool;
   if (event.decision) metadata.decision = event.decision;
   if (event.risk) metadata.risk = event.risk;
-  if (event.redactedPayloadHash) metadata.payload = event.redactedPayloadHash;
+  if (event.redactedPayloadHash) metadata.redacted_payload_hash = event.redactedPayloadHash;
+  if (event.links && event.links.length > 0) {
+    metadata.links = event.links.map((link) => `${link.label}: ${link.href}`).join(', ');
+  }
   return metadata;
 }
 

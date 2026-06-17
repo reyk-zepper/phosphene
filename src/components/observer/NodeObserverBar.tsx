@@ -20,6 +20,14 @@ export function NodeObserverBar({ traces, selectedTraceId, onSelectTrace }: Prop
         <div className="flex min-w-0 items-center gap-3">
           <RadioTower size={18} className="shrink-0 text-[color:var(--glow-hypothesis)]" />
           <div className="min-w-0">
+            <div className="mb-1 flex items-center gap-2">
+              <span className="rounded-full border border-[color:var(--glow-decision)]/50 px-2 py-0.5 font-mono text-[9px] tracking-widest text-[color:var(--glow-decision)] uppercase">
+                Redacted demo traces
+              </span>
+              <span className="font-mono text-[9px] tracking-widest text-[color:var(--text-muted)] uppercase">
+                No live telemetry
+              </span>
+            </div>
             <select
               value={selectedTraceId}
               onChange={(event) => onSelectTrace(event.target.value)}

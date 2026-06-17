@@ -1,0 +1,63 @@
+[
+  {
+    "trace_id": "openclaw-worker-1",
+    "run_id": "run-openclaw-worker-demo",
+    "source": "hermes",
+    "event_type": "run.started",
+    "actor": "hermes",
+    "status": "running",
+    "timestamp": "2026-06-14T10:30:00Z",
+    "summary": "Hermes starts a bounded worker delegation",
+    "parent_event_id": null
+  },
+  {
+    "trace_id": "openclaw-worker-2",
+    "run_id": "run-openclaw-worker-demo",
+    "source": "hermes",
+    "event_type": "tool.requested",
+    "actor": "hermes",
+    "tool": "openclaw_worker.start_task",
+    "risk": "low",
+    "status": "running",
+    "timestamp": "2026-06-14T10:30:04Z",
+    "summary": "Hermes requests a worker job through the adapter boundary",
+    "redacted_payload_hash": "sha256:redacted-openclaw-request",
+    "parent_event_id": "openclaw-worker-1"
+  },
+  {
+    "trace_id": "openclaw-worker-3",
+    "run_id": "run-openclaw-worker-demo",
+    "source": "openclaw",
+    "event_type": "worker.started",
+    "actor": "openclaw-worker",
+    "status": "running",
+    "timestamp": "2026-06-14T10:30:06Z",
+    "summary": "OpenClaw worker starts isolated execution",
+    "parent_event_id": "openclaw-worker-2"
+  },
+  {
+    "trace_id": "openclaw-worker-4",
+    "run_id": "run-openclaw-worker-demo",
+    "source": "openclaw",
+    "event_type": "worker.completed",
+    "actor": "openclaw-worker",
+    "decision": "return_redacted_result",
+    "risk": "low",
+    "status": "succeeded",
+    "timestamp": "2026-06-14T10:31:21Z",
+    "summary": "Worker returns a redacted result to Hermes",
+    "redacted_payload_hash": "sha256:redacted-openclaw-result",
+    "parent_event_id": "openclaw-worker-3"
+  },
+  {
+    "trace_id": "openclaw-worker-5",
+    "run_id": "run-openclaw-worker-demo",
+    "source": "hermes",
+    "event_type": "run.completed",
+    "actor": "hermes",
+    "status": "succeeded",
+    "timestamp": "2026-06-14T10:31:33Z",
+    "summary": "Hermes completes the demo worker run",
+    "parent_event_id": "openclaw-worker-4"
+  }
+]

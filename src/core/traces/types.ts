@@ -1,30 +1,41 @@
-export type TraceSource = 'hermes' | 'openclaw' | 'aag' | 'sentinel';
+export const TRACE_SOURCES = ['hermes', 'openclaw', 'aag', 'sentinel'] as const;
+export type TraceSource = (typeof TRACE_SOURCES)[number];
 
-export type TraceStatus =
-  | 'queued'
-  | 'running'
-  | 'needs_approval'
-  | 'approved'
-  | 'denied'
-  | 'succeeded'
-  | 'failed'
-  | 'recovered';
+export const TRACE_STATUSES = [
+  'queued',
+  'running',
+  'needs_approval',
+  'approved',
+  'denied',
+  'succeeded',
+  'failed',
+  'recovered',
+] as const;
+export type TraceStatus = (typeof TRACE_STATUSES)[number];
 
-export type TraceRisk = 'low' | 'medium' | 'high';
+export const TRACE_RISKS = ['low', 'medium', 'high'] as const;
+export type TraceRisk = (typeof TRACE_RISKS)[number];
 
-export type TraceEventType =
-  | 'run.started'
-  | 'agent.plan'
-  | 'tool.requested'
-  | 'tool.executed'
-  | 'aag.decision'
-  | 'approval.required'
-  | 'worker.started'
-  | 'worker.completed'
-  | 'health.check'
-  | 'sentinel.alert'
-  | 'sentinel.recovery'
-  | 'run.completed';
+export const TRACE_EVENT_TYPES = [
+  'run.started',
+  'agent.plan',
+  'tool.requested',
+  'tool.executed',
+  'aag.decision',
+  'approval.required',
+  'worker.started',
+  'worker.completed',
+  'health.check',
+  'sentinel.alert',
+  'sentinel.recovery',
+  'run.completed',
+] as const;
+export type TraceEventType = (typeof TRACE_EVENT_TYPES)[number];
+
+export interface TraceLink {
+  label: string;
+  href: string;
+}
 
 export interface NodeTraceEvent {
   id: string;
@@ -41,10 +52,7 @@ export interface NodeTraceEvent {
   summary: string;
   detail: string;
   redactedPayloadHash?: string;
-  links?: Array<{
-    label: string;
-    href: string;
-  }>;
+  links?: TraceLink[];
 }
 
 export interface NodeTrace {

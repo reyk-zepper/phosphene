@@ -1,0 +1,54 @@
+[
+  {
+    "trace_id": "workspace-bundle-1",
+    "run_id": "run-workspace-bundle-demo",
+    "source": "hermes",
+    "event_type": "run.started",
+    "actor": "hermes",
+    "status": "running",
+    "timestamp": "2026-06-14T09:12:00Z",
+    "summary": "Hermes receives a synthetic Workspace bundle request",
+    "parent_event_id": null
+  },
+  {
+    "trace_id": "workspace-bundle-2",
+    "run_id": "run-workspace-bundle-demo",
+    "source": "hermes",
+    "event_type": "agent.plan",
+    "actor": "hermes",
+    "status": "running",
+    "timestamp": "2026-06-14T09:12:05Z",
+    "summary": "Hermes groups Calendar, Docs, and Drive actions before side effects",
+    "parent_event_id": "workspace-bundle-1"
+  },
+  {
+    "trace_id": "workspace-bundle-3",
+    "run_id": "run-workspace-bundle-demo",
+    "source": "aag",
+    "event_type": "aag.decision",
+    "actor": "aag",
+    "tool": "google.workspace.bundle",
+    "decision": "require_approval",
+    "risk": "medium",
+    "status": "needs_approval",
+    "timestamp": "2026-06-14T09:12:11Z",
+    "summary": "AAG requires approval for the bundled Workspace mutation",
+    "redacted_payload_hash": "sha256:redacted-workspace-bundle",
+    "parent_event_id": "workspace-bundle-2"
+  },
+  {
+    "trace_id": "workspace-bundle-4",
+    "run_id": "run-workspace-bundle-demo",
+    "source": "aag",
+    "event_type": "approval.required",
+    "actor": "operator",
+    "tool": "google.workspace.bundle",
+    "decision": "pending_operator_review",
+    "risk": "medium",
+    "status": "needs_approval",
+    "timestamp": "2026-06-14T09:12:13Z",
+    "summary": "Operator approval is pending; provider mutation is blocked",
+    "redacted_payload_hash": "sha256:redacted-workspace-bundle",
+    "parent_event_id": "workspace-bundle-3"
+  }
+]
