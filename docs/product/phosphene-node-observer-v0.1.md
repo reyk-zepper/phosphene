@@ -94,6 +94,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - README mentions both Reasoning Lab and Node Observer.
 - Four demo traces are available through Boundary JSON.
 - Adapter converts Boundary JSON into graph-renderable data.
+- v0.1.1 allows a local Boundary JSON upload, validates schema/redaction rules in the browser, and renders the imported trace without sending data to a server.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

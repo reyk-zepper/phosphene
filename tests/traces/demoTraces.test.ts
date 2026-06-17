@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { BOUNDARY_DEMO_TRACES, DEMO_TRACES } from '@/constants/demoTraces';
 import { boundaryEventsToNodeTrace } from '@/core/traces/boundary';
 import { traceToGraph } from '@/core/traces/toGraph';
-import { TRACE_RISKS, TRACE_SOURCES, TRACE_STATUSES } from '@/core/traces/types';
+import {
+  TRACE_EVENT_TYPES,
+  TRACE_RISKS,
+  TRACE_SOURCES,
+  TRACE_STATUSES,
+} from '@/core/traces/types';
 
 const ALLOWED_SOURCES = new Set<string>(TRACE_SOURCES);
 const ALLOWED_STATUSES = new Set<string>(TRACE_STATUSES);
 const ALLOWED_RISKS = new Set<string>(TRACE_RISKS);
+const ALLOWED_EVENT_TYPES = new Set<string>(TRACE_EVENT_TYPES);
 
 function stringifyTraceData(value: unknown): string {
   return JSON.stringify(value);
@@ -50,10 +56,11 @@ describe('DEMO_TRACES', () => {
     }
   });
 
-  it('uses only allowed source, status, and risk values', () => {
+  it('uses only allowed source, event type, status, and risk values', () => {
     for (const fixture of BOUNDARY_DEMO_TRACES) {
       for (const event of fixture.events) {
         expect(ALLOWED_SOURCES.has(event.source)).toBe(true);
+        expect(ALLOWED_EVENT_TYPES.has(event.event_type)).toBe(true);
         expect(ALLOWED_STATUSES.has(event.status)).toBe(true);
         if (event.risk) expect(ALLOWED_RISKS.has(event.risk)).toBe(true);
       }
