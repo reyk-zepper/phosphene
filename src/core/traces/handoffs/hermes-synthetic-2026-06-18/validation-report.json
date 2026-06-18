@@ -1,0 +1,104 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "created_at": "2026-06-18T12:21:00Z",
+  "overall_status": "passed",
+  "data_source": "synthetic_files_only_no_live_reads",
+  "checks": {
+    "json_parse_all_trace_files": true,
+    "schema_version_all_trace_files": true,
+    "bundle_shape_all_trace_files": true,
+    "one_root_event_per_trace_file": true,
+    "parent_event_references_valid": true,
+    "allowed_enum_values": true,
+    "links_object_shape": true,
+    "link_hrefs_trace_scheme_only": true,
+    "stable_event_ids_without_url_schema": true,
+    "forbidden_patterns_absent": true
+  },
+  "trace_results": [
+    {
+      "file": "aag-workspace-bundle.synthetic.json",
+      "checks": {
+        "json_parse": true,
+        "schema_version_correct": true,
+        "bundle_shape_metadata_and_events": true,
+        "stable_event_ids_without_url_schema": true,
+        "one_root_event": true,
+        "parent_references_valid": true,
+        "allowed_enum_values": true,
+        "links_object_shape": true,
+        "link_hrefs_trace_scheme_only": true,
+        "forbidden_patterns_absent": true
+      },
+      "blocked_pattern_classes": [],
+      "ok": true
+    },
+    {
+      "file": "hermes-aag-gmail-draft.synthetic.json",
+      "checks": {
+        "json_parse": true,
+        "schema_version_correct": true,
+        "bundle_shape_metadata_and_events": true,
+        "stable_event_ids_without_url_schema": true,
+        "one_root_event": true,
+        "parent_references_valid": true,
+        "allowed_enum_values": true,
+        "links_object_shape": true,
+        "link_hrefs_trace_scheme_only": true,
+        "forbidden_patterns_absent": true
+      },
+      "blocked_pattern_classes": [],
+      "ok": true
+    },
+    {
+      "file": "hermes-openclaw-worker.synthetic.json",
+      "checks": {
+        "json_parse": true,
+        "schema_version_correct": true,
+        "bundle_shape_metadata_and_events": true,
+        "stable_event_ids_without_url_schema": true,
+        "one_root_event": true,
+        "parent_references_valid": true,
+        "allowed_enum_values": true,
+        "links_object_shape": true,
+        "link_hrefs_trace_scheme_only": true,
+        "forbidden_patterns_absent": true
+      },
+      "blocked_pattern_classes": [],
+      "ok": true
+    },
+    {
+      "file": "sentinel-recovery.synthetic.json",
+      "checks": {
+        "json_parse": true,
+        "schema_version_correct": true,
+        "bundle_shape_metadata_and_events": true,
+        "stable_event_ids_without_url_schema": true,
+        "one_root_event": true,
+        "parent_references_valid": true,
+        "allowed_enum_values": true,
+        "links_object_shape": true,
+        "link_hrefs_trace_scheme_only": true,
+        "forbidden_patterns_absent": true
+      },
+      "blocked_pattern_classes": [],
+      "ok": true
+    }
+  ],
+  "support_file_results": [
+    {
+      "file": "manifest.json",
+      "exists": true,
+      "forbidden_patterns_absent": true,
+      "blocked_pattern_classes": [],
+      "ok": true
+    },
+    {
+      "file": "README.md",
+      "exists": true,
+      "forbidden_patterns_absent": true,
+      "blocked_pattern_classes": [],
+      "ok": true
+    }
+  ]
+}

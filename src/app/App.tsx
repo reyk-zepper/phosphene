@@ -12,13 +12,13 @@ import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { useGraphNavigation } from '@/hooks/useGraphNavigation';
 import { OBSERVER_TRACE_GROUPS, OBSERVER_TRACES } from '@/constants/demoTraces';
 import { traceToGraph } from '@/core/traces/toGraph';
-import { parseBoundaryTraceJson } from '@/core/traces/boundaryImport';
+import {
+  parseTraceIntakeFiles,
+  type TraceIntakeBatchResult,
+} from '@/core/traces/intake';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
-import {
-  NodeObserverBar,
-  type TraceImportStatus,
-} from '@/components/observer/NodeObserverBar';
+import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
 
 export function App() {
   const graph = useSessionStore((s) => s.currentGraph);
@@ -31,37 +31,31 @@ export function App() {
   const [mode, setMode] = useState<AppMode>('observer');
   const [selectedTraceId, setSelectedTraceId] = useState(OBSERVER_TRACES[0].id);
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
-  const [importStatus, setImportStatus] = useState<TraceImportStatus>({ type: 'idle' });
+  const [intakeResult, setIntakeResult] = useState<TraceIntakeBatchResult | undefined>();
   const observerTraces = useMemo(
     () => [...importedTraces, ...OBSERVER_TRACES],
     [importedTraces]
   );
   useGraphNavigation();
 
-  const handleImportTraceFile = useCallback(async (file: File) => {
-    const input = await file.text();
-    const result = parseBoundaryTraceJson(input, file.name);
+  const handleImportTraceFiles = useCallback(async (files: File[]) => {
+    const inputs = await Promise.all(
+      files.map(async (file) => ({
+        name: file.name,
+        text: await file.text(),
+      }))
+    );
+    const result = parseTraceIntakeFiles(inputs);
 
-    if (!result.ok) {
-      setImportStatus({
-        type: 'error',
-        message: `Import blocked: ${file.name}`,
-        errors: result.errors,
-        checks: result.checks,
-      });
-      return;
+    if (result.traces.length > 0) {
+      setImportedTraces((current) => [
+        ...result.traces,
+        ...current.filter((trace) => !result.traces.some((imported) => imported.id === trace.id)),
+      ]);
+      setSelectedTraceId(result.traces[0].id);
     }
 
-    setImportedTraces((current) => [
-      result.trace,
-      ...current.filter((trace) => trace.id !== result.trace.id),
-    ]);
-    setSelectedTraceId(result.trace.id);
-    setImportStatus({
-      type: 'success',
-      message: `Imported ${result.trace.title}`,
-      checks: result.checks,
-    });
+    setIntakeResult(result);
   }, []);
 
   useEffect(() => {
@@ -102,7 +96,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.3
+              v0.1.4
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -129,8 +123,8 @@ export function App() {
             selectedTraceId={selectedTraceId}
             onSelectTrace={setSelectedTraceId}
             importedTraceIds={importedTraces.map((trace) => trace.id)}
-            importStatus={importStatus}
-            onImportTraceFile={handleImportTraceFile}
+            intakeResult={intakeResult}
+            onImportTraceFiles={handleImportTraceFiles}
           />
         )}
       </header>
@@ -139,7 +133,7 @@ export function App() {
         <GraphCanvas />
       </main>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden sm:block">
         <GraphLegend variant={mode === 'observer' ? 'observer' : 'reasoning'} />
       </div>
 

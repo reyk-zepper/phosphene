@@ -50,7 +50,8 @@ Currently working:
 - Reasoning Lab demo graph for model reasoning exploration
 - Node Observer mode with four redacted AI-node demo traces plus four grouped Hermes synthetic handoff fixtures
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
-- Local Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
+- Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
+- Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -111,7 +112,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm preview` | Preview the production build locally |
 | `pnpm test` | Run the Vitest unit tests |
 | `pnpm lint` | Run ESLint |
-| `pnpm validate:traces -- <paths>` | Validate Boundary JSON fixture files or directories |
+| `pnpm validate:traces -- <paths>` | Validate Boundary trace fixtures plus local manifest/report support files |
 | `pnpm format` | Format with Prettier |
 
 ### Design language — "Bioluminescent Dark"
@@ -207,7 +208,8 @@ Funktioniert bereits:
 - Reasoning-Lab-Demo-Graph für Reasoning-Exploration
 - Node Observer mit vier redigierten AI-Node-Demo-Traces plus vier gruppierten Hermes Synthetic Handoff Fixtures
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
-- Lokaler Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
+- Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
+- Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -268,7 +270,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm preview` | Production-Build lokal ansehen |
 | `pnpm test` | Vitest Unit-Tests ausführen |
 | `pnpm lint` | ESLint ausführen |
-| `pnpm validate:traces -- <paths>` | Boundary-JSON-Fixtures oder Verzeichnisse validieren |
+| `pnpm validate:traces -- <paths>` | Boundary-Trace-Fixtures plus lokale Manifest-/Report-Support-Dateien validieren |
 | `pnpm format` | Mit Prettier formatieren |
 
 ### Design-Sprache — "Bioluminescent Dark"

@@ -1,13 +1,8 @@
 import { AlertTriangle, CheckCircle, GitBranch, RadioTower, ShieldCheck, Upload } from 'lucide-react';
 import type { ObserverTraceGroup } from '@/constants/demoTraces';
-import type { BoundaryValidationCheck } from '@/core/traces/boundaryValidation';
+import type { TraceIntakeBatchResult, TraceIntakeItemResult } from '@/core/traces/intake';
 import type { NodeTrace } from '@/core/traces/types';
 import { RunSummaryPanel } from './RunSummaryPanel';
-
-export type TraceImportStatus =
-  | { type: 'idle' }
-  | { type: 'success'; message: string; checks?: BoundaryValidationCheck[] }
-  | { type: 'error'; message: string; errors: string[]; checks?: BoundaryValidationCheck[] };
 
 interface Props {
   traces: NodeTrace[];
@@ -15,65 +10,86 @@ interface Props {
   selectedTraceId: string;
   onSelectTrace: (traceId: string) => void;
   importedTraceIds?: string[];
-  importStatus?: TraceImportStatus;
-  onImportTraceFile?: (file: File) => void;
+  intakeResult?: TraceIntakeBatchResult;
+  onImportTraceFiles?: (files: File[]) => void;
 }
 
 function sourceCount(trace: NodeTrace): number {
   return new Set(trace.events.map((event) => event.source)).size;
 }
 
-function checkLabel(id: BoundaryValidationCheck['id']): string {
-  return id.replace('_', ' ');
+function kindLabel(kind: TraceIntakeItemResult['kind']): string {
+  return kind.replace('_', ' ');
 }
 
-function ImportValidationPanel({ status }: { status: TraceImportStatus }) {
-  if (status.type === 'idle') return null;
+function itemSummary(item: TraceIntakeItemResult): string {
+  if (item.status === 'imported' && item.trace) return item.trace.title;
+  if (item.kind === 'manifest' && item.manifest) {
+    return `${item.manifest.sourceAgent ?? 'unknown'} manifest · ${item.manifest.files.length} files`;
+  }
+  if (item.kind === 'validation_report' && item.validationReport) {
+    return `Validation report · ${item.validationReport.overallStatus ?? 'unknown'} · ${item.validationReport.traceResultCount} traces`;
+  }
+  if (item.errors.length > 0) return item.errors[0];
+  return 'No graph trace imported';
+}
+
+function statusClass(status: TraceIntakeItemResult['status']): string {
+  if (status === 'blocked') return 'text-[color:var(--glow-revision)]';
+  if (status === 'ignored') return 'text-[color:var(--text-muted)]';
+  return 'text-[color:var(--glow-decision)]';
+}
+
+function IntakeResultsPanel({ result }: { result?: TraceIntakeBatchResult }) {
+  if (!result) return null;
+
+  const blockedCount = result.items.filter((item) => item.status === 'blocked').length;
+  const icon = blockedCount > 0 && result.summary.acceptedTraceCount === 0
+    ? <AlertTriangle size={12} className="text-[color:var(--glow-revision)]" />
+    : <CheckCircle size={12} className="text-[color:var(--glow-decision)]" />;
 
   return (
     <div
       className="mt-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 px-3 py-2 font-mono text-[10px] text-[color:var(--text-secondary)] backdrop-blur-xl"
-      role={status.type === 'error' ? 'alert' : 'status'}
+      role={blockedCount > 0 ? 'alert' : 'status'}
     >
-      <div className="flex items-center gap-2">
-        {status.type === 'success' ? (
-          <CheckCircle size={12} className="text-[color:var(--glow-decision)]" />
-        ) : (
-          <AlertTriangle size={12} className="text-[color:var(--glow-revision)]" />
+      <div className="flex flex-wrap items-center gap-2">
+        {icon}
+        <span className="tracking-wider uppercase">
+          Intake {result.summary.overallStatus}: {result.summary.acceptedTraceCount} traces · {result.summary.supportFileCount} support · {blockedCount} blocked
+        </span>
+        {result.manifest && (
+          <span className="text-[color:var(--text-muted)] uppercase">
+            Manifest {result.manifest.sourceAgent ?? 'unknown'} · {result.manifest.files.length} files
+          </span>
         )}
-        <span className="tracking-wider uppercase">{status.message}</span>
+        {result.validationReport && (
+          <span className="text-[color:var(--text-muted)] uppercase">
+            Report {result.validationReport.overallStatus ?? 'unknown'}
+          </span>
+        )}
       </div>
 
-      {status.checks && status.checks.length > 0 && (
-        <div className="mt-2 grid gap-1 sm:grid-cols-2 md:grid-cols-3">
-          {status.checks.map((check) => (
-            <div
-              key={check.id}
-              className="flex items-center justify-between gap-2 rounded-md border border-[color:var(--border-subtle)] px-2 py-1"
-              title={check.message}
-            >
-              <span className="tracking-wider uppercase">{checkLabel(check.id)}</span>
-              <span
-                className={
-                  check.status === 'passed'
-                    ? 'text-[color:var(--glow-decision)] uppercase'
-                    : 'text-[color:var(--glow-revision)] uppercase'
-                }
-              >
-                {check.status}
-              </span>
+      <div className="mt-2 overflow-hidden rounded-lg border border-[color:var(--border-subtle)]">
+        {result.items.map((item) => (
+          <div
+            key={`${item.fileName}-${item.kind}`}
+            className="grid gap-2 border-b border-[color:var(--border-subtle)] px-2 py-1.5 last:border-b-0 sm:grid-cols-[1fr_100px_120px_1.4fr]"
+          >
+            <span className="truncate text-[color:var(--text-primary)]">{item.fileName}</span>
+            <span className="tracking-wider text-[color:var(--text-muted)] uppercase">{kindLabel(item.kind)}</span>
+            <span className={`tracking-wider uppercase ${statusClass(item.status)}`}>{item.status}</span>
+            <div className="min-w-0">
+              <p className="truncate text-[color:var(--text-muted)]">{itemSummary(item)}</p>
+              {item.checks && item.checks.some((check) => check.status === 'failed') && (
+                <p className="truncate text-[color:var(--glow-revision)]">
+                  Failed checks: {item.checks.filter((check) => check.status === 'failed').map((check) => check.id).join(', ')}
+                </p>
+              )}
             </div>
-          ))}
-        </div>
-      )}
-
-      {status.type === 'error' && status.errors.length > 0 && (
-        <ul className="mt-1 list-disc pl-5 leading-relaxed text-[color:var(--text-muted)]">
-          {status.errors.slice(0, 3).map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -84,8 +100,8 @@ export function NodeObserverBar({
   selectedTraceId,
   onSelectTrace,
   importedTraceIds = [],
-  importStatus = { type: 'idle' },
-  onImportTraceFile,
+  intakeResult,
+  onImportTraceFiles,
 }: Props) {
   const selected = traces.find((trace) => trace.id === selectedTraceId) ?? traces[0];
   const importedIds = new Set(importedTraceIds);
@@ -164,18 +180,19 @@ export function NodeObserverBar({
           {selected ? sourceCount(selected) : 0} sources
         </div>
 
-        {onImportTraceFile && (
+        {onImportTraceFiles && (
           <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[color:var(--border-subtle)] px-2.5 py-1.5 font-mono text-[10px] tracking-wider text-[color:var(--text-secondary)] uppercase transition hover:border-[color:var(--glow-hypothesis)] hover:text-[color:var(--glow-hypothesis)]">
             <Upload size={12} />
             Import JSON
             <input
               type="file"
               accept="application/json,.json"
+              multiple
               className="sr-only"
               onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+                const files = Array.from(event.currentTarget.files ?? []);
                 event.currentTarget.value = '';
-                if (file) onImportTraceFile(file);
+                if (files.length > 0) onImportTraceFiles(files);
               }}
             />
           </label>
@@ -184,7 +201,7 @@ export function NodeObserverBar({
 
       {selected && <RunSummaryPanel trace={selected} />}
 
-      <ImportValidationPanel status={importStatus} />
+      <IntakeResultsPanel result={intakeResult} />
     </div>
   );
 }

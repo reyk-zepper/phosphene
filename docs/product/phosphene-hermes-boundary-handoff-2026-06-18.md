@@ -43,9 +43,12 @@ Codex independently verified the handoff after Hermes repaired the first pass:
 - Source, event type, status, and risk values match Phosphene's allowed enum sets.
 - Redaction scan found no email addresses, bearer/OAuth/API-key keywords, private URLs, private key blocks, or raw provider IDs.
 - Browser QA imported all four Hermes-generated bundles through Phosphene's local JSON upload path.
+- v0.1.4 intake validation accepts the full handoff directory shape: four trace bundles plus `manifest.json` and `validation-report.json`.
 
 ## Result
 
 The handoff is suitable as a synthetic AI-node-side test fixture set for Phosphene Node Observer. It should remain outside live-agent claims until a future adapter generates redacted traces from real runs through the same Boundary contract.
 
 In Phosphene v0.1.3 the four repaired handoff bundles are copied into the repo under `src/core/traces/handoffs/hermes-synthetic-2026-06-18/` and exposed as the `Hermes Synthetic Handoffs` Node Observer gallery group.
+
+In Phosphene v0.1.4 the accompanying `manifest.json` and `validation-report.json` are also copied into that fixture directory. They are parsed as support context for local handoff intake and do not create graph traces.

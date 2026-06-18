@@ -82,11 +82,20 @@ v0.1.3 adds a repeatable intake path for Boundary JSON fixtures:
 
 The Hermes handoff gallery is still **synthetic fixture data**, not live telemetry. It exists to prove that AI-node-side workers can generate Phosphene-compatible Boundary bundles without coupling the UI to live Hermes internals.
 
+v0.1.4 hardens this intake path:
+
+- Multiple local JSON files can be selected at once.
+- Valid trace bundles are imported even when another selected file is blocked.
+- `manifest.json` and `validation-report.json` are parsed as support context, not graph traces.
+- The Node Observer UI shows a per-file intake table with file kind, status, and failed checks/errors.
+- The CLI validator accepts directories that contain trace bundles plus manifest/report support files.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
 - Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
+- Intake results appear as a compact table below the run summary after local JSON upload.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
@@ -115,6 +124,9 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.3 stores four verified Hermes synthetic handoff fixtures as a separate gallery group.
 - v0.1.3 shows structured validation checks for accepted and blocked Boundary JSON imports.
 - v0.1.3 provides `pnpm validate:traces -- <files-or-directories>` for repeatable fixture intake checks.
+- v0.1.4 supports multi-file local intake with partial success: valid traces import while invalid files remain blocked.
+- v0.1.4 parses Hermes `manifest.json` and `validation-report.json` as support context and displays them in intake results.
+- v0.1.4 CLI validation accepts handoff directories containing trace bundles plus manifest/report support files.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

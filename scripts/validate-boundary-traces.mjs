@@ -53,6 +53,15 @@ function isNonEmptyString(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function classifyJson(file, data) {
+  const fileName = path.basename(file);
+  if (!isRecord(data)) return 'ignored';
+  if (Array.isArray(data.events)) return 'trace';
+  if (fileName === 'manifest.json' || Array.isArray(data.files)) return 'manifest';
+  if (fileName === 'validation-report.json' || Array.isArray(data.trace_results)) return 'validation_report';
+  return 'ignored';
+}
+
 function collectJsonFiles(target) {
   const stat = fs.statSync(target);
   if (stat.isFile()) return target.endsWith('.json') ? [target] : [];
@@ -65,6 +74,40 @@ function collectJsonFiles(target) {
   });
 }
 
+function validateForbiddenPatterns(raw, prefix) {
+  const errors = [];
+  for (const [id, pattern] of FORBIDDEN) {
+    if (pattern.test(raw)) errors.push(`${prefix} contains forbidden sensitive pattern: ${id}`);
+  }
+  return errors;
+}
+
+function validateManifest(data, raw) {
+  const errors = validateForbiddenPatterns(raw, 'Support file');
+  if (data.schema_version !== SCHEMA_VERSION) errors.push(`manifest.schema_version must be ${SCHEMA_VERSION}`);
+  if (!Array.isArray(data.files)) {
+    errors.push('manifest.files must be an array');
+  } else {
+    data.files.forEach((item, index) => {
+      if (!isRecord(item)) {
+        errors.push(`manifest.files[${index}] must be an object`);
+        return;
+      }
+      if (!isNonEmptyString(item.file)) errors.push(`manifest.files[${index}].file must be a non-empty string`);
+    });
+  }
+  return errors;
+}
+
+function validateValidationReport(data, raw) {
+  const errors = validateForbiddenPatterns(raw, 'Support file');
+  if (data.schema_version !== SCHEMA_VERSION) {
+    errors.push(`validation-report.schema_version must be ${SCHEMA_VERSION}`);
+  }
+  if (!Array.isArray(data.trace_results)) errors.push('validation-report.trace_results must be an array');
+  return errors;
+}
+
 function validateFile(file) {
   const errors = [];
   const raw = fs.readFileSync(file, 'utf8');
@@ -73,13 +116,21 @@ function validateFile(file) {
   try {
     data = JSON.parse(raw);
   } catch (error) {
-    return [`Invalid JSON: ${error instanceof Error ? error.message : 'unknown parse error'}`];
+    return {
+      kind: 'ignored',
+      errors: [`Invalid JSON: ${error instanceof Error ? error.message : 'unknown parse error'}`],
+    };
   }
 
   if (!isRecord(data)) {
-    errors.push('Boundary JSON must be an object');
-    return errors;
+    return { kind: 'ignored', errors: ['Boundary JSON must be an object'] };
   }
+
+  const kind = classifyJson(file, data);
+  if (kind === 'manifest') return { kind, errors: validateManifest(data, raw) };
+  if (kind === 'validation_report') return { kind, errors: validateValidationReport(data, raw) };
+  if (kind === 'ignored') return { kind, errors: [] };
+
   if (data.schema_version !== SCHEMA_VERSION) errors.push(`schema_version must be ${SCHEMA_VERSION}`);
   if (!isRecord(data.metadata)) errors.push('metadata must be an object');
   if (!Array.isArray(data.events)) errors.push('events must be an array');
@@ -146,11 +197,9 @@ function validateFile(file) {
   if (runIds.size !== 1) errors.push('Boundary trace must contain exactly one run_id');
   if (rootCount !== 1) errors.push('Boundary trace must contain exactly one root event');
 
-  for (const [id, pattern] of FORBIDDEN) {
-    if (pattern.test(raw)) errors.push(`Trace data contains forbidden sensitive pattern: ${id}`);
-  }
+  errors.push(...validateForbiddenPatterns(raw, 'Trace data'));
 
-  return [...new Set(errors)];
+  return { kind, errors: [...new Set(errors)] };
 }
 
 const targets = process.argv.slice(2).filter((target) => target !== '--');
@@ -167,12 +216,14 @@ if (files.length === 0) {
 
 let failureCount = 0;
 for (const file of files) {
-  const errors = validateFile(file);
+  const result = validateFile(file);
+  const errors = result.errors;
+  const kindLabel = result.kind === 'trace' ? '' : ` (${result.kind})`;
   if (errors.length === 0) {
-    console.log(`PASS ${path.relative(process.cwd(), file)}`);
+    console.log(`PASS ${path.relative(process.cwd(), file)}${kindLabel}`);
   } else {
     failureCount += 1;
-    console.log(`FAIL ${path.relative(process.cwd(), file)}`);
+    console.log(`FAIL ${path.relative(process.cwd(), file)}${kindLabel}`);
     for (const error of errors) console.log(`  - ${error}`);
   }
 }
