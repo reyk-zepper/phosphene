@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { BOUNDARY_DEMO_TRACES, DEMO_TRACES } from '@/constants/demoTraces';
+import {
+  BOUNDARY_DEMO_TRACES,
+  BOUNDARY_OBSERVER_TRACES,
+  DEMO_TRACES,
+  OBSERVER_TRACE_GROUPS,
+  OBSERVER_TRACES,
+} from '@/constants/demoTraces';
 import { boundaryEventsToNodeTrace } from '@/core/traces/boundary';
 import { traceToGraph } from '@/core/traces/toGraph';
 import {
@@ -29,16 +35,35 @@ describe('DEMO_TRACES', () => {
     ]);
   });
 
-  it('ships every demo trace as a supported v0.1.2 Boundary bundle', () => {
-    for (const fixture of BOUNDARY_DEMO_TRACES) {
+  it('groups built-in demos separately from Hermes synthetic handoffs', () => {
+    expect(OBSERVER_TRACE_GROUPS.map((group) => group.label)).toEqual([
+      'Built-in Demo Traces',
+      'Hermes Synthetic Handoffs',
+    ]);
+    expect(OBSERVER_TRACE_GROUPS[0].traces).toHaveLength(4);
+    expect(OBSERVER_TRACE_GROUPS[1].traces).toHaveLength(4);
+    expect(OBSERVER_TRACE_GROUPS[1].traces.map((trace) => trace.id)).toEqual([
+      'boundary-hermes-aag-draft-001',
+      'boundary-hermes-worker-001',
+      'boundary-aag-workspace-bundle-001',
+      'boundary-sentinel-recovery-001',
+    ]);
+    for (const trace of OBSERVER_TRACE_GROUPS[1].traces) {
+      expect(trace.schemaVersion).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
+      expect(`${trace.title} ${trace.subtitle ?? ''}`).toMatch(/synthetic/i);
+    }
+  });
+
+  it('ships every observer trace as a supported v0.1.2 Boundary bundle', () => {
+    for (const fixture of BOUNDARY_OBSERVER_TRACES) {
       expect(fixture.schema_version).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
-      expect(fixture.metadata.id).toMatch(/^trace-/);
+      expect(fixture.metadata.id).toMatch(/^(trace|boundary)-/);
       expect(fixture.events.length).toBeGreaterThan(0);
     }
   });
 
   it('uses unique trace_ids and valid parent references', () => {
-    for (const fixture of BOUNDARY_DEMO_TRACES) {
+    for (const fixture of BOUNDARY_OBSERVER_TRACES) {
       const ids = new Set(fixture.events.map((event) => event.trace_id));
       expect(ids.size).toBe(fixture.events.length);
       expect(fixture.events.filter((event) => !event.parent_event_id)).toHaveLength(1);
@@ -50,7 +75,7 @@ describe('DEMO_TRACES', () => {
   });
 
   it('has exactly one root event per run', () => {
-    for (const fixture of BOUNDARY_DEMO_TRACES) {
+    for (const fixture of BOUNDARY_OBSERVER_TRACES) {
       const runs = new Map<string, number>();
 
       for (const event of fixture.events) {
@@ -66,7 +91,7 @@ describe('DEMO_TRACES', () => {
   });
 
   it('uses only allowed source, event type, status, and risk values', () => {
-    for (const fixture of BOUNDARY_DEMO_TRACES) {
+    for (const fixture of BOUNDARY_OBSERVER_TRACES) {
       for (const event of fixture.events) {
         expect(ALLOWED_SOURCES.has(event.source)).toBe(true);
         expect(ALLOWED_EVENT_TYPES.has(event.event_type)).toBe(true);
@@ -77,7 +102,7 @@ describe('DEMO_TRACES', () => {
   });
 
   it('keeps demo data redacted and free of obvious secret/provider/private-url patterns', () => {
-    const serialized = stringifyTraceData(BOUNDARY_DEMO_TRACES);
+    const serialized = stringifyTraceData(BOUNDARY_OBSERVER_TRACES);
     const forbiddenPatterns = [
       /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
       /\b(?:bearer|oauth|api[_-]?key|client[_-]?secret|access[_-]?token|refresh[_-]?token|session[_-]?cookie)\b/i,
@@ -93,8 +118,8 @@ describe('DEMO_TRACES', () => {
     }
   });
 
-  it('can render every demo trace as a graph', () => {
-    for (const trace of DEMO_TRACES) {
+  it('can render every observer trace as a graph', () => {
+    for (const trace of OBSERVER_TRACES) {
       const graph = traceToGraph(trace);
       expect(graph.rootNode.label).toMatch(/HERMES|OPENCLAW|AAG|SENTINEL/);
       expect(graph.metadata.nodeCount).toBe(trace.events.length);

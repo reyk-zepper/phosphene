@@ -22,7 +22,7 @@ Phosphene has two modes:
 - **Reasoning Lab** turns model reasoning traces into an **interactive visual graph**. Instead of scrolling through walls of raw "thinking" text, you see each step of the model's thought process as a glowing node — categorized by type (hypothesis, analysis, revision, decision…), connected by organic edges, explorable with click, zoom, and pan.
 - **Node Observer** renders redacted AI-node demo traces so runs, events, systems, statuses, risks, decisions, and recovery steps are understandable without exposing private payloads.
 
-Node Observer v0.1 uses **synthetic/redacted demo traces only**. It is not a live Hermes/AAG/OpenClaw/Sentinel telemetry integration yet.
+Node Observer v0.1 uses **synthetic/redacted demo traces only**, including grouped Hermes synthetic handoff fixtures generated on the AI Node. It is not a live Hermes/AAG/OpenClaw/Sentinel telemetry integration yet.
 
 **The metaphor:** Phosphenes are the light patterns you see when you close your eyes and press on them — light generated *by the brain itself*, not by anything external. That's exactly what this tool does: it makes the inner light of AI reasoning visible.
 
@@ -42,15 +42,16 @@ Built for:
 
 ### Status
 
-> **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted demo traces, not live AI-node telemetry.
+> **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted built-in demos and Hermes synthetic handoff fixtures, not live AI-node telemetry.
 
 Currently working:
 
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
 - Reasoning Lab demo graph for model reasoning exploration
-- Node Observer mode with four redacted AI-node demo traces
+- Node Observer mode with four redacted AI-node demo traces plus four grouped Hermes synthetic handoff fixtures
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
-- Local Boundary JSON upload with schema and redaction validation
+- Local Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
+- CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
@@ -110,6 +111,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm preview` | Preview the production build locally |
 | `pnpm test` | Run the Vitest unit tests |
 | `pnpm lint` | Run ESLint |
+| `pnpm validate:traces -- <paths>` | Validate Boundary JSON fixture files or directories |
 | `pnpm format` | Format with Prettier |
 
 ### Design language — "Bioluminescent Dark"
@@ -177,7 +179,7 @@ Phosphene hat zwei Modi:
 - **Reasoning Lab** macht den verborgenen Denkprozess großer Sprachmodelle zu einem **interaktiven visuellen Graphen**. Statt endlose "Thinking"-Textblöcke zu scrollen, siehst du jeden Schritt des Reasonings als leuchtenden Node — kategorisiert nach Typ (Hypothese, Analyse, Korrektur, Entscheidung…), verbunden durch organische Kanten, explorierbar mit Klick, Zoom und Pan.
 - **Node Observer** rendert redigierte AI-Node-Demo-Traces, damit Runs, Events, beteiligte Systeme, Status, Risiko, Entscheidungen und Recovery-Schritte verständlich werden, ohne private Payloads offenzulegen.
 
-Node Observer v0.1 nutzt **synthetische/redigierte Demo-Traces**. Es ist noch keine Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
+Node Observer v0.1 nutzt **synthetische/redigierte Demo-Traces**, inklusive gruppierter Hermes Synthetic Handoff Fixtures vom AI Node. Es ist noch keine Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
 
 **Die Metapher:** Phosphene sind die Lichterscheinungen, die du siehst, wenn du die Augen schließt und darauf drückst — Licht, das vom *Gehirn selbst* erzeugt wird, nicht von außen. Genau das tut dieses Tool: es macht das innere Licht der KI sichtbar.
 
@@ -197,15 +199,16 @@ Gebaut für:
 
 ### Status
 
-> **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Demo-Traces, keine Live-AI-Node-Telemetrie.
+> **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Built-in-Demos und Hermes Synthetic Handoff Fixtures, keine Live-AI-Node-Telemetrie.
 
 Funktioniert bereits:
 
 - Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
 - Reasoning-Lab-Demo-Graph für Reasoning-Exploration
-- Node Observer mit vier redigierten AI-Node-Demo-Traces
+- Node Observer mit vier redigierten AI-Node-Demo-Traces plus vier gruppierten Hermes Synthetic Handoff Fixtures
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
-- Lokaler Boundary-JSON-Upload mit Schema- und Redaction-Validierung
+- Lokaler Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
+- CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe
@@ -265,6 +268,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm preview` | Production-Build lokal ansehen |
 | `pnpm test` | Vitest Unit-Tests ausführen |
 | `pnpm lint` | ESLint ausführen |
+| `pnpm validate:traces -- <paths>` | Boundary-JSON-Fixtures oder Verzeichnisse validieren |
 | `pnpm format` | Mit Prettier formatieren |
 
 ### Design-Sprache — "Bioluminescent Dark"

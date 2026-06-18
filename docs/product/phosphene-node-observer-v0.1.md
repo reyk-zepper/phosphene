@@ -62,7 +62,7 @@ The adapter converts this Boundary format into the current internal `NodeTrace`/
 
 ## Demo traces
 
-v0.1 ships four synthetic scenarios:
+v0.1 ships four built-in synthetic scenarios:
 
 1. **Hermes -> AAG -> Gmail Draft** — a draft is prepared and held behind approval; no email address or message body is present.
 2. **Hermes -> OpenClaw Worker** — Hermes delegates bounded work through a worker boundary and receives a redacted result.
@@ -71,10 +71,22 @@ v0.1 ships four synthetic scenarios:
 
 All demo data is synthetic/redacted. Payload proof is represented only by values like `sha256:redacted-...`.
 
+## Trace intake and handoff gallery
+
+v0.1.3 adds a repeatable intake path for Boundary JSON fixtures:
+
+- Built-in demo traces and Hermes synthetic handoffs are shown as separate Node Observer groups.
+- Hermes handoff traces are stored as repo fixtures under `src/core/traces/handoffs/hermes-synthetic-2026-06-18/`.
+- The browser import path returns visible validation checks for JSON parsing, schema version, shape, enum values, graph references, and redaction.
+- The CLI validator can be run with `pnpm validate:traces -- <files-or-directories>`.
+
+The Hermes handoff gallery is still **synthetic fixture data**, not live telemetry. It exists to prove that AI-node-side workers can generate Phosphene-compatible Boundary bundles without coupling the UI to live Hermes internals.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
-- Node Observer Bar selects among demo traces and explicitly labels them as redacted demo traces.
+- Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
+- Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
@@ -100,6 +112,9 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.1 allows a local Boundary JSON upload, validates schema/redaction rules in the browser, and renders the imported trace without sending data to a server.
 - v0.1.2 ships versioned Boundary bundles with `schema_version: "phosphene.boundary.v0.1.2"` and a JSON Schema contract document.
 - v0.1.2 exposes run-level summaries before node click-through and groups event details by purpose.
+- v0.1.3 stores four verified Hermes synthetic handoff fixtures as a separate gallery group.
+- v0.1.3 shows structured validation checks for accepted and blocked Boundary JSON imports.
+- v0.1.3 provides `pnpm validate:traces -- <files-or-directories>` for repeatable fixture intake checks.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

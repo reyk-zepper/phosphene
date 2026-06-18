@@ -1,0 +1,82 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "boundary-hermes-aag-draft-001",
+    "title": "Hermes to AAG draft action gate",
+    "subtitle": "Synthetic boundary trace for approval-held message draft",
+    "status": "needs_approval"
+  },
+  "events": [
+    {
+      "trace_id": "draft-001-e1",
+      "run_id": "run-synth-draft-001",
+      "source": "hermes",
+      "event_type": "run.started",
+      "actor": "hermes",
+      "status": "running",
+      "timestamp": "2026-06-18T09:00:00Z",
+      "summary": "Synthetic user-intent run started for a redacted draft action.",
+      "parent_event_id": null,
+      "risk": "low"
+    },
+    {
+      "trace_id": "draft-001-e2",
+      "run_id": "run-synth-draft-001",
+      "source": "hermes",
+      "event_type": "agent.plan",
+      "actor": "hermes",
+      "status": "running",
+      "timestamp": "2026-06-18T09:00:12Z",
+      "summary": "Hermes plans a draft-only message operation with recipient and body removed.",
+      "parent_event_id": "draft-001-e1",
+      "risk": "medium",
+      "redacted_payload_hash": "sha256:redacted-draft-plan-001"
+    },
+    {
+      "trace_id": "draft-001-e3",
+      "run_id": "run-synth-draft-001",
+      "source": "hermes",
+      "event_type": "tool.requested",
+      "actor": "hermes",
+      "status": "queued",
+      "timestamp": "2026-06-18T09:00:20Z",
+      "summary": "Draft creation request is prepared but not executed.",
+      "parent_event_id": "draft-001-e2",
+      "tool": "message_draft_prepare",
+      "risk": "medium",
+      "redacted_payload_hash": "sha256:redacted-draft-request-001"
+    },
+    {
+      "trace_id": "draft-001-e4",
+      "run_id": "run-synth-draft-001",
+      "source": "aag",
+      "event_type": "aag.decision",
+      "actor": "aag",
+      "status": "needs_approval",
+      "timestamp": "2026-06-18T09:00:28Z",
+      "summary": "AAG classifies the draft operation as requiring explicit human approval before any side effect.",
+      "parent_event_id": "draft-001-e3",
+      "decision": "hold_for_approval",
+      "risk": "medium",
+      "links": [
+        {
+          "label": "Related event draft-001-e3",
+          "href": "trace://draft-001-e3"
+        }
+      ]
+    },
+    {
+      "trace_id": "draft-001-e5",
+      "run_id": "run-synth-draft-001",
+      "source": "aag",
+      "event_type": "approval.required",
+      "actor": "aag",
+      "status": "needs_approval",
+      "timestamp": "2026-06-18T09:00:31Z",
+      "summary": "Run remains paused at the approval boundary; no message content or recipient is present.",
+      "parent_event_id": "draft-001-e4",
+      "decision": "approval_required",
+      "risk": "medium"
+    }
+  ]
+}

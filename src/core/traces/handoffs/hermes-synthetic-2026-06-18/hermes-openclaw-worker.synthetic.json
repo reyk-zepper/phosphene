@@ -1,0 +1,92 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "boundary-hermes-worker-001",
+    "title": "Hermes delegates bounded worker task",
+    "subtitle": "Synthetic worker handoff with redacted result return",
+    "status": "succeeded"
+  },
+  "events": [
+    {
+      "trace_id": "worker-001-e1",
+      "run_id": "run-synth-worker-001",
+      "source": "hermes",
+      "event_type": "run.started",
+      "actor": "hermes",
+      "status": "running",
+      "timestamp": "2026-06-18T10:00:00Z",
+      "summary": "Hermes starts a synthetic bounded-work run.",
+      "parent_event_id": null,
+      "risk": "low"
+    },
+    {
+      "trace_id": "worker-001-e2",
+      "run_id": "run-synth-worker-001",
+      "source": "hermes",
+      "event_type": "agent.plan",
+      "actor": "hermes",
+      "status": "running",
+      "timestamp": "2026-06-18T10:00:07Z",
+      "summary": "Hermes defines a narrow worker scope with no autonomous primary-agent authority.",
+      "parent_event_id": "worker-001-e1",
+      "risk": "low"
+    },
+    {
+      "trace_id": "worker-001-e3",
+      "run_id": "run-synth-worker-001",
+      "source": "hermes",
+      "event_type": "tool.requested",
+      "actor": "hermes",
+      "status": "queued",
+      "timestamp": "2026-06-18T10:00:15Z",
+      "summary": "Hermes requests a bounded local worker task using a redacted task brief.",
+      "parent_event_id": "worker-001-e2",
+      "tool": "bounded_worker_dispatch",
+      "risk": "low",
+      "redacted_payload_hash": "sha256:redacted-worker-brief-001"
+    },
+    {
+      "trace_id": "worker-001-e4",
+      "run_id": "run-synth-worker-001",
+      "source": "openclaw",
+      "event_type": "worker.started",
+      "actor": "openclaw_worker",
+      "status": "running",
+      "timestamp": "2026-06-18T10:00:23Z",
+      "summary": "OpenClaw starts as a constrained worker under Hermes supervision.",
+      "parent_event_id": "worker-001-e3",
+      "risk": "low"
+    },
+    {
+      "trace_id": "worker-001-e5",
+      "run_id": "run-synth-worker-001",
+      "source": "openclaw",
+      "event_type": "worker.completed",
+      "actor": "openclaw_worker",
+      "status": "succeeded",
+      "timestamp": "2026-06-18T10:01:10Z",
+      "summary": "Worker completes the bounded task and returns only a redacted artifact summary.",
+      "parent_event_id": "worker-001-e4",
+      "risk": "low",
+      "redacted_payload_hash": "sha256:redacted-worker-result-001"
+    },
+    {
+      "trace_id": "worker-001-e6",
+      "run_id": "run-synth-worker-001",
+      "source": "hermes",
+      "event_type": "run.completed",
+      "actor": "hermes",
+      "status": "succeeded",
+      "timestamp": "2026-06-18T10:01:18Z",
+      "summary": "Hermes receives the redacted worker result and closes the run successfully.",
+      "parent_event_id": "worker-001-e5",
+      "risk": "low",
+      "links": [
+        {
+          "label": "Related event worker-001-e5",
+          "href": "trace://worker-001-e5"
+        }
+      ]
+    }
+  ]
+}

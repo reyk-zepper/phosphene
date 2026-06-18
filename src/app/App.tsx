@@ -10,7 +10,7 @@ import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { useGraphNavigation } from '@/hooks/useGraphNavigation';
-import { DEMO_TRACES } from '@/constants/demoTraces';
+import { OBSERVER_TRACE_GROUPS, OBSERVER_TRACES } from '@/constants/demoTraces';
 import { traceToGraph } from '@/core/traces/toGraph';
 import { parseBoundaryTraceJson } from '@/core/traces/boundaryImport';
 import type { NodeTrace } from '@/core/traces/types';
@@ -29,11 +29,11 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mode, setMode] = useState<AppMode>('observer');
-  const [selectedTraceId, setSelectedTraceId] = useState(DEMO_TRACES[0].id);
+  const [selectedTraceId, setSelectedTraceId] = useState(OBSERVER_TRACES[0].id);
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
   const [importStatus, setImportStatus] = useState<TraceImportStatus>({ type: 'idle' });
   const observerTraces = useMemo(
-    () => [...importedTraces, ...DEMO_TRACES],
+    () => [...importedTraces, ...OBSERVER_TRACES],
     [importedTraces]
   );
   useGraphNavigation();
@@ -47,6 +47,7 @@ export function App() {
         type: 'error',
         message: `Import blocked: ${file.name}`,
         errors: result.errors,
+        checks: result.checks,
       });
       return;
     }
@@ -59,6 +60,7 @@ export function App() {
     setImportStatus({
       type: 'success',
       message: `Imported ${result.trace.title}`,
+      checks: result.checks,
     });
   }, []);
 
@@ -100,7 +102,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.2
+              v0.1.3
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -123,6 +125,7 @@ export function App() {
         ) : (
           <NodeObserverBar
             traces={observerTraces}
+            traceGroups={OBSERVER_TRACE_GROUPS}
             selectedTraceId={selectedTraceId}
             onSelectTrace={setSelectedTraceId}
             importedTraceIds={importedTraces.map((trace) => trace.id)}

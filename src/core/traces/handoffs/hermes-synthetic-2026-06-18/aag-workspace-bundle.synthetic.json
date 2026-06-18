@@ -1,0 +1,88 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "boundary-aag-workspace-bundle-001",
+    "title": "AAG evaluates synthetic workspace mutation bundle",
+    "subtitle": "Multiple proposed side effects held before execution",
+    "status": "needs_approval"
+  },
+  "events": [
+    {
+      "trace_id": "bundle-001-e1",
+      "run_id": "run-synth-bundle-001",
+      "source": "aag",
+      "event_type": "run.started",
+      "actor": "aag",
+      "status": "running",
+      "timestamp": "2026-06-18T11:00:00Z",
+      "summary": "AAG starts evaluation of a synthetic workspace bundle.",
+      "parent_event_id": null,
+      "risk": "medium"
+    },
+    {
+      "trace_id": "bundle-001-e2",
+      "run_id": "run-synth-bundle-001",
+      "source": "hermes",
+      "event_type": "agent.plan",
+      "actor": "hermes",
+      "status": "running",
+      "timestamp": "2026-06-18T11:00:09Z",
+      "summary": "Hermes submits a bundle containing several redacted proposed workspace changes.",
+      "parent_event_id": "bundle-001-e1",
+      "risk": "medium",
+      "redacted_payload_hash": "sha256:redacted-bundle-plan-001"
+    },
+    {
+      "trace_id": "bundle-001-e3",
+      "run_id": "run-synth-bundle-001",
+      "source": "aag",
+      "event_type": "aag.decision",
+      "actor": "aag",
+      "status": "needs_approval",
+      "timestamp": "2026-06-18T11:00:20Z",
+      "summary": "AAG groups draft, schedule, and file-state changes into one approval boundary.",
+      "parent_event_id": "bundle-001-e2",
+      "decision": "bundle_hold",
+      "risk": "high"
+    },
+    {
+      "trace_id": "bundle-001-e5",
+      "run_id": "run-synth-bundle-001",
+      "source": "aag",
+      "event_type": "health.check",
+      "actor": "aag",
+      "status": "succeeded",
+      "timestamp": "2026-06-18T11:00:34Z",
+      "summary": "AAG confirms the synthetic bundle contains no raw content fields in the handoff trace.",
+      "parent_event_id": "bundle-001-e3",
+      "risk": "low"
+    },
+    {
+      "trace_id": "bundle-001-e4",
+      "run_id": "run-synth-bundle-001",
+      "source": "aag",
+      "event_type": "approval.required",
+      "actor": "aag",
+      "status": "needs_approval",
+      "timestamp": "2026-06-18T11:00:27Z",
+      "summary": "All proposed mutations remain blocked until explicit approval is provided.",
+      "parent_event_id": "bundle-001-e5",
+      "decision": "approval_required",
+      "risk": "high",
+      "links": [
+        {
+          "label": "Related event bundle-001-e2",
+          "href": "trace://bundle-001-e2"
+        },
+        {
+          "label": "Related event bundle-001-e3",
+          "href": "trace://bundle-001-e3"
+        },
+        {
+          "label": "Related event bundle-001-e5",
+          "href": "trace://bundle-001-e5"
+        }
+      ]
+    }
+  ]
+}

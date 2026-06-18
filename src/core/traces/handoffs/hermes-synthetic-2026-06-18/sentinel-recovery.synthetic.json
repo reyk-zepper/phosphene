@@ -1,0 +1,94 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "boundary-sentinel-recovery-001",
+    "title": "Sentinel synthetic health-gate recovery",
+    "subtitle": "Detection, recovery, and recovered terminal state",
+    "status": "recovered"
+  },
+  "events": [
+    {
+      "trace_id": "recovery-001-e1",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "run.started",
+      "actor": "sentinel",
+      "status": "running",
+      "timestamp": "2026-06-18T12:00:00Z",
+      "summary": "Sentinel starts a synthetic health supervision run.",
+      "parent_event_id": null,
+      "risk": "low"
+    },
+    {
+      "trace_id": "recovery-001-e2",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "health.check",
+      "actor": "sentinel",
+      "status": "failed",
+      "timestamp": "2026-06-18T12:00:11Z",
+      "summary": "Synthetic health gate reports a failed readiness condition.",
+      "parent_event_id": "recovery-001-e1",
+      "risk": "medium",
+      "redacted_payload_hash": "sha256:redacted-health-failure-001"
+    },
+    {
+      "trace_id": "recovery-001-e3",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "sentinel.alert",
+      "actor": "sentinel",
+      "status": "running",
+      "timestamp": "2026-06-18T12:00:18Z",
+      "summary": "Sentinel emits an alert with operational details removed.",
+      "parent_event_id": "recovery-001-e2",
+      "risk": "medium"
+    },
+    {
+      "trace_id": "recovery-001-e4",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "sentinel.recovery",
+      "actor": "sentinel",
+      "status": "running",
+      "timestamp": "2026-06-18T12:00:29Z",
+      "summary": "Recovery procedure starts in synthetic mode without external side effects.",
+      "parent_event_id": "recovery-001-e3",
+      "risk": "medium"
+    },
+    {
+      "trace_id": "recovery-001-e5",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "health.check",
+      "actor": "sentinel",
+      "status": "succeeded",
+      "timestamp": "2026-06-18T12:01:05Z",
+      "summary": "Follow-up health check succeeds after the synthetic recovery step.",
+      "parent_event_id": "recovery-001-e4",
+      "risk": "low"
+    },
+    {
+      "trace_id": "recovery-001-e6",
+      "run_id": "run-synth-recovery-001",
+      "source": "sentinel",
+      "event_type": "run.completed",
+      "actor": "sentinel",
+      "status": "recovered",
+      "timestamp": "2026-06-18T12:01:12Z",
+      "summary": "Sentinel closes the trace with recovered terminal status.",
+      "parent_event_id": "recovery-001-e5",
+      "risk": "low",
+      "links": [
+        {
+          "label": "Related event recovery-001-e2",
+          "href": "trace://recovery-001-e2"
+        },
+        {
+          "label": "Related event recovery-001-e5",
+          "href": "trace://recovery-001-e5"
+        }
+      ]
+    }
+  ]
+}

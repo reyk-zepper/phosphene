@@ -47,3 +47,5 @@ Codex independently verified the handoff after Hermes repaired the first pass:
 ## Result
 
 The handoff is suitable as a synthetic AI-node-side test fixture set for Phosphene Node Observer. It should remain outside live-agent claims until a future adapter generates redacted traces from real runs through the same Boundary contract.
+
+In Phosphene v0.1.3 the four repaired handoff bundles are copied into the repo under `src/core/traces/handoffs/hermes-synthetic-2026-06-18/` and exposed as the `Hermes Synthetic Handoffs` Node Observer gallery group.

@@ -4,20 +4,22 @@ import {
   type BoundaryTraceMetadata,
 } from './boundary';
 import {
-  BOUNDARY_TRACE_SCHEMA_VERSION,
+  validateBoundaryTraceJson,
+  type BoundaryValidationCheck,
+} from './boundaryValidation';
+import {
   TRACE_EVENT_TYPES,
   TRACE_RISKS,
   TRACE_SOURCES,
   TRACE_STATUSES,
-  type BoundaryTraceSchemaVersion,
   type NodeTrace,
   type TraceLink,
   type TraceStatus,
 } from './types';
 
 export type BoundaryTraceImportResult =
-  | { ok: true; trace: NodeTrace }
-  | { ok: false; errors: string[] };
+  | { ok: true; trace: NodeTrace; checks?: BoundaryValidationCheck[] }
+  | { ok: false; errors: string[]; checks?: BoundaryValidationCheck[] };
 
 const sensitivePatterns: Array<{ id: string; pattern: RegExp }> = [
   { id: 'email_address', pattern: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i },
@@ -201,32 +203,6 @@ function validateRedaction(value: unknown): string[] {
     .map(({ id }) => `Trace data contains forbidden sensitive pattern: ${id}`);
 }
 
-function readSchemaVersion(value: unknown, errors: string[]): BoundaryTraceSchemaVersion | undefined {
-  if (value !== BOUNDARY_TRACE_SCHEMA_VERSION) {
-    errors.push(`schema_version must be ${BOUNDARY_TRACE_SCHEMA_VERSION}`);
-    return undefined;
-  }
-
-  return value;
-}
-
-function extractEvents(
-  value: unknown,
-  errors: string[]
-): { events: unknown[]; metadata: unknown; schemaVersion?: BoundaryTraceSchemaVersion } | null {
-  if (Array.isArray(value)) return { events: value, metadata: undefined };
-  if (!isRecord(value)) {
-    errors.push('Boundary JSON must be an event array or an object with an events array');
-    return null;
-  }
-  const schemaVersion = readSchemaVersion(value.schema_version, errors);
-  if (!Array.isArray(value.events)) {
-    errors.push('Boundary JSON object must contain an events array');
-    return null;
-  }
-  return { events: value.events, metadata: value.metadata, schemaVersion };
-}
-
 function validateEventGraph(events: BoundaryTraceEvent[], rawEvents: unknown[], errors: string[]): void {
   const ids = new Set<string>();
   const runIds = new Set<string>();
@@ -267,19 +243,34 @@ export function parseBoundaryTraceJson(
     return { ok: false, errors: [`Invalid JSON: ${message}`] };
   }
 
-  const errors = validateRedaction(parsed);
-  const extracted = extractEvents(parsed, errors);
-  if (!extracted) return { ok: false, errors: uniqueErrors(errors) };
-  if (extracted.events.length === 0) errors.push('Boundary trace must contain at least one event');
+  if (!Array.isArray(parsed)) {
+    const validation = validateBoundaryTraceJson(input, fileName);
+    if (!validation.ok || !validation.bundle) {
+      return { ok: false, errors: validation.errors, checks: validation.checks };
+    }
 
-  const events = extracted.events
+    return {
+      ok: true,
+      trace: boundaryEventsToNodeTrace(
+        validation.bundle.events,
+        validation.bundle.metadata,
+        validation.bundle.schema_version
+      ),
+      checks: validation.checks,
+    };
+  }
+
+  const errors = validateRedaction(parsed);
+  if (parsed.length === 0) errors.push('Boundary trace must contain at least one event');
+
+  const events = parsed
     .map((event, index) => readEvent(event, index, errors))
     .filter((event): event is BoundaryTraceEvent => event !== null);
 
-  if (events.length > 0) validateEventGraph(events, extracted.events, errors);
+  if (events.length > 0) validateEventGraph(events, parsed, errors);
   const fallbackStatus = [...events].sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp)).at(-1)?.status;
-  const metadata = readMetadata(extracted.metadata, fileName, fallbackStatus, errors);
+  const metadata = readMetadata(undefined, fileName, fallbackStatus, errors);
 
   if (errors.length > 0) return { ok: false, errors: uniqueErrors(errors) };
-  return { ok: true, trace: boundaryEventsToNodeTrace(events, metadata, extracted.schemaVersion) };
+  return { ok: true, trace: boundaryEventsToNodeTrace(events, metadata) };
 }
