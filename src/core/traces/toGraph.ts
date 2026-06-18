@@ -67,16 +67,22 @@ function eventMetadata(event: NodeTraceEvent): Record<string, string> {
 
 function eventContent(event: NodeTraceEvent): string {
   const lines = [event.detail.trim()];
-  const metadata = eventMetadata(event);
-  const entries = Object.entries(metadata).filter(([, value]) => value.trim().length > 0);
-  if (entries.length > 0) {
+
+  const context = [
+    event.decision && !event.detail.includes(event.decision)
+      ? `Decision: ${event.decision}.`
+      : undefined,
+    event.risk && !event.detail.includes(event.risk) ? `Risk: ${event.risk}.` : undefined,
+    event.redactedPayloadHash && !event.detail.includes(event.redactedPayloadHash)
+      ? `Payload proof: ${event.redactedPayloadHash}.`
+      : undefined,
+  ].filter(Boolean);
+
+  if (context.length > 0) {
     lines.push('');
-    lines.push('| Field | Value |');
-    lines.push('|---|---|');
-    for (const [key, value] of entries) {
-      lines.push(`| ${key} | ${value} |`);
-    }
+    lines.push(context.join(' '));
   }
+
   return lines.join('\n');
 }
 

@@ -3,6 +3,7 @@ import { BOUNDARY_DEMO_TRACES, DEMO_TRACES } from '@/constants/demoTraces';
 import { boundaryEventsToNodeTrace } from '@/core/traces/boundary';
 import { traceToGraph } from '@/core/traces/toGraph';
 import {
+  BOUNDARY_TRACE_SCHEMA_VERSION,
   TRACE_EVENT_TYPES,
   TRACE_RISKS,
   TRACE_SOURCES,
@@ -26,6 +27,14 @@ describe('DEMO_TRACES', () => {
       'trace-aag-google-workspace-bundle',
       'trace-sentinel-failure-recovery',
     ]);
+  });
+
+  it('ships every demo trace as a supported v0.1.2 Boundary bundle', () => {
+    for (const fixture of BOUNDARY_DEMO_TRACES) {
+      expect(fixture.schema_version).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
+      expect(fixture.metadata.id).toMatch(/^trace-/);
+      expect(fixture.events.length).toBeGreaterThan(0);
+    }
   });
 
   it('uses unique trace_ids and valid parent references', () => {

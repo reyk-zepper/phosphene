@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { parseBoundaryTraceJson } from '@/core/traces/boundaryImport';
 import { traceToGraph } from '@/core/traces/toGraph';
+import { BOUNDARY_TRACE_SCHEMA_VERSION } from '@/core/traces/types';
 
 const validBundle = {
+  schema_version: BOUNDARY_TRACE_SCHEMA_VERSION,
   metadata: {
     id: 'trace-imported-gmail-demo',
     title: 'Imported Gmail Draft Trace',
@@ -48,6 +50,7 @@ describe('parseBoundaryTraceJson', () => {
     if (!result.ok) throw new Error(result.errors.join('\n'));
 
     expect(result.trace.id).toBe('trace-imported-gmail-demo');
+    expect(result.trace.schemaVersion).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
     expect(result.trace.title).toBe('Imported Gmail Draft Trace');
     expect(result.trace.events[1].redactedPayloadHash).toBe(
       'sha256:redacted-imported-draft'
@@ -69,6 +72,28 @@ describe('parseBoundaryTraceJson', () => {
     expect(result.trace.id).toBe('imported-worker-run');
     expect(result.trace.title).toBe('worker-run.json');
     expect(result.trace.status).toBe('needs_approval');
+  });
+
+  it('rejects bundled Boundary JSON without a schema_version', () => {
+    const missingVersion = Object.fromEntries(
+      Object.entries(validBundle).filter(([key]) => key !== 'schema_version')
+    );
+    const result = parseBoundaryTraceJson(JSON.stringify(missingVersion), 'missing-version.json');
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('Expected versionless bundle to fail');
+    expect(result.errors).toContain('schema_version must be phosphene.boundary.v0.1.2');
+  });
+
+  it('rejects bundled Boundary JSON with an unsupported schema_version', () => {
+    const result = parseBoundaryTraceJson(
+      JSON.stringify({ ...validBundle, schema_version: 'phosphene.boundary.v9.9.9' }),
+      'future-version.json'
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('Expected unsupported schema version to fail');
+    expect(result.errors).toContain('schema_version must be phosphene.boundary.v0.1.2');
   });
 
   it('reports parse errors for invalid JSON', () => {

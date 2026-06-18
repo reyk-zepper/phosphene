@@ -1,4 +1,5 @@
 import type {
+  BoundaryTraceSchemaVersion,
   NodeTrace,
   NodeTraceEvent,
   TraceEventType,
@@ -7,6 +8,7 @@ import type {
   TraceSource,
   TraceStatus,
 } from './types';
+import { createNodeTraceSummary } from './summary';
 
 export interface BoundaryTraceEvent {
   trace_id: string;
@@ -30,6 +32,12 @@ export interface BoundaryTraceMetadata {
   title: string;
   subtitle?: string;
   status: TraceStatus;
+}
+
+export interface BoundaryTraceBundle {
+  schema_version: BoundaryTraceSchemaVersion;
+  metadata: BoundaryTraceMetadata;
+  events: BoundaryTraceEvent[];
 }
 
 function boundaryEventDetail(event: BoundaryTraceEvent): string {
@@ -79,7 +87,8 @@ export function boundaryEventToNodeTraceEvent(event: BoundaryTraceEvent): NodeTr
 
 export function boundaryEventsToNodeTrace(
   events: BoundaryTraceEvent[],
-  metadata: BoundaryTraceMetadata
+  metadata: BoundaryTraceMetadata,
+  schemaVersion?: BoundaryTraceSchemaVersion
 ): NodeTrace {
   if (events.length === 0) {
     throw new Error(`Boundary trace ${metadata.id} must contain at least one event`);
@@ -88,13 +97,16 @@ export function boundaryEventsToNodeTrace(
   const orderedEvents = [...events].sort(
     (a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp)
   );
+  const nodeEvents = orderedEvents.map(boundaryEventToNodeTraceEvent);
 
   return {
     id: metadata.id,
+    schemaVersion,
     title: metadata.title,
     subtitle: metadata.subtitle,
     status: metadata.status,
     startedAt: orderedEvents[0].timestamp,
-    events: orderedEvents.map(boundaryEventToNodeTraceEvent),
+    summary: createNodeTraceSummary({ events: nodeEvents, status: metadata.status }),
+    events: nodeEvents,
   };
 }

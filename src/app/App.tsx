@@ -100,7 +100,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.1
+              v0.1.2
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />

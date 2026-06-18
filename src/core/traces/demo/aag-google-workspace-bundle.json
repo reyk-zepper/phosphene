@@ -1,4 +1,12 @@
-[
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "trace-aag-google-workspace-bundle",
+    "title": "AAG Google Workspace Bundle",
+    "subtitle": "Redacted demo: bundled Workspace changes require operator approval",
+    "status": "needs_approval"
+  },
+  "events": [
   {
     "trace_id": "workspace-bundle-1",
     "run_id": "run-workspace-bundle-demo",
@@ -51,4 +59,5 @@
     "redacted_payload_hash": "sha256:redacted-workspace-bundle",
     "parent_event_id": "workspace-bundle-3"
   }
-]
+  ]
+}

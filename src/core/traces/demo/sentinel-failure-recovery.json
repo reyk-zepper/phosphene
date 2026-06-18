@@ -1,4 +1,12 @@
-[
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "trace-sentinel-failure-recovery",
+    "title": "Sentinel Failure / Recovery",
+    "subtitle": "Redacted demo: health failure and recovery become visible",
+    "status": "recovered"
+  },
+  "events": [
   {
     "trace_id": "sentinel-recovery-1",
     "run_id": "run-sentinel-recovery-demo",
@@ -49,4 +57,5 @@
     "summary": "Recovery status is visible to the operator",
     "parent_event_id": "sentinel-recovery-3"
   }
-]
+  ]
+}

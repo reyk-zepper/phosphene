@@ -7,6 +7,25 @@ import { useSessionStore } from '@/core/store/sessionStore';
 import { flattenGraph } from '@/constants/demoGraph';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 
+const EVENT_FIELD_GROUPS = [
+  {
+    title: 'Identity',
+    keys: ['source', 'actor', 'run', 'time'],
+  },
+  {
+    title: 'Action',
+    keys: ['event', 'tool', 'status'],
+  },
+  {
+    title: 'Gate',
+    keys: ['decision', 'risk'],
+  },
+  {
+    title: 'Evidence',
+    keys: ['redacted_payload_hash', 'links'],
+  },
+] as const;
+
 export function DetailPanel() {
   const graph = useSessionStore((s) => s.currentGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
@@ -129,20 +148,31 @@ export function DetailPanel() {
                 <p className="mb-2 font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
                   Node Observer event fields
                 </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(node.metadata).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="rounded-lg border border-[color:var(--border-subtle)] px-3 py-2"
-                    >
-                      <dt className="font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
-                        {key}
-                      </dt>
-                      <dd className="mt-1 break-words font-mono text-[11px] text-[color:var(--text-secondary)]">
-                        {value}
-                      </dd>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  {EVENT_FIELD_GROUPS.map((group) => {
+                    const entries = group.keys.flatMap((key) => {
+                      const value = node.metadata?.[key];
+                      return value ? [{ key, value }] : [];
+                    });
+
+                    if (entries.length === 0) return null;
+
+                    return (
+                      <section
+                        key={group.title}
+                        className="rounded-lg border border-[color:var(--border-subtle)] px-3 py-2.5"
+                      >
+                        <h3 className="font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                          {group.title}
+                        </h3>
+                        <dl className="mt-2 grid grid-cols-2 gap-2">
+                          {entries.map(({ key, value }) => (
+                            <EventField key={key} label={key} value={value} />
+                          ))}
+                        </dl>
+                      </section>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -163,6 +193,19 @@ export function DetailPanel() {
         </motion.aside>
       )}
     </AnimatePresence>
+  );
+}
+
+function EventField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0">
+      <dt className="font-mono text-[9px] tracking-wider text-[color:var(--text-muted)] uppercase">
+        {label}
+      </dt>
+      <dd className="mt-1 break-words font-mono text-[11px] text-[color:var(--text-secondary)]">
+        {value}
+      </dd>
+    </div>
   );
 }
 

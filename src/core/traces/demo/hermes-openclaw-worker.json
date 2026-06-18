@@ -1,4 +1,12 @@
-[
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "trace-hermes-openclaw-worker",
+    "title": "Hermes -> OpenClaw Worker",
+    "subtitle": "Redacted demo: bounded worker delegation through an adapter boundary",
+    "status": "succeeded"
+  },
+  "events": [
   {
     "trace_id": "openclaw-worker-1",
     "run_id": "run-openclaw-worker-demo",
@@ -60,4 +68,5 @@
     "summary": "Hermes completes the demo worker run",
     "parent_event_id": "openclaw-worker-4"
   }
-]
+  ]
+}

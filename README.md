@@ -49,8 +49,9 @@ Currently working:
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
 - Reasoning Lab demo graph for model reasoning exploration
 - Node Observer mode with four redacted AI-node demo traces
-- JSON import / adapter boundary for trace events before they become internal graph data
+- Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
 - Local Boundary JSON upload with schema and redaction validation
+- Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
 - Click to inspect, zoom & pan the canvas
@@ -203,8 +204,9 @@ Funktioniert bereits:
 - Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
 - Reasoning-Lab-Demo-Graph für Reasoning-Exploration
 - Node Observer mit vier redigierten AI-Node-Demo-Traces
-- JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
+- Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Lokaler Boundary-JSON-Upload mit Schema- und Redaction-Validierung
+- Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe
 - Klick zum Inspizieren, Zoom und Pan auf dem Canvas

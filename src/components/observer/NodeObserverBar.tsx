@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle, GitBranch, RadioTower, ShieldCheck, Upload } from 'lucide-react';
 import type { NodeTrace } from '@/core/traces/types';
+import { RunSummaryPanel } from './RunSummaryPanel';
 
 export type TraceImportStatus =
   | { type: 'idle' }
@@ -94,6 +95,8 @@ export function NodeObserverBar({
           </label>
         )}
       </div>
+
+      {selected && <RunSummaryPanel trace={selected} />}
 
       {importStatus.type !== 'idle' && (
         <div

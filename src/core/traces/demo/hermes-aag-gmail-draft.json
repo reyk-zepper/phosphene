@@ -1,4 +1,12 @@
-[
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "trace-hermes-aag-gmail-draft",
+    "title": "Hermes -> AAG -> Gmail Draft",
+    "subtitle": "Redacted demo: draft creation is gated before provider side effects",
+    "status": "needs_approval"
+  },
+  "events": [
   {
     "trace_id": "gmail-draft-1",
     "run_id": "run-gmail-draft-demo",
@@ -52,4 +60,5 @@
     "redacted_payload_hash": "sha256:redacted-gmail-draft",
     "parent_event_id": "gmail-draft-3"
   }
-]
+  ]
+}

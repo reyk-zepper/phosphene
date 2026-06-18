@@ -4,10 +4,12 @@ import {
   type BoundaryTraceMetadata,
 } from './boundary';
 import {
+  BOUNDARY_TRACE_SCHEMA_VERSION,
   TRACE_EVENT_TYPES,
   TRACE_RISKS,
   TRACE_SOURCES,
   TRACE_STATUSES,
+  type BoundaryTraceSchemaVersion,
   type NodeTrace,
   type TraceLink,
   type TraceStatus,
@@ -199,17 +201,30 @@ function validateRedaction(value: unknown): string[] {
     .map(({ id }) => `Trace data contains forbidden sensitive pattern: ${id}`);
 }
 
-function extractEvents(value: unknown, errors: string[]): { events: unknown[]; metadata: unknown } | null {
+function readSchemaVersion(value: unknown, errors: string[]): BoundaryTraceSchemaVersion | undefined {
+  if (value !== BOUNDARY_TRACE_SCHEMA_VERSION) {
+    errors.push(`schema_version must be ${BOUNDARY_TRACE_SCHEMA_VERSION}`);
+    return undefined;
+  }
+
+  return value;
+}
+
+function extractEvents(
+  value: unknown,
+  errors: string[]
+): { events: unknown[]; metadata: unknown; schemaVersion?: BoundaryTraceSchemaVersion } | null {
   if (Array.isArray(value)) return { events: value, metadata: undefined };
   if (!isRecord(value)) {
     errors.push('Boundary JSON must be an event array or an object with an events array');
     return null;
   }
+  const schemaVersion = readSchemaVersion(value.schema_version, errors);
   if (!Array.isArray(value.events)) {
     errors.push('Boundary JSON object must contain an events array');
     return null;
   }
-  return { events: value.events, metadata: value.metadata };
+  return { events: value.events, metadata: value.metadata, schemaVersion };
 }
 
 function validateEventGraph(events: BoundaryTraceEvent[], rawEvents: unknown[], errors: string[]): void {
@@ -266,5 +281,5 @@ export function parseBoundaryTraceJson(
   const metadata = readMetadata(extracted.metadata, fileName, fallbackStatus, errors);
 
   if (errors.length > 0) return { ok: false, errors: uniqueErrors(errors) };
-  return { ok: true, trace: boundaryEventsToNodeTrace(events, metadata) };
+  return { ok: true, trace: boundaryEventsToNodeTrace(events, metadata, extracted.schemaVersion) };
 }

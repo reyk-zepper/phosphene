@@ -37,7 +37,9 @@ Node Observer is the mode for inspecting AI-node run traces. In v0.1 it renders 
 
 ## Trace schema
 
-The external Boundary event format uses snake_case fields:
+The external Boundary bundle format is versioned with `schema_version: "phosphene.boundary.v0.1.2"` and contains `metadata` plus an `events` array. The canonical machine-readable schema lives in `docs/product/phosphene-boundary-trace.schema.json`.
+
+Boundary event fields use snake_case:
 
 | Field | Meaning |
 |---|---|
@@ -73,8 +75,9 @@ All demo data is synthetic/redacted. Payload proof is represented only by values
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among demo traces and explicitly labels them as redacted demo traces.
+- Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
-- Detail Panel displays actor, source, tool, decision, risk, status, summary, redacted payload hash, and links where available.
+- Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
 
 ## Security/redaction rules
 
@@ -95,6 +98,8 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - Four demo traces are available through Boundary JSON.
 - Adapter converts Boundary JSON into graph-renderable data.
 - v0.1.1 allows a local Boundary JSON upload, validates schema/redaction rules in the browser, and renders the imported trace without sending data to a server.
+- v0.1.2 ships versioned Boundary bundles with `schema_version: "phosphene.boundary.v0.1.2"` and a JSON Schema contract document.
+- v0.1.2 exposes run-level summaries before node click-through and groups event details by purpose.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
