@@ -38,16 +38,18 @@ AI Node container path:
 /opt/data/phosphene-handoffs/
 ```
 
-Current verified synthetic handoff pack:
+Current verified synthetic handoff packs:
 
 ```text
 boundary-v0.1.2/hermes-synthetic-2026-06-18/
+boundary-v0.1.5/hermes-synthetic-2026-06-19/
 ```
 
-Current fixture copy in this repo:
+Current fixture copies in this repo:
 
 ```text
 src/core/traces/handoffs/hermes-synthetic-2026-06-18/
+src/core/traces/handoffs/hermes-synthetic-2026-06-19/
 ```
 
 Current v0.1.5 Hermes request document:
@@ -130,3 +132,4 @@ When Hermes is asked to produce a Phosphene handoff, the request must say:
 - keep all payloads synthetic or redacted
 - use stable event IDs without URL schemes
 - use link objects shaped as `{ "label": "...", "href": "trace://..." }`
+- omit optional string fields when no value applies; only root `parent_event_id` should use `null`

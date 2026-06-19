@@ -38,7 +38,8 @@ describe('DEMO_TRACES', () => {
   it('groups built-in demos separately from Hermes synthetic handoffs', () => {
     expect(OBSERVER_TRACE_GROUPS.map((group) => group.label)).toEqual([
       'Built-in Demo Traces',
-      'Hermes Synthetic Handoffs',
+      'Hermes Synthetic Handoffs 2026-06-18',
+      'Hermes Synthetic Handoffs 2026-06-19',
     ]);
     expect(OBSERVER_TRACE_GROUPS[0].traces).toHaveLength(4);
     expect(OBSERVER_TRACE_GROUPS[1].traces).toHaveLength(4);
@@ -52,12 +53,23 @@ describe('DEMO_TRACES', () => {
       expect(trace.schemaVersion).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
       expect(`${trace.title} ${trace.subtitle ?? ''}`).toMatch(/synthetic/i);
     }
+    expect(OBSERVER_TRACE_GROUPS[2].traces).toHaveLength(4);
+    expect(OBSERVER_TRACE_GROUPS[2].traces.map((trace) => trace.id)).toEqual([
+      'run-hermes-aag-draft-synthetic-20260619',
+      'run-hermes-openclaw-worker-synthetic-20260619',
+      'run-aag-workspace-bundle-synthetic-20260619',
+      'run-sentinel-recovery-synthetic-20260619',
+    ]);
+    for (const trace of OBSERVER_TRACE_GROUPS[2].traces) {
+      expect(trace.schemaVersion).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
+      expect(`${trace.title} ${trace.subtitle ?? ''}`).toMatch(/synthetic/i);
+    }
   });
 
   it('ships every observer trace as a supported v0.1.2 Boundary bundle', () => {
     for (const fixture of BOUNDARY_OBSERVER_TRACES) {
       expect(fixture.schema_version).toBe(BOUNDARY_TRACE_SCHEMA_VERSION);
-      expect(fixture.metadata.id).toMatch(/^(trace|boundary)-/);
+      expect(fixture.metadata.id).toMatch(/^(trace|boundary|run)-/);
       expect(fixture.events.length).toBeGreaterThan(0);
     }
   });

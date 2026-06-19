@@ -12,6 +12,10 @@ import handoffWorkspaceBundle from '@/core/traces/handoffs/hermes-synthetic-2026
 import handoffGmailDraftBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-18/hermes-aag-gmail-draft.synthetic.json';
 import handoffOpenClawWorkerBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-18/hermes-openclaw-worker.synthetic.json';
 import handoffSentinelRecoveryBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-18/sentinel-recovery.synthetic.json';
+import handoff20260619WorkspaceBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-19/aag-workspace-bundle.synthetic.json';
+import handoff20260619GmailDraftBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-19/hermes-aag-gmail-draft.synthetic.json';
+import handoff20260619OpenClawWorkerBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-19/hermes-openclaw-worker.synthetic.json';
+import handoff20260619SentinelRecoveryBundle from '@/core/traces/handoffs/hermes-synthetic-2026-06-19/sentinel-recovery.synthetic.json';
 
 export interface ObserverTraceGroup {
   id: string;
@@ -35,9 +39,17 @@ export const BOUNDARY_HANDOFF_TRACES = [
   handoffSentinelRecoveryBundle as BoundaryTraceBundle,
 ] as const;
 
+export const BOUNDARY_HANDOFF_20260619_TRACES = [
+  handoff20260619GmailDraftBundle as BoundaryTraceBundle,
+  handoff20260619OpenClawWorkerBundle as BoundaryTraceBundle,
+  handoff20260619WorkspaceBundle as BoundaryTraceBundle,
+  handoff20260619SentinelRecoveryBundle as BoundaryTraceBundle,
+] as const;
+
 export const BOUNDARY_OBSERVER_TRACES = [
   ...BOUNDARY_DEMO_TRACES,
   ...BOUNDARY_HANDOFF_TRACES,
+  ...BOUNDARY_HANDOFF_20260619_TRACES,
 ] as const;
 
 function normalizeTrace({ schema_version, metadata, events }: BoundaryTraceBundle): NodeTrace {
@@ -48,6 +60,8 @@ export const DEMO_TRACES: NodeTrace[] = BOUNDARY_DEMO_TRACES.map(normalizeTrace)
 
 export const HANDOFF_TRACES: NodeTrace[] = BOUNDARY_HANDOFF_TRACES.map(normalizeTrace);
 
+export const HANDOFF_20260619_TRACES: NodeTrace[] = BOUNDARY_HANDOFF_20260619_TRACES.map(normalizeTrace);
+
 export const OBSERVER_TRACE_GROUPS: ObserverTraceGroup[] = [
   {
     id: 'built-in-demo-traces',
@@ -57,11 +71,18 @@ export const OBSERVER_TRACE_GROUPS: ObserverTraceGroup[] = [
     traces: DEMO_TRACES,
   },
   {
-    id: 'hermes-synthetic-handoffs',
-    label: 'Hermes Synthetic Handoffs',
+    id: 'hermes-synthetic-handoffs-2026-06-18',
+    label: 'Hermes Synthetic Handoffs 2026-06-18',
     badge: 'Synthetic handoff',
     description: 'AI-node-generated synthetic Boundary handoffs imported from Hermes output.',
     traces: HANDOFF_TRACES,
+  },
+  {
+    id: 'hermes-synthetic-handoffs-2026-06-19',
+    label: 'Hermes Synthetic Handoffs 2026-06-19',
+    badge: 'Synthetic handoff',
+    description: 'Fresh AI-node-generated synthetic Boundary handoffs from the v0.1.5 request.',
+    traces: HANDOFF_20260619_TRACES,
   },
 ];
 

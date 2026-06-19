@@ -1,0 +1,71 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "run-aag-workspace-bundle-synthetic-20260619",
+    "title": "Synthetic workspace bundle approval gate",
+    "subtitle": "Grouped side effects remain pending",
+    "status": "needs_approval"
+  },
+  "events": [
+    {
+      "trace_id": "evt-bundle-root-start",
+      "run_id": "run-aag-workspace-bundle-synthetic-20260619",
+      "source": "aag",
+      "event_type": "run.started",
+      "actor": "aag",
+      "risk": "medium",
+      "status": "running",
+      "timestamp": "2026-06-19T10:10:00Z",
+      "summary": "AAG starts review of a synthetic workspace action bundle.",
+      "redacted_payload_hash": "sha256:redacted-c78100ec34dc",
+      "parent_event_id": null
+    },
+    {
+      "trace_id": "evt-bundle-plan-review",
+      "run_id": "run-aag-workspace-bundle-synthetic-20260619",
+      "source": "aag",
+      "event_type": "agent.plan",
+      "actor": "aag",
+      "risk": "medium",
+      "status": "running",
+      "timestamp": "2026-06-19T10:10:09Z",
+      "summary": "Bundle review groups possible edits and scheduling actions.",
+      "redacted_payload_hash": "sha256:redacted-594e2bc02527",
+      "parent_event_id": "evt-bundle-root-start"
+    },
+    {
+      "trace_id": "evt-bundle-decision",
+      "run_id": "run-aag-workspace-bundle-synthetic-20260619",
+      "source": "aag",
+      "event_type": "aag.decision",
+      "actor": "aag",
+      "decision": "hold_bundle_for_approval",
+      "risk": "high",
+      "status": "needs_approval",
+      "timestamp": "2026-06-19T10:10:18Z",
+      "summary": "AAG holds multiple possible side effects at the gate.",
+      "redacted_payload_hash": "sha256:redacted-ccedf7025fb7",
+      "parent_event_id": "evt-bundle-plan-review"
+    },
+    {
+      "trace_id": "evt-bundle-approval-required",
+      "run_id": "run-aag-workspace-bundle-synthetic-20260619",
+      "source": "aag",
+      "event_type": "approval.required",
+      "actor": "aag",
+      "decision": "approval_required",
+      "risk": "high",
+      "status": "needs_approval",
+      "timestamp": "2026-06-19T10:10:25Z",
+      "summary": "Approval required before any bundled side effect proceeds.",
+      "redacted_payload_hash": "sha256:redacted-448b954fc393",
+      "parent_event_id": "evt-bundle-decision",
+      "links": [
+        {
+          "label": "Redacted audit reference",
+          "href": "trace://synthetic-workspace-bundle-gate"
+        }
+      ]
+    }
+  ]
+}

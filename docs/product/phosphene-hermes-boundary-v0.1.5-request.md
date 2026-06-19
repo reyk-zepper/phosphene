@@ -142,6 +142,7 @@ Event requirements:
 - Use stable event IDs without URL schemes.
 - Use ISO timestamps.
 - Keep summaries short, human-readable, and redacted.
+- Omit optional string fields when no value applies. Do not write `null` for `actor`, `tool`, `decision`, or `redacted_payload_hash`.
 - Use `redacted_payload_hash` values shaped like `sha256:redacted-...`.
 - If `links` are present, each link must be shaped as:
 
@@ -261,4 +262,3 @@ Respond with only:
 - generated file list
 - validation short status
 - confirmation that no live data was read and no live side effects were executed
-

@@ -54,6 +54,18 @@ function optionalString(value: unknown): string | undefined {
   return isString(value) ? value : undefined;
 }
 
+function validateOptionalString(
+  raw: Record<string, unknown>,
+  key: 'actor' | 'tool' | 'decision' | 'redacted_payload_hash',
+  path: string,
+  errors: string[]
+): boolean {
+  if (!Object.prototype.hasOwnProperty.call(raw, key)) return true;
+  if (isString(raw[key])) return true;
+  errors.push(`${path}.${key} must be a non-empty string when present`);
+  return false;
+}
+
 function enumError(name: string, values: readonly string[]): string {
   return `${name} must be one of: ${values.join(', ')}`;
 }
@@ -159,6 +171,13 @@ function readEvent(raw: unknown, index: number, errors: string[]): BoundaryTrace
     errors.push(`${path}.parent_event_id must be a string or null`);
   }
 
+  const optionalsValid = [
+    validateOptionalString(raw, 'actor', path, errors),
+    validateOptionalString(raw, 'tool', path, errors),
+    validateOptionalString(raw, 'decision', path, errors),
+    validateOptionalString(raw, 'redacted_payload_hash', path, errors),
+  ].every(Boolean);
+
   const links = readLinks(raw.links, `${path}.links`, errors);
   if (
     !traceId ||
@@ -173,7 +192,8 @@ function readEvent(raw: unknown, index: number, errors: string[]): BoundaryTrace
     Number.isNaN(Date.parse(timestamp)) ||
     !summary ||
     (risk != null && !hasEnumValue(TRACE_RISKS, risk)) ||
-    (parent != null && typeof parent !== 'string')
+    (parent != null && typeof parent !== 'string') ||
+    !optionalsValid
   ) {
     return null;
   }

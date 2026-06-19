@@ -15,7 +15,7 @@ describe('createObserverReadiness', () => {
       ['handoff_intake', 'ready'],
       ['ai_node_live_adapter', 'not_connected'],
     ]);
-    expect(readiness[0].detail).toBe('8 redacted traces available');
+    expect(readiness[0].detail).toBe('12 redacted traces available');
     expect(readiness[2].detail).toBe('AI Node adapter pending');
   });
 

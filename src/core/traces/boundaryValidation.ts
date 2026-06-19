@@ -80,6 +80,18 @@ function optionalString(value: unknown): string | undefined {
   return isString(value) ? value : undefined;
 }
 
+function validateOptionalString(
+  raw: Record<string, unknown>,
+  key: 'actor' | 'tool' | 'decision' | 'redacted_payload_hash',
+  path: string,
+  shapeErrors: string[]
+): boolean {
+  if (!Object.prototype.hasOwnProperty.call(raw, key)) return true;
+  if (isString(raw[key])) return true;
+  shapeErrors.push(`${path}.${key} must be a non-empty string when present`);
+  return false;
+}
+
 function enumError(name: string, values: readonly string[]): string {
   return `${name} must be one of: ${values.join(', ')}`;
 }
@@ -197,6 +209,13 @@ function readEvent(
     shapeErrors.push(`${path}.parent_event_id must be a string or null`);
   }
 
+  const optionalsValid = [
+    validateOptionalString(raw, 'actor', path, shapeErrors),
+    validateOptionalString(raw, 'tool', path, shapeErrors),
+    validateOptionalString(raw, 'decision', path, shapeErrors),
+    validateOptionalString(raw, 'redacted_payload_hash', path, shapeErrors),
+  ].every(Boolean);
+
   const links = readLinks(raw.links, `${path}.links`, shapeErrors);
 
   if (
@@ -212,7 +231,8 @@ function readEvent(
     Number.isNaN(Date.parse(timestamp)) ||
     !summary ||
     (risk != null && !hasEnumValue(TRACE_RISKS, risk)) ||
-    (parent != null && typeof parent !== 'string')
+    (parent != null && typeof parent !== 'string') ||
+    !optionalsValid
   ) {
     return null;
   }

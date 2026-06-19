@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.5`
+- App version: `v0.1.6`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures and locally imported Boundary JSON
@@ -16,6 +16,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Switch between `Reasoning Lab` and `Node Observer`.
 - Select built-in redacted AI-node demo traces.
 - Select Hermes synthetic handoff traces generated on the AI Node.
+- Select the fresh `Hermes Synthetic Handoffs 2026-06-19` gallery group.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -95,4 +96,10 @@ Concrete request document:
 
 ```text
 docs/product/phosphene-hermes-boundary-v0.1.5-request.md
+```
+
+Resulting handoff evidence:
+
+```text
+docs/product/phosphene-hermes-boundary-handoff-2026-06-19.md
 ```

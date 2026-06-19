@@ -104,6 +104,33 @@ describe('parseBoundaryTraceJson', () => {
     expect(result.errors[0]).toContain('Invalid JSON');
   });
 
+  it('rejects null optional string fields during import', () => {
+    const broken = {
+      ...validBundle,
+      events: [
+        {
+          ...validBundle.events[0],
+          tool: null,
+          decision: null,
+          redacted_payload_hash: null,
+        },
+        validBundle.events[1],
+      ],
+    };
+
+    const result = parseBoundaryTraceJson(JSON.stringify(broken), 'null-optionals.json');
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('Expected null optional fields to fail');
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        'events[0].tool must be a non-empty string when present',
+        'events[0].decision must be a non-empty string when present',
+        'events[0].redacted_payload_hash must be a non-empty string when present',
+      ])
+    );
+  });
+
   it('rejects invalid enum values and broken parent references', () => {
     const broken = {
       metadata: {

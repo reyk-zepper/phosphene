@@ -1,0 +1,26 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "created_at": "2026-06-19T11:34:59Z",
+  "source_agent": "hermes",
+  "data_classification": "synthetic_redacted",
+  "files": [
+    {
+      "file": "hermes-aag-gmail-draft.synthetic.json",
+      "description": "Synthetic message draft approval-gate trace with no private fields."
+    },
+    {
+      "file": "hermes-openclaw-worker.synthetic.json",
+      "description": "Synthetic bounded worker delegation trace with redacted result summary."
+    },
+    {
+      "file": "aag-workspace-bundle.synthetic.json",
+      "description": "Synthetic workspace action bundle held for approval."
+    },
+    {
+      "file": "sentinel-recovery.synthetic.json",
+      "description": "Synthetic health-gate alert and recovery trace."
+    }
+  ],
+  "import_contract": "phosphene.boundary.v0.1.2-importable",
+  "notes": "All content is synthetic and redacted for local import testing."
+}

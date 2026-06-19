@@ -75,6 +75,31 @@ describe('validateBoundaryTraceJson', () => {
     expect(result.errors).toContain('events[1].links[0] must be an object');
   });
 
+  it('rejects null optional string fields with a shape failure', () => {
+    const broken = {
+      ...validBundle,
+      events: [
+        {
+          ...validBundle.events[0],
+          tool: null,
+          decision: null,
+          redacted_payload_hash: null,
+        },
+        validBundle.events[1],
+      ],
+    };
+
+    const result = validateBoundaryTraceJson(JSON.stringify(broken), 'null-optionals.json');
+
+    expect(result.ok).toBe(false);
+    expect(result.checks.find((check) => check.id === 'shape')?.status).toBe('failed');
+    expect(result.errors).toContain('events[0].tool must be a non-empty string when present');
+    expect(result.errors).toContain('events[0].decision must be a non-empty string when present');
+    expect(result.errors).toContain(
+      'events[0].redacted_payload_hash must be a non-empty string when present'
+    );
+  });
+
   it('rejects unsupported schema versions', () => {
     const result = validateBoundaryTraceJson(
       JSON.stringify({ ...validBundle, schema_version: 'phosphene.boundary.v9.9.9' }),
