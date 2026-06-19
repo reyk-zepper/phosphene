@@ -16,6 +16,7 @@ import {
   parseTraceIntakeFiles,
   type TraceIntakeBatchResult,
 } from '@/core/traces/intake';
+import { createObserverReadiness } from '@/core/traces/readiness';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
@@ -35,6 +36,14 @@ export function App() {
   const observerTraces = useMemo(
     () => [...importedTraces, ...OBSERVER_TRACES],
     [importedTraces]
+  );
+  const observerReadiness = useMemo(
+    () => createObserverReadiness({
+      traceGroups: OBSERVER_TRACE_GROUPS,
+      importedTraceCount: importedTraces.length,
+      intakeResult,
+    }),
+    [importedTraces.length, intakeResult]
   );
   useGraphNavigation();
 
@@ -96,7 +105,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.4
+              v0.1.5
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -124,6 +133,7 @@ export function App() {
             onSelectTrace={setSelectedTraceId}
             importedTraceIds={importedTraces.map((trace) => trace.id)}
             intakeResult={intakeResult}
+            readiness={observerReadiness}
             onImportTraceFiles={handleImportTraceFiles}
           />
         )}

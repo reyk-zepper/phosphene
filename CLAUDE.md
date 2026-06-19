@@ -19,9 +19,14 @@ Ich bin Reyk, AI Adoption Manager, React-Entwickler, AI-Enthusiast. Ich baue Pho
 
 ## Was ist Phosphene?
 
-**Phosphene ist ein Open-Source AI Reasoning Visualizer.**
+**Phosphene ist ein Open-Source AI Reasoning Visualizer und AI Node Observer.**
 
-Es transformiert die unsichtbaren Denkprozesse von AI-Modellen (Chain-of-Thought, Extended Thinking, Reasoning Traces) in interaktive, visuelle Graphen, die man navigieren, explorieren und vergleichen kann.
+Phosphene hat zwei Produktmodi:
+
+- **Reasoning Lab** transformiert die unsichtbaren Denkprozesse von AI-Modellen (Chain-of-Thought, Extended Thinking, Reasoning Traces) in interaktive, visuelle Graphen.
+- **Node Observer** visualisiert redigierte AI-Node Boundary Traces, damit Runs, Events, Systeme, Risiken, Entscheidungen, Approvals, Delegation und Recovery auditierbar werden.
+
+Phosphene ist nicht Hermes, nicht AAG, nicht OpenClaw und nicht die Control Plane. Phosphene ist die visuelle Beobachtungs- und Erklärschicht.
 
 **Metapher:** Phosphene sind die Lichterscheinungen, die du siehst, wenn du die Augen schließt und drückst — visuell erzeugt vom Gehirn selbst, nicht von außen. Genau das tun wir: wir machen das "innere Licht" der AI sichtbar.
 
@@ -29,15 +34,42 @@ Es transformiert die unsichtbaren Denkprozesse von AI-Modellen (Chain-of-Thought
 
 **Zielgruppen:** AI Developers, Researchers, C-Level/Directors, Educators, AI Enthusiasts.
 
-**Warum es das noch nicht gibt:** LangSmith/LangFuse machen Tracing und Logging. Aber niemand macht die visuelle, interaktive Exploration von Reasoning-Chains. Phosphene füllt diese Lücke.
+**Warum es das noch nicht gibt:** LangSmith/LangFuse machen Tracing und Logging. Aber niemand macht die visuelle, interaktive Exploration von Reasoning-Chains und AI-Node-Handlungen in einer verständlichen Observer-Oberfläche. Phosphene füllt diese Lücke.
+
+### Aktueller Produktstand
+
+- `Reasoning Lab` bleibt der Modus für Modell-Reasoning.
+- `Node Observer` ist der neue Zielmodus für AI-Node Runs.
+- v0.1 rendert redigierte Demo- und Hermes-Synthetic-Handoff-Traces.
+- v0.1 behauptet keine Live-Telemetrie.
+- Live- oder Near-Live-Anbindung kommt später nur über redigierte AI-Node Boundary Adapter.
+
+### Hermes / AI Node Arbeitsregel
+
+Hermes arbeitet grundsätzlich auf dem AI Node. Hermes hat keinen lokalen Zugriff auf dieses Entwicklungssystem oder dieses lokale Repo.
+
+Wenn wir von "live angebunden" sprechen, ist damit der AI Node gemeint:
+
+- Hermes erzeugt oder normalisiert Traces auf dem AI Node.
+- Phosphene konsumiert redigierte Boundary Bundles, Snapshots oder zukünftige Adapter-Ausgaben.
+- Der Browser liest keine privaten AI-Node-Dateisystempfade direkt.
+- Lokale Entwicklung baut UI, Validatoren, Boundary-Adapter und Demo-Fixtures.
+- Keine Secrets, OAuth Tokens, privaten URLs, Raw Provider IDs oder echten Kunden-/Providerdaten dürfen in Phosphene-Daten landen.
+
+Bekannte AI-Node-Handoff-Pfade:
+
+```text
+Host:      /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/
+Container: /opt/data/phosphene-handoffs/
+```
 
 ---
 
 ## Architektur-Entscheidungen (bereits getroffen)
 
-### Client-Only SPA — Kein Backend
+### Client-Only SPA — Kein Backend im Public/Core
 
-Phosphene läuft komplett im Browser. Kein Server, kein Backend, keine Datenbank.
+Phosphene läuft im Public/Core als Browser-App. Kein Phosphene-Backend, keine Datenbank, kein lokaler Hermes-Prozess.
 
 **Warum:**
 - Zero-Ops: Static Site Deployment (Vercel/Netlify/GitHub Pages)
@@ -45,14 +77,16 @@ Phosphene läuft komplett im Browser. Kein Server, kein Backend, keine Datenbank
 - Niedrige Contribution-Barrier: `git clone → pnpm install → pnpm dev`
 - Schnelle Iteration beim Vibe-Coding
 
-**API-Calls** gehen direkt vom Client zu den LLM-APIs. Der User gibt seinen eigenen API-Key ein. Keys werden in localStorage gespeichert (base64-encoded, kein Server-Roundtrip).
+**Reasoning-Lab API-Calls** gehen direkt vom Client zu den LLM-APIs. Der User gibt seinen eigenen API-Key ein. Keys werden in localStorage gespeichert (base64-encoded, kein Server-Roundtrip).
+
+**Node-Observer-Daten** kommen nicht aus lokalen Hermes-Prozessen. Sie kommen aktuell aus statischen redigierten Fixtures oder lokal importierten Boundary JSON Dateien. Spätere Live-Adapter laufen AI-Node-seitig und liefern redigierte Boundary-Ausgaben.
 
 **Trade-offs (akzeptiert):**
 - Kein serverseitiges Caching/Sharing (kommt ggf. in v0.3+)
 - CORS bei manchen APIs (Proxy als spätere Option)
 - API-Keys im Client (für ein Dev-Tool akzeptabel)
 
-### Datenfluss
+### Reasoning-Lab Datenfluss
 
 ```
 User Prompt
@@ -71,6 +105,27 @@ D3.js Graph Renderer
     │
     ▼
 Interactive Canvas (Zoom, Pan, Click, Expand)
+```
+
+### Node-Observer Datenfluss
+
+```text
+Hermes / AAG / OpenClaw / Sentinels auf dem AI Node
+    │
+    ▼
+Redaction + Normalization Adapter auf dem AI Node
+    │
+    ▼
+Boundary JSON Bundle / Manifest / Validation Report
+    │
+    ▼
+Phosphene Trace Intake + Validation
+    │
+    ▼
+Normalized NodeTrace
+    │
+    ▼
+Graph Renderer + Detail Panel + Readiness Status
 ```
 
 ---

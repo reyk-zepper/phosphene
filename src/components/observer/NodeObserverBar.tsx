@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle, GitBranch, RadioTower, ShieldCheck, Upload } from 'lucide-react';
 import type { ObserverTraceGroup } from '@/constants/demoTraces';
 import type { TraceIntakeBatchResult, TraceIntakeItemResult } from '@/core/traces/intake';
+import type { ObserverReadinessItem } from '@/core/traces/readiness';
 import type { NodeTrace } from '@/core/traces/types';
 import { RunSummaryPanel } from './RunSummaryPanel';
 
@@ -11,6 +12,7 @@ interface Props {
   onSelectTrace: (traceId: string) => void;
   importedTraceIds?: string[];
   intakeResult?: TraceIntakeBatchResult;
+  readiness?: ObserverReadinessItem[];
   onImportTraceFiles?: (files: File[]) => void;
 }
 
@@ -38,6 +40,32 @@ function statusClass(status: TraceIntakeItemResult['status']): string {
   if (status === 'blocked') return 'text-[color:var(--glow-revision)]';
   if (status === 'ignored') return 'text-[color:var(--text-muted)]';
   return 'text-[color:var(--glow-decision)]';
+}
+
+function readinessStatusClass(status: ObserverReadinessItem['status']): string {
+  if (status === 'not_connected') return 'text-[color:var(--text-muted)]';
+  if (status === 'partial') return 'text-[color:var(--glow-revision)]';
+  return 'text-[color:var(--glow-decision)]';
+}
+
+function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-2 grid gap-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 p-3 font-mono text-[10px] backdrop-blur-xl sm:grid-cols-3">
+      {items.map((item) => (
+        <div key={item.id} className="min-w-0 rounded-lg border border-[color:var(--border-subtle)] px-2.5 py-2">
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <span className="truncate tracking-wider text-[color:var(--text-muted)] uppercase">{item.label}</span>
+            <span className={`shrink-0 tracking-wider uppercase ${readinessStatusClass(item.status)}`}>
+              {item.status}
+            </span>
+          </div>
+          <p className="truncate text-[color:var(--text-secondary)]">{item.detail}</p>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function IntakeResultsPanel({ result }: { result?: TraceIntakeBatchResult }) {
@@ -101,6 +129,7 @@ export function NodeObserverBar({
   onSelectTrace,
   importedTraceIds = [],
   intakeResult,
+  readiness,
   onImportTraceFiles,
 }: Props) {
   const selected = traces.find((trace) => trace.id === selectedTraceId) ?? traces[0];
@@ -200,6 +229,8 @@ export function NodeObserverBar({
       </div>
 
       {selected && <RunSummaryPanel trace={selected} />}
+
+      <ObserverReadinessPanel items={readiness} />
 
       <IntakeResultsPanel result={intakeResult} />
     </div>

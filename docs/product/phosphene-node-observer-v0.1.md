@@ -90,12 +90,21 @@ v0.1.4 hardens this intake path:
 - The Node Observer UI shows a per-file intake table with file kind, status, and failed checks/errors.
 - The CLI validator accepts directories that contain trace bundles plus manifest/report support files.
 
+v0.1.5 adds demo readiness and context hardening:
+
+- `CLAUDE.md` defines Phosphene as Reasoning Lab plus Node Observer.
+- Hermes is documented as AI Node-only; it has no local development-machine access.
+- `docs/product/phosphene-ai-node-integration-boundary.md` defines manual handoff, snapshot, and future adapter stages.
+- `docs/demo/phosphene-node-observer-demo.md` defines what can be shown and what must not be claimed.
+- Node Observer shows a readiness strip for Boundary Contract, Handoff Intake, and AI Node Live Adapter status.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
 - Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
 - Intake results appear as a compact table below the run summary after local JSON upload.
+- Readiness status appears below the run summary and keeps the live adapter visibly disconnected until a real AI Node adapter exists.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
@@ -127,6 +136,9 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.4 supports multi-file local intake with partial success: valid traces import while invalid files remain blocked.
 - v0.1.4 parses Hermes `manifest.json` and `validation-report.json` as support context and displays them in intake results.
 - v0.1.4 CLI validation accepts handoff directories containing trace bundles plus manifest/report support files.
+- v0.1.5 documents the AI Node integration boundary and Hermes AI Node-only rule.
+- v0.1.5 provides a demo document with safe wording and non-claims.
+- v0.1.5 exposes Observer readiness without claiming live telemetry.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

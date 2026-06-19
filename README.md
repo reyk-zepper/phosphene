@@ -52,6 +52,7 @@ Currently working:
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
 - Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
 - Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
+- Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -89,6 +90,8 @@ Phosphene is a **client-only SPA**. No backend, no database, no server. Everythi
 - API keys are stored in `localStorage` (base64-encoded, never leave the machine)
 - Deployment is a static build — Vercel, Netlify, GitHub Pages, anything
 - Contribution barrier is minimal: `git clone && pnpm install && pnpm dev`
+
+For Node Observer, Hermes and future live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, or future AI-node-published snapshots. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 ### Getting started
 
@@ -210,6 +213,7 @@ Funktioniert bereits:
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
 - Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
+- Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -247,6 +251,8 @@ Phosphene ist eine **Client-Only SPA**. Kein Backend, keine Datenbank, kein Serv
 - API-Keys liegen in `localStorage` (base64-kodiert, verlassen nie die Maschine)
 - Deployment ist ein statischer Build — Vercel, Netlify, GitHub Pages, egal was
 - Die Einstiegshürde für Contributions ist minimal: `git clone && pnpm install && pnpm dev`
+
+Für den Node Observer laufen Hermes und spätere Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports oder spätere AI-Node-publizierte Snapshots. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 ### Setup
 
