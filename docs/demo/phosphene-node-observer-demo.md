@@ -89,5 +89,10 @@ ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/
 
 ## Next Hermes Task
 
-After this demo readiness slice, Hermes should be asked to generate a fresh AI-Node-side handoff pack using the current Boundary contract and v0.1.4 intake shape. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
+After this demo readiness slice, Hermes should be asked to generate a fresh AI-Node-side handoff pack using the current Boundary contract and v0.1.5 intake/readiness shape. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
 
+Concrete request document:
+
+```text
+docs/product/phosphene-hermes-boundary-v0.1.5-request.md
+```

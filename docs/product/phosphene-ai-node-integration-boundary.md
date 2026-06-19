@@ -50,6 +50,12 @@ Current fixture copy in this repo:
 src/core/traces/handoffs/hermes-synthetic-2026-06-18/
 ```
 
+Current v0.1.5 Hermes request document:
+
+```text
+docs/product/phosphene-hermes-boundary-v0.1.5-request.md
+```
+
 ## Boundary Bundle Shape
 
 Phosphene expects:
@@ -124,4 +130,3 @@ When Hermes is asked to produce a Phosphene handoff, the request must say:
 - keep all payloads synthetic or redacted
 - use stable event IDs without URL schemes
 - use link objects shaped as `{ "label": "...", "href": "trace://..." }`
-
