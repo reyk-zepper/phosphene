@@ -52,6 +52,24 @@ src/core/traces/handoffs/hermes-synthetic-2026-06-18/
 src/core/traces/handoffs/hermes-synthetic-2026-06-19/
 ```
 
+Current published snapshot seed in this repo:
+
+```text
+public/snapshots/current/
+```
+
+Served snapshot URL after build/deploy:
+
+```text
+/snapshots/current/manifest.json
+```
+
+AI Node service path after deploy:
+
+```text
+/Users/raik./ai-stack/services/phosphene/dist/snapshots/current/
+```
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -90,7 +108,7 @@ Status: implemented for synthetic handoffs.
 
 An AI Node-side process publishes sanitized Boundary packs into a known export location. Phosphene consumes the exported pack, not private internal runtime state.
 
-Status: planned.
+Status: implemented for static published snapshots. A future Hermes publisher can replace the served `dist/snapshots/current/` pack with fresh redacted Boundary output.
 
 ### Stage 4: Near-Live Adapter
 

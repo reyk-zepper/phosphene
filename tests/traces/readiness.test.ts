@@ -13,10 +13,29 @@ describe('createObserverReadiness', () => {
     expect(readiness.map((item) => [item.id, item.status])).toEqual([
       ['boundary_contract', 'ready'],
       ['handoff_intake', 'ready'],
+      ['published_snapshot', 'not_connected'],
       ['ai_node_live_adapter', 'not_connected'],
     ]);
     expect(readiness[0].detail).toBe('12 redacted traces available');
-    expect(readiness[2].detail).toBe('AI Node adapter pending');
+    expect(readiness[2].detail).toBe('Snapshot pending');
+    expect(readiness[3].detail).toBe('AI Node adapter pending');
+  });
+
+  it('reports a published snapshot as ready when redacted traces are loaded', () => {
+    const readiness = createObserverReadiness({
+      traceGroups: OBSERVER_TRACE_GROUPS,
+      importedTraceCount: 0,
+      publishedSnapshot: {
+        status: 'available',
+        traceCount: 4,
+        blockedCount: 0,
+      },
+    });
+
+    expect(readiness.find((item) => item.id === 'published_snapshot')).toMatchObject({
+      status: 'ready',
+      detail: '4 published traces',
+    });
   });
 
   it('marks handoff intake partial when a selected batch has blocked files', () => {

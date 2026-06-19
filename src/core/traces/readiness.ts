@@ -4,16 +4,23 @@ import type { TraceIntakeBatchResult } from './intake';
 export type ObserverReadinessStatus = 'ready' | 'partial' | 'not_connected';
 
 export interface ObserverReadinessItem {
-  id: 'boundary_contract' | 'handoff_intake' | 'ai_node_live_adapter';
+  id: 'boundary_contract' | 'handoff_intake' | 'published_snapshot' | 'ai_node_live_adapter';
   label: string;
   status: ObserverReadinessStatus;
   detail: string;
+}
+
+export interface PublishedSnapshotReadinessInput {
+  status: 'available' | 'partial' | 'blocked' | 'unavailable';
+  traceCount: number;
+  blockedCount: number;
 }
 
 export interface ObserverReadinessInput {
   traceGroups: ObserverTraceGroup[];
   importedTraceCount: number;
   intakeResult?: TraceIntakeBatchResult;
+  publishedSnapshot?: PublishedSnapshotReadinessInput;
 }
 
 function totalTraceCount(traceGroups: ObserverTraceGroup[]): number {
@@ -36,10 +43,25 @@ function handoffStatus(intakeResult: TraceIntakeBatchResult | undefined): Observ
   return 'partial';
 }
 
+function snapshotStatus(snapshot: PublishedSnapshotReadinessInput | undefined): ObserverReadinessStatus {
+  if (!snapshot || snapshot.status === 'unavailable') return 'not_connected';
+  if (snapshot.status === 'available') return 'ready';
+  return 'partial';
+}
+
+function snapshotDetail(snapshot: PublishedSnapshotReadinessInput | undefined): string {
+  if (!snapshot) return 'Snapshot pending';
+  if (snapshot.status === 'unavailable') return 'No published snapshot';
+  if (snapshot.status === 'blocked') return 'Snapshot blocked';
+  if (snapshot.status === 'partial') return `${snapshot.traceCount} published · ${snapshot.blockedCount} blocked`;
+  return `${snapshot.traceCount} published traces`;
+}
+
 export function createObserverReadiness({
   traceGroups,
   importedTraceCount,
   intakeResult,
+  publishedSnapshot,
 }: ObserverReadinessInput): ObserverReadinessItem[] {
   return [
     {
@@ -53,6 +75,12 @@ export function createObserverReadiness({
       label: 'Handoff Intake',
       status: handoffStatus(intakeResult),
       detail: handoffDetail(importedTraceCount, intakeResult),
+    },
+    {
+      id: 'published_snapshot',
+      label: 'Published Snapshot',
+      status: snapshotStatus(publishedSnapshot),
+      detail: snapshotDetail(publishedSnapshot),
     },
     {
       id: 'ai_node_live_adapter',

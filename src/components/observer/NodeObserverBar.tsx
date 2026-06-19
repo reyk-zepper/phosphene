@@ -52,7 +52,7 @@ function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[
   if (items.length === 0) return null;
 
   return (
-    <div className="mt-2 grid gap-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 p-3 font-mono text-[10px] backdrop-blur-xl sm:grid-cols-3">
+    <div className="mt-2 grid gap-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 p-3 font-mono text-[10px] backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
       {items.map((item) => (
         <div key={item.id} className="min-w-0 rounded-lg border border-[color:var(--border-subtle)] px-2.5 py-2">
           <div className="mb-1 flex items-center justify-between gap-2">

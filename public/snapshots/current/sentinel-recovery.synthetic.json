@@ -1,0 +1,83 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "run-sentinel-recovery-synthetic-20260619",
+    "title": "Synthetic health-gate recovery",
+    "subtitle": "Sentinel recovery flow without private service details",
+    "status": "recovered"
+  },
+  "events": [
+    {
+      "trace_id": "evt-recovery-root-check",
+      "run_id": "run-sentinel-recovery-synthetic-20260619",
+      "source": "sentinel",
+      "event_type": "health.check",
+      "actor": "sentinel",
+      "risk": "medium",
+      "status": "failed",
+      "timestamp": "2026-06-19T10:15:00Z",
+      "summary": "Sentinel observes a synthetic health-gate failure.",
+      "redacted_payload_hash": "sha256:redacted-1a3c53fd9af6",
+      "parent_event_id": null
+    },
+    {
+      "trace_id": "evt-recovery-alert",
+      "run_id": "run-sentinel-recovery-synthetic-20260619",
+      "source": "sentinel",
+      "event_type": "sentinel.alert",
+      "actor": "sentinel",
+      "risk": "medium",
+      "status": "failed",
+      "timestamp": "2026-06-19T10:15:08Z",
+      "summary": "Alert raised with all infrastructure details redacted.",
+      "redacted_payload_hash": "sha256:redacted-2077b7886a68",
+      "parent_event_id": "evt-recovery-root-check",
+      "links": [
+        {
+          "label": "Redacted audit reference",
+          "href": "trace://synthetic-health-alert"
+        }
+      ]
+    },
+    {
+      "trace_id": "evt-recovery-start",
+      "run_id": "run-sentinel-recovery-synthetic-20260619",
+      "source": "sentinel",
+      "event_type": "sentinel.recovery",
+      "actor": "sentinel",
+      "decision": "recover",
+      "risk": "medium",
+      "status": "running",
+      "timestamp": "2026-06-19T10:15:19Z",
+      "summary": "Sentinel starts a synthetic recovery routine.",
+      "redacted_payload_hash": "sha256:redacted-3b6772b88893",
+      "parent_event_id": "evt-recovery-alert"
+    },
+    {
+      "trace_id": "evt-recovery-check",
+      "run_id": "run-sentinel-recovery-synthetic-20260619",
+      "source": "sentinel",
+      "event_type": "health.check",
+      "actor": "sentinel",
+      "risk": "low",
+      "status": "recovered",
+      "timestamp": "2026-06-19T10:15:38Z",
+      "summary": "Follow-up health gate reports recovered state.",
+      "redacted_payload_hash": "sha256:redacted-17dd85cfe76c",
+      "parent_event_id": "evt-recovery-start"
+    },
+    {
+      "trace_id": "evt-recovery-run-completed",
+      "run_id": "run-sentinel-recovery-synthetic-20260619",
+      "source": "sentinel",
+      "event_type": "run.completed",
+      "actor": "sentinel",
+      "risk": "low",
+      "status": "recovered",
+      "timestamp": "2026-06-19T10:15:46Z",
+      "summary": "Recovery completes and the synthetic run closes.",
+      "redacted_payload_hash": "sha256:redacted-3c7a625ebf93",
+      "parent_event_id": "evt-recovery-check"
+    }
+  ]
+}

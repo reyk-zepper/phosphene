@@ -1,0 +1,97 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "run-hermes-openclaw-worker-synthetic-20260619",
+    "title": "Synthetic bounded worker delegation",
+    "subtitle": "OpenClaw represented as a constrained worker",
+    "status": "succeeded"
+  },
+  "events": [
+    {
+      "trace_id": "evt-worker-root-start",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "run.started",
+      "actor": "hermes",
+      "risk": "low",
+      "status": "running",
+      "timestamp": "2026-06-19T10:05:00Z",
+      "summary": "Hermes starts a bounded synthetic worker task.",
+      "redacted_payload_hash": "sha256:redacted-40ab4658c716",
+      "parent_event_id": null
+    },
+    {
+      "trace_id": "evt-worker-plan",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "agent.plan",
+      "actor": "hermes",
+      "risk": "low",
+      "status": "running",
+      "timestamp": "2026-06-19T10:05:07Z",
+      "summary": "Plan limits worker scope to redacted analysis only.",
+      "redacted_payload_hash": "sha256:redacted-d377484bc063",
+      "parent_event_id": "evt-worker-root-start"
+    },
+    {
+      "trace_id": "evt-worker-started",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "openclaw",
+      "event_type": "worker.started",
+      "actor": "openclaw-worker",
+      "tool": "bounded-worker",
+      "risk": "low",
+      "status": "running",
+      "timestamp": "2026-06-19T10:05:16Z",
+      "summary": "OpenClaw worker begins bounded synthetic work.",
+      "redacted_payload_hash": "sha256:redacted-879b816ad6c3",
+      "parent_event_id": "evt-worker-plan"
+    },
+    {
+      "trace_id": "evt-worker-tool-executed",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "openclaw",
+      "event_type": "tool.executed",
+      "actor": "openclaw-worker",
+      "tool": "redacted-transform",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-19T10:05:29Z",
+      "summary": "Worker completes a synthetic local-only transformation.",
+      "redacted_payload_hash": "sha256:redacted-3ca692bd8b75",
+      "parent_event_id": "evt-worker-started"
+    },
+    {
+      "trace_id": "evt-worker-completed",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "openclaw",
+      "event_type": "worker.completed",
+      "actor": "openclaw-worker",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-19T10:05:40Z",
+      "summary": "Worker returns a redacted result summary only.",
+      "redacted_payload_hash": "sha256:redacted-07cf28586481",
+      "parent_event_id": "evt-worker-tool-executed",
+      "links": [
+        {
+          "label": "Redacted audit reference",
+          "href": "trace://synthetic-worker-result"
+        }
+      ]
+    },
+    {
+      "trace_id": "evt-worker-run-completed",
+      "run_id": "run-hermes-openclaw-worker-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "run.completed",
+      "actor": "hermes",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-19T10:05:49Z",
+      "summary": "Hermes accepts the redacted worker result and closes the run.",
+      "redacted_payload_hash": "sha256:redacted-a08772528474",
+      "parent_event_id": "evt-worker-completed"
+    }
+  ]
+}

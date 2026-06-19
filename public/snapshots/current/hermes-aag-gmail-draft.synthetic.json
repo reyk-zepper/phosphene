@@ -1,0 +1,91 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "run-hermes-aag-draft-synthetic-20260619",
+    "title": "Synthetic draft action approval gate",
+    "subtitle": "Redacted boundary exercise for message draft readiness",
+    "status": "needs_approval"
+  },
+  "events": [
+    {
+      "trace_id": "evt-draft-root-start",
+      "run_id": "run-hermes-aag-draft-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "run.started",
+      "actor": "hermes",
+      "risk": "low",
+      "status": "running",
+      "timestamp": "2026-06-19T10:00:00Z",
+      "summary": "Hermes starts a synthetic draft readiness run.",
+      "redacted_payload_hash": "sha256:redacted-30f9f7e8fb3d",
+      "parent_event_id": null,
+      "links": [
+        {
+          "label": "Redacted audit reference",
+          "href": "trace://synthetic-draft-root"
+        }
+      ]
+    },
+    {
+      "trace_id": "evt-draft-plan",
+      "run_id": "run-hermes-aag-draft-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "agent.plan",
+      "actor": "hermes",
+      "risk": "medium",
+      "status": "running",
+      "timestamp": "2026-06-19T10:00:08Z",
+      "summary": "Plan prepared with all message details redacted.",
+      "redacted_payload_hash": "sha256:redacted-3f84a4dc91ce",
+      "parent_event_id": "evt-draft-root-start"
+    },
+    {
+      "trace_id": "evt-draft-tool-request",
+      "run_id": "run-hermes-aag-draft-synthetic-20260619",
+      "source": "hermes",
+      "event_type": "tool.requested",
+      "actor": "hermes",
+      "tool": "redacted-message-draft",
+      "risk": "medium",
+      "status": "queued",
+      "timestamp": "2026-06-19T10:00:15Z",
+      "summary": "Synthetic draft creation requested without private fields.",
+      "redacted_payload_hash": "sha256:redacted-1767b536cba9",
+      "parent_event_id": "evt-draft-plan"
+    },
+    {
+      "trace_id": "evt-draft-aag-decision",
+      "run_id": "run-hermes-aag-draft-synthetic-20260619",
+      "source": "aag",
+      "event_type": "aag.decision",
+      "actor": "aag",
+      "decision": "hold_for_approval",
+      "risk": "medium",
+      "status": "needs_approval",
+      "timestamp": "2026-06-19T10:00:22Z",
+      "summary": "AAG classifies the requested side effect as approval gated.",
+      "redacted_payload_hash": "sha256:redacted-037a42e90c76",
+      "parent_event_id": "evt-draft-tool-request"
+    },
+    {
+      "trace_id": "evt-draft-approval-required",
+      "run_id": "run-hermes-aag-draft-synthetic-20260619",
+      "source": "aag",
+      "event_type": "approval.required",
+      "actor": "aag",
+      "decision": "approval_required",
+      "risk": "medium",
+      "status": "needs_approval",
+      "timestamp": "2026-06-19T10:00:30Z",
+      "summary": "Approval required before any draft side effect is executed.",
+      "redacted_payload_hash": "sha256:redacted-dcbf934f11c5",
+      "parent_event_id": "evt-draft-aag-decision",
+      "links": [
+        {
+          "label": "Redacted audit reference",
+          "href": "trace://synthetic-draft-approval"
+        }
+      ]
+    }
+  ]
+}

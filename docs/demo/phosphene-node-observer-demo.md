@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.6`
+- App version: `v0.1.7`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures and locally imported Boundary JSON
@@ -17,6 +17,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Select built-in redacted AI-node demo traces.
 - Select Hermes synthetic handoff traces generated on the AI Node.
 - Select the fresh `Hermes Synthetic Handoffs 2026-06-19` gallery group.
+- Load the published redacted snapshot from `/snapshots/current/`.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -24,6 +25,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - See readiness state:
   - Boundary Contract: ready
   - Handoff Intake: ready or partial
+  - Published Snapshot: ready, partial, or not connected
   - AI Node Live Adapter: not connected
 
 ## What To Say
@@ -32,6 +34,12 @@ Use this framing:
 
 ```text
 Phosphene visualizes redacted AI-node Boundary traces. It can ingest Hermes-generated handoff packs, validate them locally, and render the run as an event graph with risk, decision, status, and recovery context.
+```
+
+Use this for the v0.1.7 snapshot step:
+
+```text
+Phosphene can now load a published redacted AI-node snapshot from its served snapshot boundary. This is still not live telemetry; it is a sanitized Boundary pack made available to the observer UI.
 ```
 
 Use this when explaining the current limitation:
@@ -47,6 +55,7 @@ Do not claim:
 - Phosphene is observing live Hermes runs today.
 - Hermes runs locally on the development machine.
 - The browser reads private AI Node filesystem paths.
+- The published snapshot is a streaming or near-live adapter.
 - Phosphene stores or displays secrets, OAuth data, private URLs, raw provider IDs, or customer data.
 - Phosphene replaces AAG, Hermes, OpenClaw, or Sentinels.
 
@@ -77,6 +86,7 @@ Run locally before claiming the demo build is healthy:
 ```bash
 pnpm test -- --run
 pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18
+pnpm validate:traces -- public/snapshots/current
 pnpm lint
 pnpm build
 ```
@@ -85,6 +95,7 @@ After Mac mini deploy, verify:
 
 ```bash
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/node-deploy.json'
+ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/current/manifest.json'
 ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/'
 ```
 

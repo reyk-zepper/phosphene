@@ -10,13 +10,14 @@ import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { useGraphNavigation } from '@/hooks/useGraphNavigation';
-import { OBSERVER_TRACE_GROUPS, OBSERVER_TRACES } from '@/constants/demoTraces';
+import { OBSERVER_TRACE_GROUPS, OBSERVER_TRACES, type ObserverTraceGroup } from '@/constants/demoTraces';
 import { traceToGraph } from '@/core/traces/toGraph';
 import {
   parseTraceIntakeFiles,
   type TraceIntakeBatchResult,
 } from '@/core/traces/intake';
 import { createObserverReadiness } from '@/core/traces/readiness';
+import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
@@ -33,17 +34,50 @@ export function App() {
   const [selectedTraceId, setSelectedTraceId] = useState(OBSERVER_TRACES[0].id);
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
   const [intakeResult, setIntakeResult] = useState<TraceIntakeBatchResult | undefined>();
+  const [snapshotResult, setSnapshotResult] = useState<PublishedSnapshotLoadResult | undefined>();
+  const snapshotGroup = useMemo<ObserverTraceGroup | undefined>(() => {
+    if (!snapshotResult || snapshotResult.traces.length === 0) return undefined;
+    return {
+      id: 'published-ai-node-snapshot',
+      label: 'Published AI Node Snapshot',
+      badge: 'Published snapshot',
+      description: 'Redacted Boundary snapshot served by Phosphene from the AI Node publish path.',
+      traces: snapshotResult.traces,
+    };
+  }, [snapshotResult]);
+  const observerTraceGroups = useMemo(() => {
+    if (!snapshotGroup) return OBSERVER_TRACE_GROUPS;
+
+    const snapshotIds = new Set(snapshotGroup.traces.map((trace) => trace.id));
+    const staticGroups = OBSERVER_TRACE_GROUPS
+      .map((group) => ({
+        ...group,
+        traces: group.traces.filter((trace) => !snapshotIds.has(trace.id)),
+      }))
+      .filter((group) => group.traces.length > 0);
+
+    return [snapshotGroup, ...staticGroups];
+  }, [snapshotGroup]);
   const observerTraces = useMemo(
-    () => [...importedTraces, ...OBSERVER_TRACES],
-    [importedTraces]
+    () => [...importedTraces, ...observerTraceGroups.flatMap((group) => group.traces)],
+    [importedTraces, observerTraceGroups]
   );
+  const publishedSnapshotReadiness = useMemo(() => {
+    if (!snapshotResult) return undefined;
+    return {
+      status: snapshotResult.status,
+      traceCount: snapshotResult.traces.length,
+      blockedCount: snapshotResult.intakeResult?.summary.blockedTraceCount ?? 0,
+    };
+  }, [snapshotResult]);
   const observerReadiness = useMemo(
     () => createObserverReadiness({
-      traceGroups: OBSERVER_TRACE_GROUPS,
+      traceGroups: observerTraceGroups,
       importedTraceCount: importedTraces.length,
       intakeResult,
+      publishedSnapshot: publishedSnapshotReadiness,
     }),
-    [importedTraces.length, intakeResult]
+    [importedTraces.length, intakeResult, observerTraceGroups, publishedSnapshotReadiness]
   );
   useGraphNavigation();
 
@@ -66,6 +100,30 @@ export function App() {
 
     setIntakeResult(result);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    loadPublishedSnapshot().then((result) => {
+      if (cancelled) return;
+      setSnapshotResult(result);
+      if (result.traces.length > 0) {
+        setSelectedTraceId((current) => (
+          current === OBSERVER_TRACES[0].id ? result.traces[0].id : current
+        ));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (mode !== 'observer') return;
+    if (observerTraces.some((trace) => trace.id === selectedTraceId)) return;
+    setSelectedTraceId(observerTraces[0].id);
+  }, [mode, observerTraces, selectedTraceId]);
 
   useEffect(() => {
     if (mode !== 'observer') return;
@@ -105,7 +163,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.6
+              v0.1.7
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -128,7 +186,7 @@ export function App() {
         ) : (
           <NodeObserverBar
             traces={observerTraces}
-            traceGroups={OBSERVER_TRACE_GROUPS}
+            traceGroups={observerTraceGroups}
             selectedTraceId={selectedTraceId}
             onSelectTrace={setSelectedTraceId}
             importedTraceIds={importedTraces.map((trace) => trace.id)}

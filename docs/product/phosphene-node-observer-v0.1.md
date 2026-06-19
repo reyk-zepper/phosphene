@@ -98,6 +98,13 @@ v0.1.5 adds demo readiness and context hardening:
 - `docs/demo/phosphene-node-observer-demo.md` defines what can be shown and what must not be claimed.
 - Node Observer shows a readiness strip for Boundary Contract, Handoff Intake, and AI Node Live Adapter status.
 
+v0.1.7 adds the first published redacted snapshot path:
+
+- Phosphene fetches `/snapshots/current/manifest.json` from its served static boundary.
+- Valid snapshot traces appear as `Published AI Node Snapshot`.
+- Snapshot readiness is separate from manual handoff intake and from the still-disconnected live adapter.
+- The published snapshot is a sanitized Boundary pack, not streaming or live telemetry.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -139,6 +146,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.5 documents the AI Node integration boundary and Hermes AI Node-only rule.
 - v0.1.5 provides a demo document with safe wording and non-claims.
 - v0.1.5 exposes Observer readiness without claiming live telemetry.
+- v0.1.7 loads published redacted snapshots from `/snapshots/current/` while keeping the live adapter disconnected.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

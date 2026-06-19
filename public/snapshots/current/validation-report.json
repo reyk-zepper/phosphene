@@ -1,0 +1,88 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "created_at": "2026-06-19T11:34:59Z",
+  "overall_status": "passed",
+  "data_source": "synthetic_files_only_no_live_reads",
+  "checks": {
+    "json_parse_all_trace_files": {
+      "status": "passed",
+      "details": []
+    },
+    "schema_version_all_trace_files": {
+      "status": "passed",
+      "details": []
+    },
+    "bundle_shape_all_trace_files": {
+      "status": "passed",
+      "details": []
+    },
+    "one_root_event_per_trace_file": {
+      "status": "passed",
+      "details": []
+    },
+    "parent_event_references_valid": {
+      "status": "passed",
+      "details": []
+    },
+    "allowed_enum_values": {
+      "status": "passed",
+      "details": []
+    },
+    "links_object_shape": {
+      "status": "passed",
+      "details": []
+    },
+    "link_hrefs_trace_scheme_only": {
+      "status": "passed",
+      "details": []
+    },
+    "stable_event_ids_without_url_schema": {
+      "status": "passed",
+      "details": []
+    },
+    "forbidden_patterns_absent": {
+      "status": "passed",
+      "details": []
+    }
+  },
+  "trace_results": [
+    {
+      "file": "hermes-aag-gmail-draft.synthetic.json",
+      "status": "passed",
+      "checks": {
+        "json_parse": "passed"
+      }
+    },
+    {
+      "file": "hermes-openclaw-worker.synthetic.json",
+      "status": "passed",
+      "checks": {
+        "json_parse": "passed"
+      }
+    },
+    {
+      "file": "aag-workspace-bundle.synthetic.json",
+      "status": "passed",
+      "checks": {
+        "json_parse": "passed"
+      }
+    },
+    {
+      "file": "sentinel-recovery.synthetic.json",
+      "status": "passed",
+      "checks": {
+        "json_parse": "passed"
+      }
+    }
+  ],
+  "support_file_results": [
+    {
+      "file": "manifest.json",
+      "status": "passed"
+    },
+    {
+      "file": "README.md",
+      "status": "passed"
+    }
+  ]
+}
