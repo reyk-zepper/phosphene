@@ -48,12 +48,31 @@ So Hermes can see `/opt/data/phosphene-handoffs/`, but cannot directly publish i
 
 ## Publish Command
 
-Codex performed host-side publication through the deployed Phosphene publisher CLI:
+Codex first performed host-side publication through the deployed Phosphene publisher CLI:
 
 ```bash
 cd /Users/raik./ai-stack/services/phosphene
 corepack pnpm publish:snapshot -- --source /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20 --target dist/snapshots/current --dry-run
 corepack pnpm publish:snapshot -- --source /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20 --target dist/snapshots/current
+```
+
+After the follow-up helper decision, the AI Node host helper was installed:
+
+```text
+/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh
+```
+
+Versioned source copy:
+
+```text
+ops/ai-node/publish-phosphene-snapshot.sh
+```
+
+The helper was then used for the same source pack:
+
+```bash
+/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20
+/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20
 ```
 
 ## Verification
@@ -72,6 +91,27 @@ Validated 6 file(s), 0 failed.
 Published 7 file(s) to /Users/raik./ai-stack/services/phosphene/dist/snapshots/current
 ```
 
+Helper behavior:
+
+```text
+PASS help
+PASS dry-run allowed source
+PASS reject outside source
+```
+
+Helper publish verification:
+
+```text
+Served manifest verified: http://127.0.0.1:5173/snapshots/current/manifest.json
+Manifest sha256: 428beefab35ca5df6460dd1aeeae1af71a9e3c55f6fe9c90ae47f86bc2794175
+```
+
+Audit log:
+
+```text
+/Users/raik./ai-stack/logs/phosphene-snapshot-publish.log
+```
+
 Served manifest:
 
 ```bash
@@ -82,8 +122,12 @@ The served manifest returned `schema_version: "phosphene.boundary.v0.1.2"`, `sou
 
 ## Follow-Up
 
-To let Hermes publish directly in a later slice, choose one of these:
+The current preferred architecture is now:
 
-1. Mount `/Users/raik./ai-stack/services/phosphene` read/write into the Hermes container with a narrow path and restart Hermes.
-2. Add a host-side publish helper that accepts only a validated handoff directory and can be invoked through a controlled Hermes tool boundary.
-3. Keep Codex/operator host-side publication as the explicit approval step until the near-live adapter exists.
+```text
+Hermes writes redacted Boundary packs under the handoff root.
+The host helper validates, publishes, verifies, and logs.
+Phosphene serves only /snapshots/current/.
+```
+
+Next, expose this helper through a controlled Hermes tool boundary or approval flow instead of mounting the Phosphene service path into the Hermes container.

@@ -77,6 +77,24 @@ cd /Users/raik./ai-stack/services/phosphene
 corepack pnpm publish:snapshot -- --source /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/<pack> --target dist/snapshots/current
 ```
 
+Host-side publish helper after v0.1.9 infrastructure slice:
+
+```bash
+/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/<pack>
+```
+
+The helper only accepts source directories below:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/
+```
+
+It validates through Phosphene's publisher CLI, publishes atomically into `dist/snapshots/current`, verifies the served manifest, and writes audit events to:
+
+```text
+/Users/raik./ai-stack/logs/phosphene-snapshot-publish.log
+```
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -128,7 +146,7 @@ Status: implemented for synthetic handoffs.
 
 An AI Node-side process publishes sanitized Boundary packs into a known export location. Phosphene consumes the exported pack, not private internal runtime state.
 
-Status: implemented for static published snapshots and for an executable snapshot publisher contract. Hermes can now publish a validated redacted Boundary pack into the served `dist/snapshots/current/` directory on the AI Node.
+Status: implemented for static published snapshots, the executable snapshot publisher contract, and a host-side publish helper. Hermes can generate or stage a validated redacted Boundary pack under the handoff root; the helper performs the controlled host-side publication into the served `dist/snapshots/current/` directory.
 
 ### Stage 4: Near-Live Adapter
 
