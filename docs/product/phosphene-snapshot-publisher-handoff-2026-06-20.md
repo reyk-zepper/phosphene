@@ -112,6 +112,35 @@ Audit log:
 /Users/raik./ai-stack/logs/phosphene-snapshot-publish.log
 ```
 
+## Deploy Snapshot Persistence
+
+The published snapshot lives in the deployed build output:
+
+```text
+/Users/raik./ai-stack/services/phosphene/dist/snapshots/current/
+```
+
+Because a normal Vite build can recreate `dist/`, the AI Node deploy script now preserves the current published snapshot before build and restores it afterwards.
+
+AI Node deploy script:
+
+```text
+/Users/raik./ai-stack/scripts/update-phosphene.sh
+```
+
+Versioned source copy:
+
+```text
+ops/ai-node/update-phosphene.sh
+```
+
+Expected update log markers:
+
+```text
+phosphene snapshot preserved
+phosphene snapshot restored
+```
+
 Served manifest:
 
 ```bash

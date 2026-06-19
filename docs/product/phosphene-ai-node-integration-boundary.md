@@ -95,6 +95,20 @@ It validates through Phosphene's publisher CLI, publishes atomically into `dist/
 /Users/raik./ai-stack/logs/phosphene-snapshot-publish.log
 ```
 
+AI Node deploy/update script after the deploy persistence slice:
+
+```bash
+/Users/raik./ai-stack/scripts/update-phosphene.sh
+```
+
+Versioned source copy:
+
+```text
+ops/ai-node/update-phosphene.sh
+```
+
+The deploy script preserves the current published `dist/snapshots/current/` directory before the Phosphene build and restores it after the build. This keeps the latest validated Hermes-origin snapshot available across normal Phosphene app deploys.
+
 Current v0.1.5 Hermes request document:
 
 ```text
