@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.7`
+- App version: `v0.1.8`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures and locally imported Boundary JSON
@@ -18,6 +18,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Select Hermes synthetic handoff traces generated on the AI Node.
 - Select the fresh `Hermes Synthetic Handoffs 2026-06-19` gallery group.
 - Load the published redacted snapshot from `/snapshots/current/`.
+- Refresh the served snapshot through the AI Node publisher CLI after validation.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -42,6 +43,12 @@ Use this for the v0.1.7 snapshot step:
 Phosphene can now load a published redacted AI-node snapshot from its served snapshot boundary. This is still not live telemetry; it is a sanitized Boundary pack made available to the observer UI.
 ```
 
+Use this for the v0.1.8 publisher step:
+
+```text
+Phosphene now has an AI Node publisher contract: a redacted Boundary pack can be validated and atomically published into the served snapshot path. This still is not streaming telemetry; it is a controlled published snapshot.
+```
+
 Use this when explaining the current limitation:
 
 ```text
@@ -56,6 +63,7 @@ Do not claim:
 - Hermes runs locally on the development machine.
 - The browser reads private AI Node filesystem paths.
 - The published snapshot is a streaming or near-live adapter.
+- The snapshot publisher reads private provider data or performs live side effects.
 - Phosphene stores or displays secrets, OAuth data, private URLs, raw provider IDs, or customer data.
 - Phosphene replaces AAG, Hermes, OpenClaw, or Sentinels.
 
@@ -87,6 +95,7 @@ Run locally before claiming the demo build is healthy:
 pnpm test -- --run
 pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18
 pnpm validate:traces -- public/snapshots/current
+pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-snapshot-publish-check --dry-run
 pnpm lint
 pnpm build
 ```
@@ -97,16 +106,17 @@ After Mac mini deploy, verify:
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/node-deploy.json'
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/current/manifest.json'
 ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/'
+ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
 ```
 
 ## Next Hermes Task
 
-After this demo readiness slice, Hermes should be asked to generate a fresh AI-Node-side handoff pack using the current Boundary contract and v0.1.5 intake/readiness shape. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
+After this publisher slice, Hermes should be asked to generate a fresh AI-Node-side redacted Boundary pack and publish it through the v0.1.8 CLI contract. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
 
 Concrete request document:
 
 ```text
-docs/product/phosphene-hermes-boundary-v0.1.5-request.md
+docs/product/phosphene-hermes-snapshot-publisher-v0.1.8-request.md
 ```
 
 Resulting handoff evidence:

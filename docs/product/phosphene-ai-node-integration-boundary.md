@@ -70,10 +70,23 @@ AI Node service path after deploy:
 /Users/raik./ai-stack/services/phosphene/dist/snapshots/current/
 ```
 
+Snapshot publisher CLI after v0.1.8:
+
+```bash
+cd /Users/raik./ai-stack/services/phosphene
+corepack pnpm publish:snapshot -- --source /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/<pack> --target dist/snapshots/current
+```
+
 Current v0.1.5 Hermes request document:
 
 ```text
 docs/product/phosphene-hermes-boundary-v0.1.5-request.md
+```
+
+Current v0.1.8 Hermes publisher request document:
+
+```text
+docs/product/phosphene-hermes-snapshot-publisher-v0.1.8-request.md
 ```
 
 ## Boundary Bundle Shape
@@ -88,6 +101,13 @@ The browser import path can accept local JSON files. The CLI can validate handof
 
 ```bash
 pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18
+```
+
+The publisher CLI can validate and publish a redacted pack to the served snapshot path:
+
+```bash
+pnpm publish:snapshot -- --source public/snapshots/current --target dist/snapshots/current --dry-run
+pnpm publish:snapshot -- --source public/snapshots/current --target dist/snapshots/current
 ```
 
 ## Integration Stages
@@ -108,7 +128,7 @@ Status: implemented for synthetic handoffs.
 
 An AI Node-side process publishes sanitized Boundary packs into a known export location. Phosphene consumes the exported pack, not private internal runtime state.
 
-Status: implemented for static published snapshots. A future Hermes publisher can replace the served `dist/snapshots/current/` pack with fresh redacted Boundary output.
+Status: implemented for static published snapshots and for an executable snapshot publisher contract. Hermes can now publish a validated redacted Boundary pack into the served `dist/snapshots/current/` directory on the AI Node.
 
 ### Stage 4: Near-Live Adapter
 

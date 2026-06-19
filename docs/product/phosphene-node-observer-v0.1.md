@@ -105,6 +105,13 @@ v0.1.7 adds the first published redacted snapshot path:
 - Snapshot readiness is separate from manual handoff intake and from the still-disconnected live adapter.
 - The published snapshot is a sanitized Boundary pack, not streaming or live telemetry.
 
+v0.1.8 adds the executable snapshot publisher contract:
+
+- `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current` validates and publishes redacted Boundary packs.
+- The publisher copies only `manifest.json`, `validation-report.json`, `README.md`, and manifest-listed trace files.
+- Publication uses a temporary directory and atomic target replacement.
+- Hermes can run the publisher on the AI Node, but Phosphene still does not claim streaming or live telemetry.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -147,6 +154,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.5 provides a demo document with safe wording and non-claims.
 - v0.1.5 exposes Observer readiness without claiming live telemetry.
 - v0.1.7 loads published redacted snapshots from `/snapshots/current/` while keeping the live adapter disconnected.
+- v0.1.8 provides a validated snapshot publisher CLI for AI Node-side redacted Boundary packs.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
