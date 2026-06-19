@@ -123,4 +123,5 @@ Resulting handoff evidence:
 
 ```text
 docs/product/phosphene-hermes-boundary-handoff-2026-06-19.md
+docs/product/phosphene-snapshot-publisher-handoff-2026-06-20.md
 ```
