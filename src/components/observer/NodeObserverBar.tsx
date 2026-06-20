@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle, GitBranch, RadioTower, ShieldCheck, Upload 
 import type { ObserverTraceGroup } from '@/constants/demoTraces';
 import type { TraceIntakeBatchResult, TraceIntakeItemResult } from '@/core/traces/intake';
 import type { ObserverReadinessItem } from '@/core/traces/readiness';
+import { createPublishedSnapshotDisplayState, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
 import type { NodeTrace } from '@/core/traces/types';
 import { RunSummaryPanel } from './RunSummaryPanel';
 
@@ -12,6 +13,7 @@ interface Props {
   onSelectTrace: (traceId: string) => void;
   importedTraceIds?: string[];
   intakeResult?: TraceIntakeBatchResult;
+  publishedSnapshot?: PublishedSnapshotLoadResult;
   readiness?: ObserverReadinessItem[];
   onImportTraceFiles?: (files: File[]) => void;
 }
@@ -48,6 +50,12 @@ function readinessStatusClass(status: ObserverReadinessItem['status']): string {
   return 'text-[color:var(--glow-decision)]';
 }
 
+function snapshotStatusClass(status: ReturnType<typeof createPublishedSnapshotDisplayState>['status']): string {
+  if (status === 'checking' || status === 'unavailable') return 'text-[color:var(--text-muted)]';
+  if (status === 'partial' || status === 'blocked') return 'text-[color:var(--glow-revision)]';
+  return 'text-[color:var(--glow-decision)]';
+}
+
 function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[] }) {
   if (items.length === 0) return null;
 
@@ -64,6 +72,52 @@ function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[
           <p className="truncate text-[color:var(--text-secondary)]">{item.detail}</p>
         </div>
       ))}
+    </div>
+  );
+}
+
+function PublishedSnapshotPanel({ result }: { result?: PublishedSnapshotLoadResult }) {
+  const display = createPublishedSnapshotDisplayState(result);
+
+  return (
+    <div
+      className="mt-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 px-3 py-2 font-mono text-[10px] text-[color:var(--text-secondary)] backdrop-blur-xl"
+      role={display.role}
+      aria-label={display.title}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        {display.role === 'alert' ? (
+          <AlertTriangle size={12} className="text-[color:var(--glow-revision)]" />
+        ) : (
+          <RadioTower size={12} className={snapshotStatusClass(display.status)} />
+        )}
+        <span className="tracking-wider text-[color:var(--text-primary)] uppercase">{display.title}</span>
+        <span className={`tracking-wider uppercase ${snapshotStatusClass(display.status)}`}>
+          {display.statusLabel}
+        </span>
+        <span className="text-[color:var(--text-muted)]">{display.summary}</span>
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {display.meta.map((item) => (
+          <span
+            key={`${item.label}-${item.value}`}
+            className="rounded-md border border-[color:var(--border-subtle)] px-2 py-1 tracking-wider text-[color:var(--text-muted)] uppercase"
+          >
+            {item.label}: <span className="text-[color:var(--text-secondary)]">{item.value}</span>
+          </span>
+        ))}
+      </div>
+
+      {display.errors.length > 0 && (
+        <div className="mt-2 overflow-hidden rounded-lg border border-[color:var(--border-subtle)]">
+          {display.errors.slice(0, 3).map((error) => (
+            <p key={error} className="truncate border-b border-[color:var(--border-subtle)] px-2 py-1.5 text-[color:var(--glow-revision)] last:border-b-0">
+              {error}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -129,6 +183,7 @@ export function NodeObserverBar({
   onSelectTrace,
   importedTraceIds = [],
   intakeResult,
+  publishedSnapshot,
   readiness,
   onImportTraceFiles,
 }: Props) {
@@ -229,6 +284,8 @@ export function NodeObserverBar({
       </div>
 
       {selected && <RunSummaryPanel trace={selected} />}
+
+      <PublishedSnapshotPanel result={publishedSnapshot} />
 
       <ObserverReadinessPanel items={readiness} />
 

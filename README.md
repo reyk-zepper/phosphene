@@ -53,8 +53,10 @@ Currently working:
 - Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
 - Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
 - Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
+- Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
+- AI Node deploy helper preserves the latest published `dist/snapshots/current` across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
@@ -216,8 +218,10 @@ Funktioniert bereits:
 - Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
 - Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
 - Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
+- Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
+- AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe

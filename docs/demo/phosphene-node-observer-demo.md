@@ -6,10 +6,10 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.8`
+- App version: `v0.1.10`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
-- Data class: synthetic/redacted fixtures and locally imported Boundary JSON
+- Data class: synthetic/redacted fixtures, locally imported Boundary JSON, and published redacted AI Node snapshots
 
 ## What Works Today
 
@@ -19,6 +19,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Select the fresh `Hermes Synthetic Handoffs 2026-06-19` gallery group.
 - Load the published redacted snapshot from `/snapshots/current/`.
 - Refresh the served snapshot through the AI Node publisher CLI after validation.
+- See the `Published AI Node Snapshot` panel with source, classification, manifest, validation, and no-live-telemetry status.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -47,6 +48,12 @@ Use this for the v0.1.8 publisher step:
 
 ```text
 Phosphene now has an AI Node publisher contract: a redacted Boundary pack can be validated and atomically published into the served snapshot path. This still is not streaming telemetry; it is a controlled published snapshot.
+```
+
+Use this for the v0.1.9/v0.1.10 operator-demo step:
+
+```text
+Phosphene preserves the latest published snapshot across AI Node app deploys and shows its status directly in Node Observer. The UI tells us the source, classification, manifest size, validation state, and that this is not live telemetry.
 ```
 
 Use this when explaining the current limitation:
@@ -85,7 +92,8 @@ Do not claim:
    - `manifest.json`
    - `validation-report.json`
 7. Show the intake table.
-8. Point out the readiness strip and the `AI Node Live Adapter` status.
+8. Point out the published snapshot panel.
+9. Point out the readiness strip and the `AI Node Live Adapter` status.
 
 ## Verification Before Demo
 
@@ -106,13 +114,14 @@ After Mac mini deploy, verify:
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/node-deploy.json'
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/current/manifest.json'
 ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/'
+ssh rAIk.mini 'tail -n 80 /Users/raik./ai-stack/logs/phosphene-update.log | grep -E "phosphene snapshot preserved|phosphene snapshot restored"'
 ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20'
 ```
 
 ## Next Hermes Task
 
-After this publisher slice, Hermes should be asked to generate a fresh AI-Node-side redacted Boundary pack and publish it through the v0.1.8 CLI contract. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
+After this operator-demo slice, Hermes should be asked to generate a fresh AI-Node-side redacted Boundary pack and publish it through the host helper. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
 
 Concrete request document:
 

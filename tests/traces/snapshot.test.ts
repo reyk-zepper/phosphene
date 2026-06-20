@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadPublishedSnapshot } from '@/core/traces/snapshot';
+import { createPublishedSnapshotDisplayState, loadPublishedSnapshot } from '@/core/traces/snapshot';
 import { BOUNDARY_TRACE_SCHEMA_VERSION } from '@/core/traces/types';
 
 const manifest = {
@@ -121,5 +121,69 @@ describe('loadPublishedSnapshot', () => {
     expect(result.traces).toEqual([]);
     expect(result.intakeResult?.summary.blockedTraceCount).toBe(1);
     expect(result.errors).toContain('published.synthetic.json: events[1].source must be one of: hermes, openclaw, aag, sentinel');
+  });
+});
+
+describe('createPublishedSnapshotDisplayState', () => {
+  it('describes the loading state without implying live telemetry', () => {
+    const display = createPublishedSnapshotDisplayState(undefined, '/snapshots/current');
+
+    expect(display.status).toBe('checking');
+    expect(display.statusLabel).toBe('checking');
+    expect(display.role).toBe('status');
+    expect(display.summary).toBe('Checking /snapshots/current for a redacted Boundary snapshot.');
+    expect(display.meta).toContainEqual({ label: 'Telemetry', value: 'No live telemetry' });
+  });
+
+  it('summarizes an available snapshot from manifest and validation metadata', async () => {
+    const responses = new Map<string, Response>([
+      ['/snapshots/current/manifest.json', jsonResponse(manifest)],
+      ['/snapshots/current/published.synthetic.json', jsonResponse(validTrace)],
+      ['/snapshots/current/validation-report.json', jsonResponse(validationReport)],
+    ]);
+    const fetcher = async (url: string | URL | Request) => responses.get(String(url)) ?? textResponse('missing', 404);
+    const result = await loadPublishedSnapshot(fetcher);
+
+    const display = createPublishedSnapshotDisplayState(result);
+
+    expect(display.status).toBe('available');
+    expect(display.statusLabel).toBe('ready');
+    expect(display.role).toBe('status');
+    expect(display.summary).toBe('1 redacted trace loaded from /snapshots/current.');
+    expect(display.meta).toEqual([
+      { label: 'Source', value: 'hermes' },
+      { label: 'Classification', value: 'synthetic_redacted' },
+      { label: 'Manifest files', value: '1' },
+      { label: 'Validation', value: 'passed' },
+      { label: 'Telemetry', value: 'No live telemetry' },
+    ]);
+  });
+
+  it('surfaces blocked snapshot errors as an alert state', async () => {
+    const invalidTrace = {
+      ...validTrace,
+      events: [
+        validTrace.events[0],
+        {
+          ...validTrace.events[1],
+          source: 'private-provider',
+        },
+      ],
+    };
+    const responses = new Map<string, Response>([
+      ['/snapshots/current/manifest.json', jsonResponse(manifest)],
+      ['/snapshots/current/published.synthetic.json', jsonResponse(invalidTrace)],
+      ['/snapshots/current/validation-report.json', textResponse('missing', 404)],
+    ]);
+    const fetcher = async (url: string | URL | Request) => responses.get(String(url)) ?? textResponse('missing', 404);
+    const result = await loadPublishedSnapshot(fetcher);
+
+    const display = createPublishedSnapshotDisplayState(result);
+
+    expect(display.status).toBe('blocked');
+    expect(display.statusLabel).toBe('blocked');
+    expect(display.role).toBe('alert');
+    expect(display.summary).toBe('Snapshot blocked. Static demo traces remain available.');
+    expect(display.errors[0]).toContain('events[1].source');
   });
 });

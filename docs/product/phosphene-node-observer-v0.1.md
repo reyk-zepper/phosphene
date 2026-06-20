@@ -112,11 +112,24 @@ v0.1.8 adds the executable snapshot publisher contract:
 - Publication uses a temporary directory and atomic target replacement.
 - Hermes can run the publisher on the AI Node, but Phosphene still does not claim streaming or live telemetry.
 
+v0.1.9 hardens AI Node deployment around published snapshots:
+
+- `/Users/raik./ai-stack/scripts/update-phosphene.sh` preserves the current `dist/snapshots/current/` directory before the build and restores it afterwards.
+- The deploy script is versioned in `ops/ai-node/update-phosphene.sh`.
+- Deploy verification includes the app response, `node-deploy.json`, snapshot manifest, snapshot file count, and update log markers.
+
+v0.1.10 makes the published snapshot easier to demo:
+
+- Node Observer shows a `Published AI Node Snapshot` status panel.
+- The panel summarizes snapshot status, source agent, data classification, manifest file count, validation status, and the no-live-telemetry boundary.
+- Blocked or partial snapshots surface visible errors while static demo traces remain available.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
 - Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
+- Published snapshot status appears as an operator panel below the selected run summary.
 - Intake results appear as a compact table below the run summary after local JSON upload.
 - Readiness status appears below the run summary and keeps the live adapter visibly disconnected until a real AI Node adapter exists.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
@@ -155,6 +168,8 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.5 exposes Observer readiness without claiming live telemetry.
 - v0.1.7 loads published redacted snapshots from `/snapshots/current/` while keeping the live adapter disconnected.
 - v0.1.8 provides a validated snapshot publisher CLI for AI Node-side redacted Boundary packs.
+- v0.1.9 preserves the published snapshot across normal AI Node deploys.
+- v0.1.10 exposes published snapshot status, source, classification, manifest, validation, and blocked-state errors in Node Observer.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

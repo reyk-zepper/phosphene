@@ -163,7 +163,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.8
+              v0.1.10
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -191,6 +191,7 @@ export function App() {
             onSelectTrace={setSelectedTraceId}
             importedTraceIds={importedTraces.map((trace) => trace.id)}
             intakeResult={intakeResult}
+            publishedSnapshot={snapshotResult}
             readiness={observerReadiness}
             onImportTraceFiles={handleImportTraceFiles}
           />

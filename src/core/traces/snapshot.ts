@@ -14,6 +14,18 @@ export interface PublishedSnapshotLoadResult {
   loadedAt: string;
 }
 
+export type PublishedSnapshotDisplayStatus = PublishedSnapshotStatus | 'checking';
+
+export interface PublishedSnapshotDisplayState {
+  title: string;
+  status: PublishedSnapshotDisplayStatus;
+  statusLabel: string;
+  role: 'status' | 'alert';
+  summary: string;
+  meta: Array<{ label: string; value: string }>;
+  errors: string[];
+}
+
 type SnapshotFetcher = (input: string, init?: RequestInit) => Promise<Response>;
 
 function joinSnapshotPath(basePath: string, fileName: string): string {
@@ -73,6 +85,55 @@ function statusFromIntake(result: TraceIntakeBatchResult): PublishedSnapshotStat
   if (result.summary.acceptedTraceCount > 0 && result.summary.blockedTraceCount === 0) return 'available';
   if (result.summary.acceptedTraceCount > 0) return 'partial';
   return 'blocked';
+}
+
+function pluralizeTrace(count: number): string {
+  return count === 1 ? 'trace' : 'traces';
+}
+
+function snapshotStatusLabel(status: PublishedSnapshotDisplayStatus): string {
+  if (status === 'checking') return 'checking';
+  if (status === 'available') return 'ready';
+  return status;
+}
+
+function snapshotSummary(result: PublishedSnapshotLoadResult | undefined, basePath: string): string {
+  if (!result) return `Checking ${basePath} for a redacted Boundary snapshot.`;
+  if (result.status === 'available') {
+    return `${result.traces.length} redacted ${pluralizeTrace(result.traces.length)} loaded from ${result.basePath}.`;
+  }
+  if (result.status === 'partial') {
+    const blockedCount = result.intakeResult?.summary.blockedTraceCount ?? 0;
+    return `${result.traces.length} redacted ${pluralizeTrace(result.traces.length)} loaded, ${blockedCount} blocked.`;
+  }
+  if (result.status === 'blocked') return 'Snapshot blocked. Static demo traces remain available.';
+  return `No published snapshot at ${result.basePath}. Static demo traces remain available.`;
+}
+
+export function createPublishedSnapshotDisplayState(
+  result?: PublishedSnapshotLoadResult,
+  basePath = DEFAULT_PUBLISHED_SNAPSHOT_BASE_PATH
+): PublishedSnapshotDisplayState {
+  const manifest = result?.intakeResult?.manifest;
+  const validationReport = result?.intakeResult?.validationReport;
+  const status: PublishedSnapshotDisplayStatus = result?.status ?? 'checking';
+  const meta: Array<{ label: string; value: string }> = [];
+
+  if (manifest?.sourceAgent) meta.push({ label: 'Source', value: manifest.sourceAgent });
+  if (manifest?.dataClassification) meta.push({ label: 'Classification', value: manifest.dataClassification });
+  if (manifest) meta.push({ label: 'Manifest files', value: String(manifest.files.length) });
+  if (validationReport?.overallStatus) meta.push({ label: 'Validation', value: validationReport.overallStatus });
+  meta.push({ label: 'Telemetry', value: 'No live telemetry' });
+
+  return {
+    title: 'Published AI Node Snapshot',
+    status,
+    statusLabel: snapshotStatusLabel(status),
+    role: status === 'blocked' || status === 'partial' ? 'alert' : 'status',
+    summary: snapshotSummary(result, basePath),
+    meta,
+    errors: result?.errors ?? [],
+  };
 }
 
 export async function loadPublishedSnapshot(
