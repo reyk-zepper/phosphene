@@ -121,6 +121,12 @@ Current v0.1.8 Hermes publisher request document:
 docs/product/phosphene-hermes-snapshot-publisher-v0.1.8-request.md
 ```
 
+Current Hermes Boundary output contract:
+
+```text
+docs/product/phosphene-hermes-boundary-output-contract.md
+```
+
 ## Boundary Bundle Shape
 
 Phosphene expects:
@@ -200,6 +206,10 @@ When Hermes is asked to produce a Phosphene handoff, the request must say:
 - emit `manifest.json`
 - emit `validation-report.json`
 - keep all payloads synthetic or redacted
+- use `manifest.files[].file`, not `filename`
+- use `trace_id`, not `event_id`
+- use `event_type`, not `type`
+- set every event `run_id` to the trace `metadata.id`
 - use stable event IDs without URL schemes
 - use link objects shaped as `{ "label": "...", "href": "trace://..." }`
 - omit optional string fields when no value applies; only root `parent_event_id` should use `null`

@@ -131,11 +131,15 @@ Do not use the direct `run_agent.py` path for this workflow unless it is repaire
 
 The current published snapshot is a Hermes-origin v0.1.10 operator-demo pack generated on the AI Node, contract-normalized, validated, published through the AI Node helper, and displayed in the v0.1.10 `Published AI Node Snapshot` panel.
 
+For the next Hermes handoff, use the v0.1.11 contract-check style. It was proven by a host-side publisher dry-run without Codex normalizing the generated pack afterward.
+
 Concrete request document:
 
 ```text
+docs/product/phosphene-hermes-boundary-output-contract.md
 docs/product/phosphene-hermes-snapshot-publisher-v0.1.8-request.md
 docs/product/phosphene-hermes-snapshot-v0.1.10-request.md
+docs/product/phosphene-hermes-snapshot-v0.1.11-contract-check-request.md
 ```
 
 Resulting handoff evidence:
@@ -144,4 +148,5 @@ Resulting handoff evidence:
 docs/product/phosphene-hermes-boundary-handoff-2026-06-19.md
 docs/product/phosphene-snapshot-publisher-handoff-2026-06-20.md
 docs/product/phosphene-snapshot-operator-demo-handoff-2026-06-20.md
+docs/product/phosphene-hermes-contract-check-handoff-2026-06-20.md
 ```
