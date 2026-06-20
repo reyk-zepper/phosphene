@@ -121,12 +121,15 @@ ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry
 
 ## Next Hermes Task
 
-After this operator-demo slice, Hermes should be asked to generate a fresh AI-Node-side redacted Boundary pack and publish it through the host helper. The task should remain synthetic/redacted unless a later live-adapter spike is explicitly approved.
+Hermes was asked to generate a fresh AI-Node-side redacted Boundary pack for the v0.1.10 operator demo, but the one-shot provider path returned HTTP 403. Before assigning another snapshot-generation task to Hermes, fix or reconfigure the Hermes provider path.
+
+The host-side publication path is verified: a clearly labeled Codex host fallback pack can be validated, published through the AI Node helper, and displayed in the v0.1.10 `Published AI Node Snapshot` panel.
 
 Concrete request document:
 
 ```text
 docs/product/phosphene-hermes-snapshot-publisher-v0.1.8-request.md
+docs/product/phosphene-hermes-snapshot-v0.1.10-request.md
 ```
 
 Resulting handoff evidence:
@@ -134,4 +137,5 @@ Resulting handoff evidence:
 ```text
 docs/product/phosphene-hermes-boundary-handoff-2026-06-19.md
 docs/product/phosphene-snapshot-publisher-handoff-2026-06-20.md
+docs/product/phosphene-snapshot-operator-demo-handoff-2026-06-20.md
 ```
