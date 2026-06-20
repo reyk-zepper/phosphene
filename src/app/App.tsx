@@ -18,6 +18,7 @@ import {
 } from '@/core/traces/intake';
 import { createObserverReadiness } from '@/core/traces/readiness';
 import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
+import { loadCanaryStatus, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
@@ -35,6 +36,7 @@ export function App() {
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
   const [intakeResult, setIntakeResult] = useState<TraceIntakeBatchResult | undefined>();
   const [snapshotResult, setSnapshotResult] = useState<PublishedSnapshotLoadResult | undefined>();
+  const [canaryStatus, setCanaryStatus] = useState<CanaryStatusLoadResult | undefined>();
   const snapshotGroup = useMemo<ObserverTraceGroup | undefined>(() => {
     if (!snapshotResult || snapshotResult.traces.length === 0) return undefined;
     return {
@@ -104,7 +106,7 @@ export function App() {
   useEffect(() => {
     let cancelled = false;
 
-    loadPublishedSnapshot().then((result) => {
+    void loadPublishedSnapshot().then((result) => {
       if (cancelled) return;
       setSnapshotResult(result);
       if (result.traces.length > 0) {
@@ -112,6 +114,18 @@ export function App() {
           current === OBSERVER_TRACES[0].id ? result.traces[0].id : current
         ));
       }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadCanaryStatus().then((result) => {
+      if (!cancelled) setCanaryStatus(result);
     });
 
     return () => {
@@ -192,6 +206,7 @@ export function App() {
             importedTraceIds={importedTraces.map((trace) => trace.id)}
             intakeResult={intakeResult}
             publishedSnapshot={snapshotResult}
+            canaryStatus={canaryStatus}
             readiness={observerReadiness}
             onImportTraceFiles={handleImportTraceFiles}
           />

@@ -160,7 +160,14 @@ Default marker:
 /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json
 ```
 
-The marker is intended as the future stable read point for Phosphene UI status work. It contains only redacted metadata:
+Served browser copy:
+
+```text
+/Users/raik./ai-stack/services/phosphene/dist/snapshots/canary/latest.json
+/snapshots/canary/latest.json
+```
+
+The marker is the stable read point for Phosphene UI status work. It contains only redacted metadata:
 
 ```text
 schema_version
@@ -175,6 +182,8 @@ retention_count
 ```
 
 It must not contain absolute AI Node paths, private URLs, service URLs, credentials, raw provider IDs, emails, or customer/provider data.
+
+The Node Observer UI displays this marker as `AI Node Canary`. This is operational status only and still must not be described as live Hermes/AAG/OpenClaw/Sentinel telemetry.
 
 ## Pack Metadata
 

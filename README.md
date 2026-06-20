@@ -54,10 +54,11 @@ Currently working:
 - Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
 - Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
+- AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, not live agent telemetry
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
-- AI Node deploy helper preserves the latest published `dist/snapshots/current` across app deploys
+- AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs the redacted canary status across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
@@ -222,10 +223,11 @@ Funktioniert bereits:
 - Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
 - Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
+- AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status, nicht als Live-Agenten-Telemetrie
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
-- AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` über App-Deploys hinweg
+- AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert den redigierten Canary-Status über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe

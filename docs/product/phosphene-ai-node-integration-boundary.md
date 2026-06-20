@@ -131,6 +131,20 @@ The canary also maintains a redacted latest marker:
 
 The marker contains only the latest canary pack name, status, manifest file reference, and manifest hash. It must not contain absolute AI Node paths, private URLs, credentials, provider IDs, or service URLs. The scheduled wrapper keeps the newest 48 `ai-node-canary-*` packs by default to prevent unbounded growth.
 
+The browser-facing copy is served from:
+
+```text
+/snapshots/canary/latest.json
+```
+
+The AI Node wrapper syncs the handoff marker into:
+
+```text
+/Users/raik./ai-stack/services/phosphene/dist/snapshots/canary/latest.json
+```
+
+The deploy script also syncs the current marker after each Phosphene build, so a normal app deploy does not hide the latest canary state until the next scheduled run.
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -194,7 +208,7 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: planned. A first operational canary exists, but it observes only Phosphene service and snapshot health markers, not live Hermes/AAG/OpenClaw/Sentinel agent events.
+Status: partially implemented. A first operational canary exists and Phosphene can display its redacted latest marker from `/snapshots/canary/latest.json`, but it observes only Phosphene service and snapshot health markers, not live Hermes/AAG/OpenClaw/Sentinel agent events.
 
 ## Security Rules
 

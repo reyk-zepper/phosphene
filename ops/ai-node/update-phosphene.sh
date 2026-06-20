@@ -12,6 +12,8 @@ label="com.raik.phosphene"
 plist="$HOME/Library/LaunchAgents/$label.plist"
 port="5173"
 snapshot_dir="$service_dir/dist/snapshots/current"
+canary_latest_file="$root/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json"
+canary_served_dir="$service_dir/dist/snapshots/canary"
 snapshot_backup_dir=""
 snapshot_preserved=0
 snapshot_restored=0
@@ -47,6 +49,18 @@ restore_snapshot() {
   snapshot_restored=1
 
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene snapshot restored target=$snapshot_dir"
+}
+
+sync_canary_status() {
+  if [ ! -f "$canary_latest_file" ]; then
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene canary status sync skipped: no latest marker at $canary_latest_file"
+    return 0
+  fi
+
+  mkdir -p "$canary_served_dir"
+  cp "$canary_latest_file" "$canary_served_dir/latest.json"
+
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene canary status synced target=$canary_served_dir/latest.json"
 }
 
 cleanup_snapshot_backup() {
@@ -85,6 +99,7 @@ preserve_snapshot
 run_pnpm install --frozen-lockfile
 run_pnpm build
 restore_snapshot
+sync_canary_status
 
 commit="$(git rev-parse HEAD)"
 short_commit="$(git rev-parse --short HEAD)"

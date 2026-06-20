@@ -7,6 +7,7 @@ OUTPUT_ROOT="${PHOSPHENE_CANARY_OUTPUT_ROOT:-$AI_STACK_ROOT/data/hermes/home/pho
 PUBLISH_HELPER="${PHOSPHENE_PUBLISH_HELPER:-$AI_STACK_ROOT/scripts/publish-phosphene-snapshot.sh}"
 LATEST_FILE="${PHOSPHENE_CANARY_LATEST_FILE:-$OUTPUT_ROOT/latest.json}"
 RETENTION_COUNT="${PHOSPHENE_CANARY_RETENTION_COUNT:-48}"
+SERVED_STATUS_DIR="${PHOSPHENE_CANARY_SERVED_DIR:-$SERVICE_DIR/dist/snapshots/canary}"
 RUN_DRY_RUN=1
 TARGET=""
 
@@ -24,6 +25,7 @@ It never publishes or deploys the generated pack.
 
 The script updates:
   $LATEST_FILE
+  $SERVED_STATUS_DIR/latest.json
 
 Retention keeps the newest $RETENTION_COUNT ai-node-canary-* packs.
 USAGE
@@ -73,6 +75,9 @@ node scripts/generate-ai-node-canary-snapshot.mjs \
   --service-dir "$SERVICE_DIR" \
   --latest-file "$LATEST_FILE" \
   --retention-count "$RETENTION_COUNT"
+
+mkdir -p "$SERVED_STATUS_DIR"
+cp "$LATEST_FILE" "$SERVED_STATUS_DIR/latest.json"
 
 if [ "$RUN_DRY_RUN" -eq 1 ]; then
   [ -x "$PUBLISH_HELPER" ] || {

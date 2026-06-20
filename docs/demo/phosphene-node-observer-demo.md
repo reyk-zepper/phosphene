@@ -57,6 +57,12 @@ Use this for the v0.1.9/v0.1.10 operator-demo step:
 Phosphene preserves the latest published snapshot across AI Node app deploys and shows its status directly in Node Observer. The UI tells us the source, classification, manifest size, validation state, and that this is not live telemetry.
 ```
 
+Use this for the operational canary status:
+
+```text
+Phosphene shows the latest redacted AI Node Canary marker from /snapshots/canary/latest.json. This proves the AI Node can produce sanitized operational status for the observer surface, but it is still not live agent telemetry.
+```
+
 Use this when explaining the current limitation:
 
 ```text
@@ -114,6 +120,7 @@ After Mac mini deploy, verify:
 ```bash
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/node-deploy.json'
 ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/current/manifest.json'
+ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/canary/latest.json'
 ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/'
 ssh rAIk.mini 'tail -n 80 /Users/raik./ai-stack/logs/phosphene-update.log | grep -E "phosphene snapshot preserved|phosphene snapshot restored"'
 ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
