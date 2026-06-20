@@ -28,10 +28,22 @@ AI Node wrapper source:
 ops/ai-node/generate-phosphene-canary-snapshot.sh
 ```
 
+LaunchAgent installer source:
+
+```text
+ops/ai-node/install-phosphene-canary-launchagent.sh
+```
+
 Installed AI Node wrapper:
 
 ```text
 /Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh
+```
+
+Installed LaunchAgent:
+
+```text
+/Users/raik./Library/LaunchAgents/com.raik.phosphene-canary.plist
 ```
 
 Package script:
@@ -97,6 +109,45 @@ DRY RUN: would publish 4 file(s)
 
 No files were published by this run.
 
+## Scheduled Canary
+
+The canary is installed as a macOS LaunchAgent:
+
+```text
+label=com.raik.phosphene-canary
+interval_seconds=900
+run_at_load=false
+program=/bin/bash /Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh
+stdout=/Users/raik./ai-stack/logs/phosphene-canary.log
+stderr=/Users/raik./ai-stack/logs/phosphene-canary.log
+```
+
+Install command:
+
+```bash
+/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh
+```
+
+LaunchAgent verification:
+
+```text
+state=not running
+runs=1
+last_exit_code=0
+run_interval=900 seconds
+```
+
+First scheduled/kickstarted run:
+
+```text
+pack=/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/ai-node-canary-20260620T222458Z
+status=succeeded
+publisher_dry_run=Validated 3 file(s), 0 failed; DRY RUN: would publish 4 file(s)
+redaction_grep=passed
+```
+
+The scheduled run did not publish and did not replace the served snapshot.
+
 ## Pack Metadata
 
 Manifest:
@@ -140,6 +191,14 @@ built_at=2026-06-20T21:54:28Z
 ```
 
 Served snapshot remained the existing Hermes operator-demo snapshot:
+
+```text
+served_snapshot_source=hermes
+served_snapshot_classification=synthetic_redacted
+served_snapshot_sha256=c70db94577f627e4179918282e0753aaf41fb3a5f3e8e7b51b2a9051d90859ee
+```
+
+After LaunchAgent installation, the served snapshot still remained:
 
 ```text
 served_snapshot_source=hermes

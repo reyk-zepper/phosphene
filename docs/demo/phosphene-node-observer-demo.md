@@ -119,6 +119,7 @@ ssh rAIk.mini 'tail -n 80 /Users/raik./ai-stack/logs/phosphene-update.log | grep
 ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.10/hermes-snapshot-2026-06-20-operator-demo'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh'
+ssh rAIk.mini 'launchctl print "gui/$(id -u)/com.raik.phosphene-canary" | grep -E "run interval|last exit code|runs"'
 ```
 
 ## Next Hermes Task
