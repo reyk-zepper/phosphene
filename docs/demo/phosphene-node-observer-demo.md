@@ -19,7 +19,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Select the fresh `Hermes Synthetic Handoffs 2026-06-19` gallery group.
 - Load the published redacted snapshot from `/snapshots/current/`.
 - Refresh the served snapshot through the AI Node publisher CLI after validation.
-- See the `Published AI Node Snapshot` panel with source, classification, manifest, validation, and no-live-telemetry status.
+- See the `Published AI Node Snapshot` panel with Hermes as the current published source, classification, manifest, validation, and no-live-telemetry status.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -116,14 +116,20 @@ ssh rAIk.mini 'curl -fsS http://127.0.0.1:5173/snapshots/current/manifest.json'
 ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/'
 ssh rAIk.mini 'tail -n 80 /Users/raik./ai-stack/logs/phosphene-update.log | grep -E "phosphene snapshot preserved|phosphene snapshot restored"'
 ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
-ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.8/hermes-snapshot-2026-06-20'
+ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.10/hermes-snapshot-2026-06-20-operator-demo'
 ```
 
 ## Next Hermes Task
 
-Hermes was asked to generate a fresh AI-Node-side redacted Boundary pack for the v0.1.10 operator demo, but the one-shot provider path returned HTTP 403. Before assigning another snapshot-generation task to Hermes, fix or reconfigure the Hermes provider path.
+Hermes can now be used again for AI-Node-side snapshot-generation tasks through the official CLI one-shot path:
 
-The host-side publication path is verified: a clearly labeled Codex host fallback pack can be validated, published through the AI Node helper, and displayed in the v0.1.10 `Published AI Node Snapshot` panel.
+```bash
+docker exec hermes /opt/hermes/.venv/bin/hermes -z "<task prompt>" --ignore-rules -t terminal
+```
+
+Do not use the direct `run_agent.py` path for this workflow unless it is repaired separately; after credential refresh that path still returned HTTP 403 with empty Provider/Model fields. Keep every Hermes output behind the host-side publisher dry-run before publication.
+
+The current published snapshot is a Hermes-origin v0.1.10 operator-demo pack generated on the AI Node, contract-normalized, validated, published through the AI Node helper, and displayed in the v0.1.10 `Published AI Node Snapshot` panel.
 
 Concrete request document:
 
