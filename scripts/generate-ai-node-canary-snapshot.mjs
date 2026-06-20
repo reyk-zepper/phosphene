@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import http from 'node:http';
 import https from 'node:https';
 import path from 'node:path';
@@ -30,6 +31,8 @@ function usage() {
     `  --service-url <url>        URL to probe without writing it to output (default: ${DEFAULT_SERVICE_URL})`,
     '  --service-http-code <code> Override probed service HTTP code, useful for tests',
     '  --observed-at <iso>        Observation timestamp (default: current UTC time)',
+    '  --latest-file <file>       Write a redacted latest marker without absolute paths',
+    '  --retention-count <count>  Keep only the newest matching ai-node-canary-* packs',
     '  --help                    Show this help',
   ].join('\n');
 }
@@ -41,6 +44,8 @@ function parseArgs(argv) {
     serviceUrl: DEFAULT_SERVICE_URL,
     serviceHttpCode: undefined,
     observedAt: new Date().toISOString(),
+    latestFile: '',
+    retentionCount: undefined,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -57,6 +62,8 @@ function parseArgs(argv) {
       || arg === '--service-url'
       || arg === '--service-http-code'
       || arg === '--observed-at'
+      || arg === '--latest-file'
+      || arg === '--retention-count'
     ) {
       const value = argv[index + 1];
       if (!value || value.startsWith('--')) {
@@ -67,6 +74,8 @@ function parseArgs(argv) {
       if (arg === '--service-url') options.serviceUrl = value;
       if (arg === '--service-http-code') options.serviceHttpCode = Number(value);
       if (arg === '--observed-at') options.observedAt = value;
+      if (arg === '--latest-file') options.latestFile = value;
+      if (arg === '--retention-count') options.retentionCount = Number(value);
       index += 1;
       continue;
     }
@@ -81,11 +90,18 @@ function parseArgs(argv) {
   if (options.serviceHttpCode !== undefined && !Number.isInteger(options.serviceHttpCode)) {
     throw new CliError('--service-http-code must be an integer', 2);
   }
+  if (
+    options.retentionCount !== undefined
+    && (!Number.isInteger(options.retentionCount) || options.retentionCount < 1)
+  ) {
+    throw new CliError('--retention-count must be an integer greater than 0', 2);
+  }
 
   return {
     ...options,
     target: path.resolve(options.target),
     serviceDir: path.resolve(options.serviceDir),
+    latestFile: options.latestFile ? path.resolve(options.latestFile) : '',
   };
 }
 
@@ -293,6 +309,61 @@ async function writeJson(filePath, value) {
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+async function sha256File(filePath) {
+  return `sha256:${createHash('sha256').update(await readFile(filePath)).digest('hex')}`;
+}
+
+function buildLatestMarker({
+  observedAt,
+  target,
+  status,
+  manifestSha256,
+  retentionCount,
+}) {
+  const latestPack = path.basename(target);
+  return {
+    schema_version: SCHEMA_VERSION,
+    updated_at: observedAt,
+    source_agent: 'ai_node_canary',
+    data_classification: 'redacted_operational_canary',
+    latest_pack: latestPack,
+    canary_status: status,
+    manifest_file: `${latestPack}/manifest.json`,
+    manifest_sha256: manifestSha256,
+    retention_count: retentionCount ?? null,
+  };
+}
+
+async function writeLatestMarker(options, { status, manifestPath }) {
+  if (!options.latestFile) return;
+
+  await mkdir(path.dirname(options.latestFile), { recursive: true });
+  await writeJson(options.latestFile, buildLatestMarker({
+    observedAt: options.observedAt,
+    target: options.target,
+    status,
+    manifestSha256: await sha256File(manifestPath),
+    retentionCount: options.retentionCount,
+  }));
+}
+
+async function pruneCanaryPacks({ root, keep, currentTarget }) {
+  if (keep === undefined) return;
+
+  const entries = await readdir(root, { withFileTypes: true });
+  const packs = entries
+    .filter((entry) => entry.isDirectory() && /^ai-node-canary-\d{8}T\d{6}Z$/.test(entry.name))
+    .map((entry) => entry.name)
+    .sort((left, right) => right.localeCompare(left));
+  const current = path.resolve(currentTarget);
+
+  await Promise.all(packs.slice(keep).map(async (pack) => {
+    const candidate = path.resolve(root, pack);
+    if (candidate === current) return;
+    await rm(candidate, { recursive: true, force: true });
+  }));
+}
+
 async function generate(options) {
   const httpCode = options.serviceHttpCode ?? await probeHttpCode(options.serviceUrl);
   const deployMarker = await readJson(path.join(options.serviceDir, 'dist/node-deploy.json'));
@@ -307,9 +378,16 @@ async function generate(options) {
   await rm(options.target, { recursive: true, force: true });
   await mkdir(options.target, { recursive: true });
   await writeJson(path.join(options.target, TRACE_FILE), trace);
-  await writeJson(path.join(options.target, 'manifest.json'), buildManifest(options.observedAt));
+  const manifestPath = path.join(options.target, 'manifest.json');
+  await writeJson(manifestPath, buildManifest(options.observedAt));
   await writeJson(path.join(options.target, 'validation-report.json'), buildValidationReport());
   await writeFile(path.join(options.target, 'README.md'), buildReadme({ observedAt: options.observedAt }));
+  await writeLatestMarker(options, { status: trace.metadata.status, manifestPath });
+  await pruneCanaryPacks({
+    root: options.latestFile ? path.dirname(options.latestFile) : path.dirname(options.target),
+    keep: options.retentionCount,
+    currentTarget: options.target,
+  });
 
   return { target: options.target, status: trace.metadata.status };
 }

@@ -64,8 +64,10 @@ The wrapper:
 
 1. generates a pack below `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/`
 2. runs `/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run <pack>`
-3. does not publish
-4. does not deploy
+3. updates `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json`
+4. keeps the newest 48 `ai-node-canary-*` packs by default
+5. does not publish
+6. does not deploy
 
 To generate without the publisher dry-run:
 
@@ -120,6 +122,8 @@ run_at_load=false
 program=/bin/bash /Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh
 stdout=/Users/raik./ai-stack/logs/phosphene-canary.log
 stderr=/Users/raik./ai-stack/logs/phosphene-canary.log
+latest_marker=/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json
+retention_count=48
 ```
 
 Install command:
@@ -147,6 +151,30 @@ redaction_grep=passed
 ```
 
 The scheduled run did not publish and did not replace the served snapshot.
+
+## Latest Marker
+
+Default marker:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json
+```
+
+The marker is intended as the future stable read point for Phosphene UI status work. It contains only redacted metadata:
+
+```text
+schema_version
+updated_at
+source_agent
+data_classification
+latest_pack
+canary_status
+manifest_file
+manifest_sha256
+retention_count
+```
+
+It must not contain absolute AI Node paths, private URLs, service URLs, credentials, raw provider IDs, emails, or customer/provider data.
 
 ## Pack Metadata
 

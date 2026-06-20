@@ -123,6 +123,14 @@ The canary writes a redacted Boundary pack below:
 
 It observes only sanitized operational markers: Phosphene service HTTP status class, deployed `node-deploy.json`, and the published snapshot manifest marker. It runs the host publisher in `--dry-run` mode by default and does not publish.
 
+The canary also maintains a redacted latest marker:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json
+```
+
+The marker contains only the latest canary pack name, status, manifest file reference, and manifest hash. It must not contain absolute AI Node paths, private URLs, credentials, provider IDs, or service URLs. The scheduled wrapper keeps the newest 48 `ai-node-canary-*` packs by default to prevent unbounded growth.
+
 Current v0.1.5 Hermes request document:
 
 ```text

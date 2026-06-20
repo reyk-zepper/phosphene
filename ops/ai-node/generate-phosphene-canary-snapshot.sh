@@ -5,6 +5,8 @@ AI_STACK_ROOT="${AI_STACK_ROOT:-/Users/raik./ai-stack}"
 SERVICE_DIR="${PHOSPHENE_SERVICE_DIR:-$AI_STACK_ROOT/services/phosphene}"
 OUTPUT_ROOT="${PHOSPHENE_CANARY_OUTPUT_ROOT:-$AI_STACK_ROOT/data/hermes/home/phosphene-handoffs/boundary-canary}"
 PUBLISH_HELPER="${PHOSPHENE_PUBLISH_HELPER:-$AI_STACK_ROOT/scripts/publish-phosphene-snapshot.sh}"
+LATEST_FILE="${PHOSPHENE_CANARY_LATEST_FILE:-$OUTPUT_ROOT/latest.json}"
+RETENTION_COUNT="${PHOSPHENE_CANARY_RETENTION_COUNT:-48}"
 RUN_DRY_RUN=1
 TARGET=""
 
@@ -19,6 +21,11 @@ Default target:
 
 By default the script also runs the snapshot publisher in --dry-run mode.
 It never publishes or deploys the generated pack.
+
+The script updates:
+  $LATEST_FILE
+
+Retention keeps the newest $RETENTION_COUNT ai-node-canary-* packs.
 USAGE
 }
 
@@ -63,7 +70,9 @@ mkdir -p "$(dirname "$TARGET")"
 cd "$SERVICE_DIR"
 node scripts/generate-ai-node-canary-snapshot.mjs \
   --target "$TARGET" \
-  --service-dir "$SERVICE_DIR"
+  --service-dir "$SERVICE_DIR" \
+  --latest-file "$LATEST_FILE" \
+  --retention-count "$RETENTION_COUNT"
 
 if [ "$RUN_DRY_RUN" -eq 1 ]; then
   [ -x "$PUBLISH_HELPER" ] || {
