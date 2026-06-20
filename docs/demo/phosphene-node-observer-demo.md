@@ -20,6 +20,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Load the published redacted snapshot from `/snapshots/current/`.
 - Refresh the served snapshot through the AI Node publisher CLI after validation.
 - See the `Published AI Node Snapshot` panel with Hermes as the current published source, classification, manifest, validation, and no-live-telemetry status.
+- Generate a redacted AI Node operational canary pack and verify it through the publisher dry-run.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -117,6 +118,7 @@ ssh rAIk.mini 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5173/
 ssh rAIk.mini 'tail -n 80 /Users/raik./ai-stack/logs/phosphene-update.log | grep -E "phosphene snapshot preserved|phosphene snapshot restored"'
 ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.10/hermes-snapshot-2026-06-20-operator-demo'
+ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh'
 ```
 
 ## Next Hermes Task
@@ -149,4 +151,5 @@ docs/product/phosphene-hermes-boundary-handoff-2026-06-19.md
 docs/product/phosphene-snapshot-publisher-handoff-2026-06-20.md
 docs/product/phosphene-snapshot-operator-demo-handoff-2026-06-20.md
 docs/product/phosphene-hermes-contract-check-handoff-2026-06-20.md
+docs/product/phosphene-ai-node-canary-handoff-2026-06-20.md
 ```

@@ -109,6 +109,20 @@ ops/ai-node/update-phosphene.sh
 
 The deploy script preserves the current published `dist/snapshots/current/` directory before the Phosphene build and restores it after the build. This keeps the latest validated Hermes-origin snapshot available across normal Phosphene app deploys.
 
+AI Node operational canary after the first adapter-canary slice:
+
+```bash
+/Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh
+```
+
+The canary writes a redacted Boundary pack below:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-canary/
+```
+
+It observes only sanitized operational markers: Phosphene service HTTP status class, deployed `node-deploy.json`, and the published snapshot manifest marker. It runs the host publisher in `--dry-run` mode by default and does not publish.
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -172,7 +186,7 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: planned.
+Status: planned. A first operational canary exists, but it observes only Phosphene service and snapshot health markers, not live Hermes/AAG/OpenClaw/Sentinel agent events.
 
 ## Security Rules
 

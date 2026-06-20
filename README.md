@@ -56,6 +56,7 @@ Currently working:
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
+- CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - AI Node deploy helper preserves the latest published `dist/snapshots/current` across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -120,6 +121,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm lint` | Run ESLint |
 | `pnpm validate:traces -- <paths>` | Validate Boundary trace fixtures plus local manifest/report support files |
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Validate and atomically publish a redacted Boundary pack into a served snapshot directory |
+| `pnpm generate:canary -- --target <dir>` | Generate a redacted AI Node operational canary Boundary pack |
 | `pnpm format` | Format with Prettier |
 
 ### Design language — "Bioluminescent Dark"
@@ -221,6 +223,7 @@ Funktioniert bereits:
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
+- CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -285,6 +288,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm lint` | ESLint ausführen |
 | `pnpm validate:traces -- <paths>` | Boundary-Trace-Fixtures plus lokale Manifest-/Report-Support-Dateien validieren |
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Redigierten Boundary Pack validieren und atomar in einen served Snapshot-Pfad publizieren |
+| `pnpm generate:canary -- --target <dir>` | Redigierten AI-Node-Operational-Canary-Boundary-Pack erzeugen |
 | `pnpm format` | Mit Prettier formatieren |
 
 ### Design-Sprache — "Bioluminescent Dark"
