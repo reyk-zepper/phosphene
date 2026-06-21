@@ -1,5 +1,6 @@
 import type { LLMAdapter, ProviderId } from './types';
 import { claudeAdapter } from './claude';
+import { geminiAdapter } from './gemini';
 import { openaiAdapter } from './openai';
 import { ollamaAdapter } from './ollama';
 
@@ -10,7 +11,7 @@ export type { OllamaReachability, OllamaModelSummary } from './ollama';
 export const ADAPTERS: Record<ProviderId, LLMAdapter | null> = {
   anthropic: claudeAdapter,
   openai: openaiAdapter,
-  google: null,
+  google: geminiAdapter,
   ollama: ollamaAdapter,
   demo: null,
 };

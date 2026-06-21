@@ -18,6 +18,7 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
   const setDefaultModel = useSettingsStore((s) => s.setDefaultModel);
   const hasAnthropicKey = useSettingsStore((s) => Boolean(s.encodedKeys.anthropic));
   const hasOpenAIKey = useSettingsStore((s) => Boolean(s.encodedKeys.openai));
+  const hasGoogleKey = useSettingsStore((s) => Boolean(s.encodedKeys.google));
 
   const ollama = useOllamaStatus();
   const ref = useRef<HTMLDivElement>(null);
@@ -45,6 +46,7 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
 
   const claude = ADAPTERS.anthropic;
   const openai = ADAPTERS.openai;
+  const gemini = ADAPTERS.google;
   const ollamaAdapter: LLMAdapter | null = ADAPTERS.ollama;
 
   const ollamaModels: ModelIdentifier[] =
@@ -102,6 +104,49 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
             {(claude?.supportedModels ?? []).map((m) => {
               const active = current.provider === m.provider && current.model === m.model;
               const disabled = !hasAnthropicKey;
+              return (
+                <button
+                  key={`${m.provider}:${m.model}`}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => handleSelect(m)}
+                  className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+                >
+                  <span className="font-[family-name:var(--font-display)] text-[12px] text-[color:var(--text-primary)]">
+                    {m.displayName}
+                  </span>
+                  {active && (
+                    <Check size={12} className="text-[color:var(--glow-hypothesis)]" />
+                  )}
+                </button>
+              );
+            })}
+          </section>
+
+          <section className="border-t border-[color:var(--border-subtle)] px-2 py-2">
+            <header className="flex items-center justify-between px-2 py-1.5">
+              <div className="flex items-center gap-1.5">
+                <Sparkles size={11} className="text-[color:var(--glow-question)]" />
+                <span className="font-mono text-[10px] tracking-wider text-[color:var(--text-secondary)] uppercase">
+                  Gemini
+                </span>
+              </div>
+              {!hasGoogleKey && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenSettings();
+                  }}
+                  className="flex items-center gap-1 font-mono text-[10px] text-[color:var(--glow-analysis)] uppercase hover:text-[color:var(--glow-hypothesis)]"
+                >
+                  <KeyRound size={10} /> Add key
+                </button>
+              )}
+            </header>
+            {(gemini?.supportedModels ?? []).map((m) => {
+              const active = current.provider === m.provider && current.model === m.model;
+              const disabled = !hasGoogleKey;
               return (
                 <button
                   key={`${m.provider}:${m.model}`}

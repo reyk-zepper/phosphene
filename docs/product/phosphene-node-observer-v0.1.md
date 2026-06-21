@@ -175,6 +175,12 @@ v0.1.18 adds OpenAI Responses support:
 - OpenAI SSE events are normalized into Phosphene `ReasoningChunk` values for text, reasoning summaries, completion, and API errors.
 - The model picker exposes OpenAI o-series/GPT options when an OpenAI key is stored locally in the API Keys modal.
 
+v0.1.19 adds Gemini streaming support:
+
+- A browser-side Gemini adapter calls `streamGenerateContent` with `alt=sse`, `x-goog-api-key`, and `thinkingConfig.includeThoughts`.
+- Gemini SSE parts are normalized into Phosphene `ReasoningChunk` values by mapping `part.thought` to thinking chunks and normal text parts to answer chunks.
+- The model picker exposes Gemini thinking-capable models when a Gemini key is stored locally in the API Keys modal.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -190,6 +196,7 @@ v0.1.18 adds OpenAI Responses support:
 - Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
 - Reasoning Lab can stream OpenAI Responses output and reasoning summaries through the same graph builder used by Claude/Ollama.
+- Reasoning Lab can stream Gemini answer and thought-summary parts through the same graph builder used by Claude/OpenAI/Ollama.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
 
 ## Security/redaction rules
@@ -234,6 +241,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.16 exposes client-local session history with prompt previews, graph restore, bounded retention, and secret-like content rejection.
 - v0.1.17 exposes four curated safe demo prompts and validates demo graph metadata.
 - v0.1.18 exposes OpenAI Responses streaming, model selection, local key storage, and adapter error tests.
+- v0.1.19 exposes Gemini streaming, thought-summary parsing, model selection, local key storage, and adapter error tests.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

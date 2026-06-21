@@ -8,7 +8,7 @@ interface Props {
   onClose: () => void;
 }
 
-type KeyProvider = 'anthropic' | 'openai';
+type KeyProvider = 'anthropic' | 'openai' | 'google';
 
 interface KeyProviderConfig {
   id: KeyProvider;
@@ -33,21 +33,31 @@ const KEY_PROVIDERS: KeyProviderConfig[] = [
     format: 'Expected format: sk-...',
     href: 'https://platform.openai.com/api-keys',
   },
+  {
+    id: 'google',
+    label: 'Google Gemini',
+    placeholder: 'AIza...',
+    format: 'Expected a Gemini API key with at least 20 characters.',
+    href: 'https://aistudio.google.com/apikey',
+  },
 ];
 
 export function ApiKeyModal({ open, onClose }: Props) {
   const existingAnthropic = useSettingsStore((s) => s.getApiKey('anthropic'));
   const existingOpenAI = useSettingsStore((s) => s.getApiKey('openai'));
+  const existingGoogle = useSettingsStore((s) => s.getApiKey('google'));
   const setKey = useSettingsStore((s) => s.setApiKey);
   const clearKey = useSettingsStore((s) => s.clearApiKey);
 
   const [drafts, setDrafts] = useState<Record<KeyProvider, string>>({
     anthropic: '',
     openai: '',
+    google: '',
   });
   const [touched, setTouched] = useState<Record<KeyProvider, boolean>>({
     anthropic: false,
     openai: false,
+    google: false,
   });
 
   useEffect(() => {
@@ -55,14 +65,16 @@ export function ApiKeyModal({ open, onClose }: Props) {
       setDrafts({
         anthropic: existingAnthropic ?? '',
         openai: existingOpenAI ?? '',
+        google: existingGoogle ?? '',
       });
-      setTouched({ anthropic: false, openai: false });
+      setTouched({ anthropic: false, openai: false, google: false });
     }
-  }, [open, existingAnthropic, existingOpenAI]);
+  }, [open, existingAnthropic, existingOpenAI, existingGoogle]);
 
   const existingKeys: Record<KeyProvider, string | null> = {
     anthropic: existingAnthropic,
     openai: existingOpenAI,
+    google: existingGoogle,
   };
 
   const handleSave = (provider: KeyProvider) => {
@@ -224,5 +236,6 @@ export function ApiKeyModal({ open, onClose }: Props) {
 
 function isValidKey(provider: KeyProvider, key: string): boolean {
   if (provider === 'anthropic') return key.startsWith('sk-ant-') && key.length > 20;
-  return key.startsWith('sk-') && key.length > 20;
+  if (provider === 'openai') return key.startsWith('sk-') && key.length > 20;
+  return key.length >= 20;
 }

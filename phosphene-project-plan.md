@@ -320,8 +320,8 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [ ] Side-by-Side-Vergleich (gleicher Prompt, zwei Modelle)
 - [x] Reasoning-Heatmap (wo verbringt das Modell die meiste "Denkzeit"?)
 - [x] Shareable Graphs (URL-basiert)
-- [ ] Gemini Adapter
-- [ ] Ollama/Local Adapter
+- [x] Gemini Adapter
+- [x] Ollama/Local Adapter
 - [x] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"
 - [x] Graph-Comparison-Foundation: Metrik-, Confidence- und Node-Typ-Deltas fuer Same-Prompt-Runs
 - [x] Reasoning-Stats Dashboard
