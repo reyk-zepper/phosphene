@@ -386,6 +386,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.37 exposes client-local collaborative annotation bundles through a Reasoning Lab panel, browser-local persistence, graph/node review metadata, and guarded JSON import/export.
 - v0.1.38 exposes client-local Constitution Mode through default/custom rule definitions, browser-local persistence, deterministic graph evaluation, and visible pass/fail rule summaries.
 - v0.1.39 expands the API-key-free Reasoning Lab demo set to five curated graphs with an answer-review Constitution-check scenario.
+- v0.1.40 keeps Reasoning Lab and Node Observer minimally viewable on mobile by wrapping the top shell, hiding nonessential tagline copy, and capping the control overlay to a scrollable mobile sheet.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

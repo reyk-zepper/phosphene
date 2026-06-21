@@ -268,9 +268,9 @@ export function App() {
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden">
-      <header className="pointer-events-none absolute top-0 right-0 left-0 z-10 px-6 pt-5">
-        <div className="pointer-events-auto mb-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+      <header className="pointer-events-auto absolute top-0 right-0 left-0 z-30 max-h-[62vh] overflow-y-auto overscroll-contain px-4 pt-4 pb-2 sm:pointer-events-none sm:z-10 sm:max-h-none sm:overflow-visible sm:px-6 sm:pt-5 sm:pb-0">
+        <div className="pointer-events-auto mb-3 flex flex-wrap items-center justify-between gap-2 sm:mb-4 sm:gap-4">
+          <div className="flex min-w-0 items-center gap-2">
             <span
               className="h-2.5 w-2.5 rounded-full"
               style={{
@@ -282,12 +282,12 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.39
+              v0.1.40
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <span className="hidden font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase lg:inline">
               See how AI thinks
             </span>
             <button
