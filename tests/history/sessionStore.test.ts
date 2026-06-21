@@ -53,6 +53,45 @@ describe('session store history', () => {
     expect(useSessionStore.getState().history).toEqual([]);
   });
 
+  it('imports a portable session bundle into the active graph and local history', async () => {
+    const { createPortableSessionBundle } = await import('@/core/history/sessionBundle');
+    const { useSessionStore } = await import('@/core/store/sessionStore');
+    const bundle = createPortableSessionBundle(DEMO_GRAPH, {
+      exportedAt: new Date('2026-06-21T20:15:00Z'),
+    });
+
+    useSessionStore.getState().setError('stale error');
+    useSessionStore.getState().setComparisonGraph(DEMO_COMPARISON_GRAPH);
+    useSessionStore.getState().selectNode('n3');
+
+    const result = useSessionStore.getState().importPortableSessionBundle(JSON.stringify(bundle), { now: 3_000 });
+
+    expect(result.status).toBe('imported');
+    expect(useSessionStore.getState().currentGraph).toEqual(DEMO_GRAPH);
+    expect(useSessionStore.getState().comparisonGraph).toBeNull();
+    expect(useSessionStore.getState().selectedNodeId).toBeNull();
+    expect(useSessionStore.getState().error).toBeNull();
+    expect(useSessionStore.getState().history[0]).toMatchObject({
+      graphId: DEMO_GRAPH.id,
+      updatedAt: 3_000,
+    });
+  });
+
+  it('keeps the current graph unchanged when a portable session bundle is blocked', async () => {
+    const { useSessionStore } = await import('@/core/store/sessionStore');
+
+    useSessionStore.getState().setGraph(DEMO_GRAPH);
+
+    const result = useSessionStore.getState().importPortableSessionBundle('{');
+
+    expect(result).toMatchObject({
+      status: 'blocked',
+      errors: ['Session bundle is not valid JSON.'],
+    });
+    expect(useSessionStore.getState().currentGraph).toEqual(DEMO_GRAPH);
+    expect(useSessionStore.getState().history).toEqual([]);
+  });
+
   it('tracks which graph owns the selected node in comparison mode', async () => {
     const { useSessionStore } = await import('@/core/store/sessionStore');
 

@@ -64,6 +64,7 @@ Currently working:
 - Side-by-side graph comparison stage for same-prompt primary and comparison runs
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
+- Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
 - Prompt input with Anthropic/OpenAI/Gemini/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, and API key modal
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
@@ -181,7 +182,7 @@ phosphene/
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
 - **v0.3** — AI-node live adapters; generic, Hermes, and multi-service marker adapters ✅; deeper side-effect-aware adapters remain
-- **v0.4** — Hosted/portable session workflows
+- **v0.4** — Portable session bundles ✅; hosted session workflows remain
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
 ### Contributing
@@ -245,6 +246,7 @@ Funktioniert bereits:
 - Side-by-side-Graph-Vergleich fuer Same-Prompt-Primary- und Vergleichslaeufe
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
+- Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
 - Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
@@ -362,7 +364,7 @@ phosphene/
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes- und Multi-Service-Marker-Adapter ✅; tiefere Side-Effect-Adapter offen
-- **v0.4** — Gehostete/portable Session-Workflows
+- **v0.4** — Portable Session-Bundles ✅; gehostete Session-Workflows offen
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 
 ### Mitwirken

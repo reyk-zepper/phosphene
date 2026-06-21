@@ -1,4 +1,4 @@
-export type GraphExportFormat = 'svg' | 'png';
+export type GraphExportFormat = 'svg' | 'png' | 'json';
 
 export const GRAPH_EXPORT_STYLE = `
 :root {

@@ -5,6 +5,10 @@ import {
   upsertSessionHistory,
   type SessionHistoryEntry,
 } from '@/core/history/sessionHistory';
+import {
+  parsePortableSessionBundle,
+  type PortableSessionImportResult,
+} from '@/core/history/sessionBundle';
 import type { ReasoningGraph } from '@/core/parser/types';
 
 interface SessionState {
@@ -28,6 +32,7 @@ interface SessionActions {
   setError: (error: string | null) => void;
   setComparisonError: (error: string | null) => void;
   rememberGraph: (graph: ReasoningGraph) => void;
+  importPortableSessionBundle: (input: string, options?: { now?: number }) => PortableSessionImportResult;
   restoreHistoryEntry: (id: string) => void;
   clearHistory: () => void;
   reset: () => void;
@@ -85,6 +90,22 @@ export const useSessionStore = create<SessionState & SessionActions>()(
         set((state) => ({
           history: upsertSessionHistory(state.history, entry),
         }));
+      },
+      importPortableSessionBundle: (input, options) => {
+        const result = parsePortableSessionBundle(input, options);
+        if (result.status !== 'imported') return result;
+        set((state) => ({
+          currentGraph: result.graph,
+          comparisonGraph: null,
+          selectedNodeId: null,
+          selectedGraphId: null,
+          error: null,
+          comparisonError: null,
+          isStreaming: false,
+          isComparing: false,
+          history: upsertSessionHistory(state.history, result.historyEntry),
+        }));
+        return result;
       },
       restoreHistoryEntry: (id) => {
         const entry = get().history.find((item) => item.id === id);

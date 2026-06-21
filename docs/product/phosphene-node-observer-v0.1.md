@@ -212,6 +212,13 @@ v0.1.24 adds the multi-service live adapter suite:
 - The AI Node wrapper syncs the pack through the same `/snapshots/live/latest.json` contract used by the generic and Hermes adapters.
 - The generator and tests prevent raw logs, config values, prompts, host paths, private URLs, credentials, provider payloads, Gmail message content, Workspace document content, and user content from being emitted.
 
+v0.1.25 adds portable Reasoning Lab session bundles:
+
+- A reusable portable-session core writes versioned local JSON bundles with `schema_version: "phosphene.session.v0.1.25"`.
+- Bundle export uses the existing Session History safety check and refuses obvious secret-like prompt or graph content.
+- Bundle import validates schema, source, classification, graph shape, and secret-like content before replacing the active graph and adding it to local history.
+- The Session History panel exposes compact icon controls for exporting the active graph and importing a local JSON session bundle without storing content in the URL or contacting a server.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -225,7 +232,7 @@ v0.1.24 adds the multi-service live adapter suite:
 - Graph canvas renders event order and parent/child relationships.
 - Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
-- Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions.
+- Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions plus portable JSON export/import controls.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
 - Reasoning Lab shows a Live Compare control for running the active prompt against a second configured model.
 - Reasoning Lab shows two graph canvases side by side when a same-prompt comparison graph is available.
@@ -281,6 +288,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.22 exposes redacted near-live AI Node adapter loading from `/snapshots/live/latest.json`, AI Node generator/wrapper support, deployment sync, and no-raw-telemetry UI boundaries.
 - v0.1.23 exposes a redacted Hermes live-adapter generator and AI Node wrapper that publish Hermes operational markers through the shared `/snapshots/live/` boundary without leaking Hermes file content.
 - v0.1.24 exposes a redacted multi-service live-adapter generator and AI Node wrapper for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace marker traces through the shared `/snapshots/live/` boundary without leaking service file content.
+- v0.1.25 exposes portable Reasoning Lab session JSON export/import with schema validation, graph-shape validation, and secret-like-content rejection.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
