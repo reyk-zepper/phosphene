@@ -105,6 +105,10 @@ export function useStreaming() {
       }
       dirty = true;
       flushToStore();
+      const finalGraph = useSessionStore.getState().currentGraph;
+      if (finalGraph?.id === graphId) {
+        useSessionStore.getState().rememberGraph(finalGraph);
+      }
       useSessionStore.getState().setStreaming(false);
       abortRef.current = null;
     }

@@ -43,21 +43,21 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 ### MVP Feature-Set
 
 **Must Have (v0.1):**
-- [ ] Prompt-Input mit Model-Selektor (Claude, OpenAI)
-- [ ] Reasoning-Trace-Parser (Extended Thinking / CoT extrahieren)
-- [ ] Graph-Visualization: Reasoning als Baum/DAG
-- [ ] Node-Detail-Panel: Klick auf einen Node zeigt den Reasoning-Schritt
-- [ ] Live-Streaming: Graph baut sich auf während das Modell denkt
+- [x] Prompt-Input mit Model-Selektor (Anthropic/Ollama; OpenAI-Adapter spaeter)
+- [x] Reasoning-Trace-Parser (Extended Thinking / CoT heuristisch extrahieren)
+- [x] Graph-Visualization: Reasoning als Baum/DAG
+- [x] Node-Detail-Panel: Klick auf einen Node zeigt den Reasoning-Schritt
+- [x] Live-Streaming: Graph baut sich auf während das Modell denkt
 - [ ] 3-5 Demo-Prompts für sofortigen Wow-Effekt
-- [ ] Dark-Mode-First Design (passt zur "Phosphene"-Metapher)
+- [x] Dark-Mode-First Design (passt zur "Phosphene"-Metapher)
 - [x] Export: Screenshot/PNG des Graphen
 
 **Nice to Have (v0.2):**
 - [ ] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
 - [x] Reasoning-Stats: Token-Count, Tiefe, Verzweigungen, Confidence-Heatmap
 - [x] Shareable Links (Graph als URL)
-- [ ] Prompt-History / Session-Management
-- [ ] Keyboard-Shortcuts für Navigation
+- [x] Prompt-History / Session-Management
+- [x] Keyboard-Shortcuts für Navigation
 
 **Future (v0.3+, → Constitution-Bridge):**
 - [ ] Reasoning-Pattern-Library (häufige Denkmuster taggen)
@@ -292,26 +292,26 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 ### Phase 2: Live Connection (Wochen 4-6)
 **Ziel:** Echte API-Calls, Streaming, Live-Graph-Aufbau
 
-- [ ] API-Key-Management (localStorage, UI)
-- [ ] Claude Adapter (Extended Thinking)
+- [x] API-Key-Management (localStorage, UI)
+- [x] Claude Adapter (Extended Thinking)
 - [ ] OpenAI Adapter (o1/o3 Reasoning)
-- [ ] Streaming-Pipeline: API → Parser → Graph-State → Render
-- [ ] Live-Animation: Nodes erscheinen während Modell denkt
-- [ ] Reasoning-Parser v1 (heuristisch)
-- [ ] Node-Detail-Panel: Content, Stats, Position im Baum
-- [ ] Error-Handling: API-Fehler, Rate Limits, ungültige Keys
+- [x] Streaming-Pipeline: API → Parser → Graph-State → Render
+- [x] Live-Animation: Nodes erscheinen während Modell denkt
+- [x] Reasoning-Parser v1 (heuristisch)
+- [x] Node-Detail-Panel: Content, Stats, Position im Baum
+- [x] Error-Handling: API-Fehler, Rate Limits, ungültige Keys
 
 ### Phase 3: Polish & Launch (Wochen 7-10)
 **Ziel:** Demo-Ready, teilbar, GitHub-Launch
 
 - [ ] 5 kuratierte Demo-Prompts (kein API-Key nötig, pre-cached)
 - [x] Graph-Export (PNG, SVG)
-- [ ] Keyboard-Navigation
+- [x] Keyboard-Navigation
 - [ ] Performance-Optimierung (große Graphen)
 - [ ] Mobile-Responsive (mindestens viewable)
 - [ ] Landing Page (phosphene.dev)
 - [ ] README polieren: GIF-Demo, Badges, Quick Start
-- [ ] Open Source License (MIT)
+- [x] Open Source License (MIT)
 - [ ] Launch: HackerNews, Reddit r/MachineLearning, Twitter/X
 
 ### Phase 4: Differentiator Features (Wochen 11-16)

@@ -4,6 +4,7 @@ import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
 import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
 import { PromptInput } from '@/components/prompt/PromptInput';
+import { SessionHistoryPanel } from '@/components/history/SessionHistoryPanel';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { GraphComparisonPanel } from '@/components/graph/GraphComparisonPanel';
@@ -232,7 +233,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.15
+              v0.1.16
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -251,7 +252,10 @@ export function App() {
           </div>
         </div>
         {mode === 'reasoning' ? (
-          <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+          <div className="space-y-2">
+            <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+            <SessionHistoryPanel />
+          </div>
         ) : (
           <NodeObserverBar
             traces={observerTraces}

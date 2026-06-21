@@ -157,6 +157,12 @@ v0.1.15 adds Reasoning Lab stats:
 - Reasoning Lab shows confidence-band, depth-token, and token-hotspot bars so users can see where a graph spends most of its reasoning tokens.
 - Stats use graph node token counts for heatmap proportions and metadata totals for provider-level token summaries.
 
+v0.1.16 adds client-local session history:
+
+- A reusable session history core creates bounded prompt previews and local graph snapshots from safe `ReasoningGraph` objects.
+- The session store persists only history entries, not API keys or active stream state, and refuses obvious secret-like prompts or graph content.
+- Reasoning Lab shows a compact Session History panel for restoring recent local graph snapshots without serializing them into share URLs.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -169,6 +175,7 @@ v0.1.15 adds Reasoning Lab stats:
 - Graph canvas renders event order and parent/child relationships.
 - Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
+- Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
 
 ## Security/redaction rules
@@ -210,6 +217,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.13 exposes graph search for text, type, confidence, metadata, and mind-change/revision patterns.
 - v0.1.14 exposes graph comparison metrics, highlights, and node-type deltas for same-prompt Reasoning Lab demo runs.
 - v0.1.15 exposes reasoning stats, confidence bands, depth-token distribution, and token hotspots for active Reasoning Lab graphs.
+- v0.1.16 exposes client-local session history with prompt previews, graph restore, bounded retention, and secret-like content rejection.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
