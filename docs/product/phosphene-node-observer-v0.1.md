@@ -181,6 +181,12 @@ v0.1.19 adds Gemini streaming support:
 - Gemini SSE parts are normalized into Phosphene `ReasoningChunk` values by mapping `part.thought` to thinking chunks and normal text parts to answer chunks.
 - The model picker exposes Gemini thinking-capable models when a Gemini key is stored locally in the API Keys modal.
 
+v0.1.20 adds live same-prompt comparison:
+
+- A reusable live comparison runner sends the active graph prompt to a selected configured model and builds a secondary `ReasoningGraph`.
+- Reasoning Lab exposes a Live Compare control for choosing an available model, running the same prompt, cancelling a run, and surfacing comparison errors.
+- The existing Graph Compare panel now prefers the live secondary graph when present, while retaining the API-key-free demo comparison fallback.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -195,6 +201,7 @@ v0.1.19 adds Gemini streaming support:
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
 - Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
+- Reasoning Lab shows a Live Compare control for running the active prompt against a second configured model.
 - Reasoning Lab can stream OpenAI Responses output and reasoning summaries through the same graph builder used by Claude/Ollama.
 - Reasoning Lab can stream Gemini answer and thought-summary parts through the same graph builder used by Claude/OpenAI/Ollama.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
@@ -242,6 +249,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.17 exposes four curated safe demo prompts and validates demo graph metadata.
 - v0.1.18 exposes OpenAI Responses streaming, model selection, local key storage, and adapter error tests.
 - v0.1.19 exposes Gemini streaming, thought-summary parsing, model selection, local key storage, and adapter error tests.
+- v0.1.20 exposes live same-prompt comparison orchestration, cancellation UI, graph persistence, and runner tests.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

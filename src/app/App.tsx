@@ -9,6 +9,7 @@ import { SessionHistoryPanel } from '@/components/history/SessionHistoryPanel';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { GraphComparisonPanel } from '@/components/graph/GraphComparisonPanel';
+import { LiveComparisonControls } from '@/components/graph/LiveComparisonControls';
 import { GraphStatsPanel } from '@/components/graph/GraphStatsPanel';
 import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
@@ -35,6 +36,7 @@ function readInitialShareState(): ShareLinkState {
 
 export function App() {
   const graph = useSessionStore((s) => s.currentGraph);
+  const liveComparisonGraph = useSessionStore((s) => s.comparisonGraph);
   const setGraph = useSessionStore((s) => s.setGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
   const selectNode = useSessionStore((s) => s.selectNode);
@@ -111,10 +113,11 @@ export function App() {
   }, [graph?.id, mode, selectedNodeId, selectedTraceId]);
   const comparisonGraph = useMemo(() => {
     if (mode !== 'reasoning' || !graph) return null;
+    if (liveComparisonGraph && liveComparisonGraph.prompt === graph.prompt) return liveComparisonGraph;
     if (graph.id === DEMO_GRAPH.id) return DEMO_COMPARISON_GRAPH;
     if (graph.id === DEMO_COMPARISON_GRAPH.id) return DEMO_GRAPH;
     return null;
-  }, [graph, mode]);
+  }, [graph, liveComparisonGraph, mode]);
   useGraphNavigation();
 
   const handleImportTraceFiles = useCallback(async (files: File[]) => {
@@ -236,7 +239,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.19
+              v0.1.20
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -257,6 +260,7 @@ export function App() {
         {mode === 'reasoning' ? (
           <div className="space-y-2">
             <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+            <LiveComparisonControls />
             <DemoPromptGallery />
             <SessionHistoryPanel />
           </div>

@@ -59,6 +59,7 @@ Currently working:
 - Copyable share links for the active mode, graph/trace, and selected node
 - Graph search with text, type, confidence, and mind-change pattern queries
 - Graph comparison panel for same-prompt demo runs with metric, confidence, and node-type deltas
+- Live same-prompt comparison runner for configured Anthropic, OpenAI, Gemini, or Ollama models
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Prompt input with Anthropic/OpenAI/Gemini/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, and API key modal
@@ -172,8 +173,8 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
-- **v0.2** — Live multi-provider comparison
-- **v0.3** — Full side-by-side model comparison and adapter hardening
+- **v0.2** — Full side-by-side graph comparison and adapter hardening
+- **v0.3** — AI-node live adapters
 - **v0.4** — Hosted/portable session workflows
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
@@ -233,6 +234,7 @@ Funktioniert bereits:
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
 - Graph-Vergleichspanel fuer Same-Prompt-Demo-Runs mit Metrik-, Confidence- und Node-Typ-Deltas
+- Live-Same-Prompt-Vergleich fuer konfigurierte Anthropic-, OpenAI-, Gemini- oder Ollama-Modelle
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
@@ -346,8 +348,8 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
-- **v0.2** — Live-Multi-Provider-Vergleich
-- **v0.3** — Vollstaendiger Modell-Vergleich nebeneinander und Adapter-Haertung
+- **v0.2** — Vollstaendiger Side-by-side-Graph-Vergleich und Adapter-Haertung
+- **v0.3** — AI-Node-Live-Adapter
 - **v0.4** — Gehostete/portable Session-Workflows
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 

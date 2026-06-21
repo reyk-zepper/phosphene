@@ -53,7 +53,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 - [x] Export: Screenshot/PNG des Graphen
 
 **Nice to Have (v0.2):**
-- [ ] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
+- [x] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
 - [x] Reasoning-Stats: Token-Count, Tiefe, Verzweigungen, Confidence-Heatmap
 - [x] Shareable Links (Graph als URL)
 - [x] Prompt-History / Session-Management
