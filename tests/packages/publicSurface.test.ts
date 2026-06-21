@@ -49,11 +49,13 @@ describe('public parser and graph package surface', () => {
     expect(pkg.exports).toMatchObject({
       './parser': {
         types: './dist-types/packages/parser.d.ts',
-        default: './src/packages/parser.ts',
+        import: './dist-packages/parser.js',
+        default: './dist-packages/parser.js',
       },
       './graph': {
         types: './dist-types/packages/graph.d.ts',
-        default: './src/packages/graph.ts',
+        import: './dist-packages/graph.js',
+        default: './dist-packages/graph.js',
       },
     });
   });

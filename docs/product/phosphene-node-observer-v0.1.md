@@ -232,6 +232,12 @@ v0.1.27 adds a declaration-only package build for that surface:
 - Package export `types` paths now point to generated `dist-types/packages/*.d.ts` files while runtime defaults remain source-level.
 - Package-relevant parser/graph imports use relative module specifiers, and tests reject workspace-only `@/` aliases in generated declarations.
 
+v0.1.28 adds importable ESM package runtime artifacts:
+
+- `pnpm build:packages` now chains `tsc` declarations and a dedicated `vite.packages.config.ts` library build.
+- Package export `import` and `default` paths now point to generated `dist-packages/*.js` runtime files.
+- Tests dynamically import `dist-packages/parser.js` and `dist-packages/graph.js`, call parser/traversal primitives, and reject workspace-only aliases or copied public snapshot data in package output.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -304,6 +310,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.25 exposes portable Reasoning Lab session JSON export/import with schema validation, graph-shape validation, and secret-like-content rejection.
 - v0.1.26 exposes source-level `phosphene/parser` and `phosphene/graph` package entry points and keeps them independent from app, UI, stores, adapters, and demo constants.
 - v0.1.27 exposes `pnpm build:packages` for declaration-only parser/graph package artifacts and validates that generated declarations do not contain workspace-only aliases.
+- v0.1.28 exposes importable parser/graph ESM package artifacts under `dist-packages/` and validates runtime imports without copying public snapshot data.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

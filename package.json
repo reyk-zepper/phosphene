@@ -1,28 +1,31 @@
 {
   "name": "phosphene",
   "private": true,
-  "version": "0.1.27",
+  "version": "0.1.28",
   "type": "module",
   "description": "See how AI thinks. Open-source AI reasoning visualizer.",
   "exports": {
     ".": {
       "types": "./dist-types/packages/index.d.ts",
-      "default": "./src/packages/index.ts"
+      "import": "./dist-packages/index.js",
+      "default": "./dist-packages/index.js"
     },
     "./parser": {
       "types": "./dist-types/packages/parser.d.ts",
-      "default": "./src/packages/parser.ts"
+      "import": "./dist-packages/parser.js",
+      "default": "./dist-packages/parser.js"
     },
     "./graph": {
       "types": "./dist-types/packages/graph.d.ts",
-      "default": "./src/packages/graph.ts"
+      "import": "./dist-packages/graph.js",
+      "default": "./dist-packages/graph.js"
     }
   },
   "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:packages": "tsc -p tsconfig.packages.json",
+    "build:packages": "tsc -p tsconfig.packages.json && vite build --config vite.packages.config.ts",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
