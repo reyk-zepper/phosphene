@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { Download, FileImage, Share2 } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
@@ -11,13 +11,22 @@ import { layoutGraph, type LaidOutEdge } from '@/core/graph/layout';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 import { NodeTooltip } from './NodeTooltip';
 import { flattenGraph } from '@/constants/demoGraph';
-import type { ReasoningNode } from '@/core/parser/types';
+import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
 
 const NODE_RADIUS = 14;
 const EXPORT_BACKGROUND = '#0a0e17';
 
 interface GraphCanvasProps {
   shareUrl?: string;
+  graph?: ReasoningGraph | null;
+  selectedNodeId?: string | null;
+  onSelectNode?: (id: string | null) => void;
+  showControls?: boolean;
+  fitPadding?: {
+    top: number;
+    bottom: number;
+    side: number;
+  };
 }
 
 function edgePath(edge: LaidOutEdge): string {
@@ -30,13 +39,24 @@ function edgePath(edge: LaidOutEdge): string {
   return line(edge.points) ?? '';
 }
 
-export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
-  const graph = useSessionStore((s) => s.currentGraph);
-  const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
-  const selectNode = useSessionStore((s) => s.selectNode);
+export function GraphCanvas({
+  shareUrl,
+  graph: graphProp,
+  selectedNodeId: selectedNodeIdProp,
+  onSelectNode,
+  showControls = true,
+  fitPadding,
+}: GraphCanvasProps) {
+  const storeGraph = useSessionStore((s) => s.currentGraph);
+  const storeSelectedNodeId = useSessionStore((s) => s.selectedNodeId);
+  const storeSelectNode = useSessionStore((s) => s.selectNode);
+  const graph = graphProp === undefined ? storeGraph : graphProp;
+  const selectedNodeId = selectedNodeIdProp === undefined ? storeSelectedNodeId : selectedNodeIdProp;
+  const selectNode = onSelectNode ?? storeSelectNode;
 
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
+  const markerId = useStableSvgId('arrow', graph?.id);
 
   const [hoverNode, setHoverNode] = useState<ReasoningNode | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -150,9 +170,9 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
     svg.call(zoom);
 
     const bbox = svgRef.current.getBoundingClientRect();
-    const PAD_TOP = 160;
-    const PAD_BOTTOM = 80;
-    const PAD_SIDE = 60;
+    const PAD_TOP = fitPadding?.top ?? 160;
+    const PAD_BOTTOM = fitPadding?.bottom ?? 80;
+    const PAD_SIDE = fitPadding?.side ?? 60;
     const availW = Math.max(bbox.width - PAD_SIDE * 2, 1);
     const availH = Math.max(bbox.height - PAD_TOP - PAD_BOTTOM, 1);
     const scale = Math.min(
@@ -167,7 +187,7 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
     return () => {
       svg.on('.zoom', null);
     };
-  }, [layout]);
+  }, [fitPadding?.bottom, fitPadding?.side, fitPadding?.top, layout]);
 
   if (!graph || !layout) {
     return (
@@ -182,7 +202,7 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
       <svg ref={svgRef} className="graph-canvas h-full w-full">
         <defs>
           <marker
-            id="arrow"
+            id={markerId}
             viewBox="0 -5 10 10"
             refX="8"
             refY="0"
@@ -202,7 +222,7 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
                   key={`${e.from}-${e.to}`}
                   d={edgePath(e)}
                   className={`graph-edge ${active ? 'is-active' : ''}`}
-                  markerEnd="url(#arrow)"
+                  markerEnd={`url(#${markerId})`}
                 />
               );
             })}
@@ -271,36 +291,38 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
         <NodeTooltip node={hoverNode} x={tooltipPos.x} y={tooltipPos.y} />
       </svg>
 
-      <div className="pointer-events-auto absolute right-4 bottom-4 z-20 flex items-center gap-2 rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/85 p-1.5 shadow-[0_0_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        <button
-          type="button"
-          onClick={handleExportSvg}
-          title="Download SVG"
-          aria-label="Download graph as SVG"
-          className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-analysis)] hover:text-[color:var(--glow-analysis)]"
-        >
-          <Download size={15} />
-        </button>
-        <button
-          type="button"
-          onClick={handleExportPng}
-          title="Download PNG"
-          aria-label="Download graph as PNG"
-          className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-hypothesis)] hover:text-[color:var(--glow-hypothesis)]"
-        >
-          <FileImage size={15} />
-        </button>
-        <button
-          type="button"
-          onClick={handleCopyShareUrl}
-          title="Copy share link"
-          aria-label="Copy share link"
-          disabled={!shareUrl}
-          className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-decision)] hover:text-[color:var(--glow-decision)] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <Share2 size={15} />
-        </button>
-      </div>
+      {showControls && (
+        <div className="pointer-events-auto absolute right-4 bottom-4 z-20 flex items-center gap-2 rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/85 p-1.5 shadow-[0_0_24px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={handleExportSvg}
+            title="Download SVG"
+            aria-label="Download graph as SVG"
+            className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-analysis)] hover:text-[color:var(--glow-analysis)]"
+          >
+            <Download size={15} />
+          </button>
+          <button
+            type="button"
+            onClick={handleExportPng}
+            title="Download PNG"
+            aria-label="Download graph as PNG"
+            className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-hypothesis)] hover:text-[color:var(--glow-hypothesis)]"
+          >
+            <FileImage size={15} />
+          </button>
+          <button
+            type="button"
+            onClick={handleCopyShareUrl}
+            title="Copy share link"
+            aria-label="Copy share link"
+            disabled={!shareUrl}
+            className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-decision)] hover:text-[color:var(--glow-decision)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Share2 size={15} />
+          </button>
+        </div>
+      )}
 
       {(exportError || shareStatus) && (
         <div
@@ -313,6 +335,12 @@ export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
       )}
     </div>
   );
+}
+
+function useStableSvgId(prefix: string, seed?: string): string {
+  const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const safeSeed = seed?.replace(/[^a-zA-Z0-9_-]/g, '-');
+  return `${prefix}-${safeSeed ?? reactId}`;
 }
 
 function truncate(s: string, max: number): string {

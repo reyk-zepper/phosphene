@@ -27,10 +27,13 @@ const EVENT_FIELD_GROUPS = [
 ] as const;
 
 export function DetailPanel() {
-  const graph = useSessionStore((s) => s.currentGraph);
+  const currentGraph = useSessionStore((s) => s.currentGraph);
+  const comparisonGraph = useSessionStore((s) => s.comparisonGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
+  const selectedGraphId = useSessionStore((s) => s.selectedGraphId);
   const selectNode = useSessionStore((s) => s.selectNode);
   const [copied, setCopied] = useState(false);
+  const graph = selectedGraphId === comparisonGraph?.id ? comparisonGraph : currentGraph;
 
   const allNodes = useMemo(
     () => (graph ? flattenGraph(graph.rootNode) : []),
@@ -46,12 +49,12 @@ export function DetailPanel() {
   const nodeLabel = node ? (node.label ?? NODE_TYPE_CONFIG[node.type].label) : '';
 
   const goPrev = useCallback(() => {
-    if (nodeIndex > 0) selectNode(allNodes[nodeIndex - 1].id);
-  }, [nodeIndex, allNodes, selectNode]);
+    if (nodeIndex > 0) selectNode(allNodes[nodeIndex - 1].id, graph?.id);
+  }, [graph?.id, nodeIndex, allNodes, selectNode]);
 
   const goNext = useCallback(() => {
-    if (nodeIndex < allNodes.length - 1) selectNode(allNodes[nodeIndex + 1].id);
-  }, [nodeIndex, allNodes, selectNode]);
+    if (nodeIndex < allNodes.length - 1) selectNode(allNodes[nodeIndex + 1].id, graph?.id);
+  }, [graph?.id, nodeIndex, allNodes, selectNode]);
 
   const handleCopy = useCallback(async () => {
     if (!node) return;

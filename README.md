@@ -60,6 +60,7 @@ Currently working:
 - Graph search with text, type, confidence, and mind-change pattern queries
 - Graph comparison panel for same-prompt demo runs with metric, confidence, and node-type deltas
 - Live same-prompt comparison runner for configured Anthropic, OpenAI, Gemini, or Ollama models
+- Side-by-side graph comparison stage for same-prompt primary and comparison runs
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Prompt input with Anthropic/OpenAI/Gemini/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, and API key modal
@@ -76,7 +77,6 @@ Currently working:
 Not yet built:
 
 - Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
-- Full live side-by-side model comparison
 
 ### Tech stack
 
@@ -173,7 +173,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
-- **v0.2** — Full side-by-side graph comparison and adapter hardening
+- **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
 - **v0.3** — AI-node live adapters
 - **v0.4** — Hosted/portable session workflows
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
@@ -235,6 +235,7 @@ Funktioniert bereits:
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
 - Graph-Vergleichspanel fuer Same-Prompt-Demo-Runs mit Metrik-, Confidence- und Node-Typ-Deltas
 - Live-Same-Prompt-Vergleich fuer konfigurierte Anthropic-, OpenAI-, Gemini- oder Ollama-Modelle
+- Side-by-side-Graph-Vergleich fuer Same-Prompt-Primary- und Vergleichslaeufe
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
@@ -251,7 +252,6 @@ Funktioniert bereits:
 Noch nicht gebaut:
 
 - Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
-- Vollstaendiger Live-Modellvergleich nebeneinander
 
 ### Tech-Stack
 
@@ -348,7 +348,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
-- **v0.2** — Vollstaendiger Side-by-side-Graph-Vergleich und Adapter-Haertung
+- **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
 - **v0.3** — AI-Node-Live-Adapter
 - **v0.4** — Gehostete/portable Session-Workflows
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren

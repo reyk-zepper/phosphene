@@ -317,7 +317,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 ### Phase 4: Differentiator Features (Wochen 11-16)
 **Ziel:** Multi-Model, Community-Features
 
-- [ ] Side-by-Side-Vergleich (gleicher Prompt, zwei Modelle)
+- [x] Side-by-Side-Vergleich (gleicher Prompt, zwei Modelle)
 - [x] Reasoning-Heatmap (wo verbringt das Modell die meiste "Denkzeit"?)
 - [x] Shareable Graphs (URL-basiert)
 - [x] Gemini Adapter

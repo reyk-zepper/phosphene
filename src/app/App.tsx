@@ -9,6 +9,7 @@ import { SessionHistoryPanel } from '@/components/history/SessionHistoryPanel';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { GraphComparisonPanel } from '@/components/graph/GraphComparisonPanel';
+import { GraphSideBySideStage } from '@/components/graph/GraphSideBySideStage';
 import { LiveComparisonControls } from '@/components/graph/LiveComparisonControls';
 import { GraphStatsPanel } from '@/components/graph/GraphStatsPanel';
 import { DetailPanel } from '@/components/detail/DetailPanel';
@@ -39,6 +40,7 @@ export function App() {
   const liveComparisonGraph = useSessionStore((s) => s.comparisonGraph);
   const setGraph = useSessionStore((s) => s.setGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
+  const selectedGraphId = useSessionStore((s) => s.selectedGraphId);
   const selectNode = useSessionStore((s) => s.selectNode);
   const hasKey = useSettingsStore((s) =>
     Object.values(s.encodedKeys).some(Boolean)
@@ -108,9 +110,12 @@ export function App() {
       mode,
       traceId: mode === 'observer' ? selectedTraceId : undefined,
       graphId: mode === 'reasoning' ? graph?.id : undefined,
-      nodeId: selectedNodeId ?? undefined,
+      nodeId:
+        mode === 'reasoning'
+          ? (!selectedGraphId || selectedGraphId === graph?.id ? (selectedNodeId ?? undefined) : undefined)
+          : selectedNodeId ?? undefined,
     });
-  }, [graph?.id, mode, selectedNodeId, selectedTraceId]);
+  }, [graph?.id, mode, selectedGraphId, selectedNodeId, selectedTraceId]);
   const comparisonGraph = useMemo(() => {
     if (mode !== 'reasoning' || !graph) return null;
     if (liveComparisonGraph && liveComparisonGraph.prompt === graph.prompt) return liveComparisonGraph;
@@ -239,7 +244,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.20
+              v0.1.21
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -281,7 +286,15 @@ export function App() {
       </header>
 
       <main className="relative h-full w-full">
-        <GraphCanvas shareUrl={shareUrl} />
+        {mode === 'reasoning' && graph && comparisonGraph ? (
+          <GraphSideBySideStage
+            primaryGraph={graph}
+            comparisonGraph={comparisonGraph}
+            shareUrl={shareUrl}
+          />
+        ) : (
+          <GraphCanvas shareUrl={shareUrl} />
+        )}
       </main>
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-h-[calc(100vh-9rem)] max-w-[calc(100vw-2rem)] flex-col gap-3 overflow-y-auto pr-1 sm:flex">

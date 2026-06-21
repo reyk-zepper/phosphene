@@ -15,13 +15,14 @@ interface SessionState {
   error: string | null;
   comparisonError: string | null;
   selectedNodeId: string | null;
+  selectedGraphId: string | null;
   history: SessionHistoryEntry[];
 }
 
 interface SessionActions {
   setGraph: (graph: ReasoningGraph | null) => void;
   setComparisonGraph: (graph: ReasoningGraph | null) => void;
-  selectNode: (id: string | null) => void;
+  selectNode: (id: string | null, graphId?: string | null) => void;
   setStreaming: (streaming: boolean) => void;
   setComparing: (comparing: boolean) => void;
   setError: (error: string | null) => void;
@@ -40,6 +41,7 @@ const initialState: SessionState = {
   error: null,
   comparisonError: null,
   selectedNodeId: null,
+  selectedGraphId: null,
   history: [],
 };
 
@@ -51,15 +53,28 @@ const emptySessionState = {
   error: null,
   comparisonError: null,
   selectedNodeId: null,
+  selectedGraphId: null,
 };
 
 export const useSessionStore = create<SessionState & SessionActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      setGraph: (graph) => set({ currentGraph: graph, selectedNodeId: null }),
-      setComparisonGraph: (graph) => set({ comparisonGraph: graph }),
-      selectNode: (id) => set({ selectedNodeId: id }),
+      setGraph: (graph) => set({ currentGraph: graph, selectedNodeId: null, selectedGraphId: null }),
+      setComparisonGraph: (graph) =>
+        set((state) => {
+          const selectedComparisonGraph = state.selectedGraphId === state.comparisonGraph?.id;
+          return {
+            comparisonGraph: graph,
+            selectedNodeId: selectedComparisonGraph ? null : state.selectedNodeId,
+            selectedGraphId: selectedComparisonGraph ? null : state.selectedGraphId,
+          };
+        }),
+      selectNode: (id, graphId) =>
+        set((state) => ({
+          selectedNodeId: id,
+          selectedGraphId: id ? (graphId ?? state.currentGraph?.id ?? null) : null,
+        })),
       setStreaming: (streaming) => set({ isStreaming: streaming }),
       setComparing: (comparing) => set({ isComparing: comparing }),
       setError: (error) => set({ error }),
@@ -78,6 +93,7 @@ export const useSessionStore = create<SessionState & SessionActions>()(
           currentGraph: entry.graph,
           comparisonGraph: null,
           selectedNodeId: null,
+          selectedGraphId: null,
           error: null,
           comparisonError: null,
           isStreaming: false,

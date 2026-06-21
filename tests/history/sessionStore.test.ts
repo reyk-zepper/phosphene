@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DEMO_GRAPH } from '@/constants/demoGraph';
+import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH } from '@/constants/demoGraph';
 
 function createMemoryStorage(): Storage {
   const values = new Map<string, string>();
@@ -38,6 +38,7 @@ describe('session store history', () => {
     const restored = useSessionStore.getState();
     expect(restored.currentGraph).toEqual(DEMO_GRAPH);
     expect(restored.selectedNodeId).toBeNull();
+    expect(restored.selectedGraphId).toBeNull();
     expect(restored.error).toBeNull();
   });
 
@@ -50,5 +51,21 @@ describe('session store history', () => {
     });
 
     expect(useSessionStore.getState().history).toEqual([]);
+  });
+
+  it('tracks which graph owns the selected node in comparison mode', async () => {
+    const { useSessionStore } = await import('@/core/store/sessionStore');
+
+    useSessionStore.getState().setGraph(DEMO_GRAPH);
+    useSessionStore.getState().setComparisonGraph(DEMO_COMPARISON_GRAPH);
+    useSessionStore.getState().selectNode('o3', DEMO_COMPARISON_GRAPH.id);
+
+    expect(useSessionStore.getState().selectedNodeId).toBe('o3');
+    expect(useSessionStore.getState().selectedGraphId).toBe(DEMO_COMPARISON_GRAPH.id);
+
+    useSessionStore.getState().setComparisonGraph(null);
+
+    expect(useSessionStore.getState().selectedNodeId).toBeNull();
+    expect(useSessionStore.getState().selectedGraphId).toBeNull();
   });
 });

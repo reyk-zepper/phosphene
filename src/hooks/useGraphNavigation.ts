@@ -40,9 +40,12 @@ function allNodeIds(root: ReasoningNode): string[] {
 }
 
 export function useGraphNavigation() {
-  const graph = useSessionStore((s) => s.currentGraph);
+  const currentGraph = useSessionStore((s) => s.currentGraph);
+  const comparisonGraph = useSessionStore((s) => s.comparisonGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
+  const selectedGraphId = useSessionStore((s) => s.selectedGraphId);
   const selectNode = useSessionStore((s) => s.selectNode);
+  const graph = selectedGraphId === comparisonGraph?.id ? comparisonGraph : currentGraph;
 
   const navMap = useMemo(
     () => (graph ? buildNavMap(graph.rootNode) : null),
@@ -59,7 +62,7 @@ export function useGraphNavigation() {
       if (!navMap || nodeIds.length === 0) return;
 
       if (!selectedNodeId) {
-        selectNode(nodeIds[0]);
+        selectNode(nodeIds[0], graph?.id);
         return;
       }
 
@@ -69,27 +72,27 @@ export function useGraphNavigation() {
       switch (direction) {
         case 'up': {
           if (entry.siblingIndex > 0) {
-            selectNode(entry.siblings[entry.siblingIndex - 1]);
+            selectNode(entry.siblings[entry.siblingIndex - 1], graph?.id);
           }
           break;
         }
         case 'down': {
           if (entry.siblingIndex < entry.siblings.length - 1) {
-            selectNode(entry.siblings[entry.siblingIndex + 1]);
+            selectNode(entry.siblings[entry.siblingIndex + 1], graph?.id);
           }
           break;
         }
         case 'left': {
-          if (entry.parent) selectNode(entry.parent);
+          if (entry.parent) selectNode(entry.parent, graph?.id);
           break;
         }
         case 'right': {
-          if (entry.children.length > 0) selectNode(entry.children[0]);
+          if (entry.children.length > 0) selectNode(entry.children[0], graph?.id);
           break;
         }
       }
     },
-    [navMap, nodeIds, selectedNodeId, selectNode]
+    [graph?.id, navMap, nodeIds, selectedNodeId, selectNode]
   );
 
   useEffect(() => {
@@ -120,7 +123,7 @@ export function useGraphNavigation() {
           break;
         case 'Enter':
           if (!selectedNodeId && nodeIds.length > 0) {
-            selectNode(nodeIds[0]);
+            selectNode(nodeIds[0], graph?.id);
           }
           break;
         case 'Escape':
@@ -135,5 +138,5 @@ export function useGraphNavigation() {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [navigate, selectedNodeId, selectNode, nodeIds]);
+  }, [graph?.id, navigate, selectedNodeId, selectNode, nodeIds]);
 }
