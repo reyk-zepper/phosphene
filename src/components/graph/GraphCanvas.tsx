@@ -10,7 +10,6 @@ import {
 import { layoutGraph, type LaidOutEdge } from '@/core/graph/layout';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 import { NodeTooltip } from './NodeTooltip';
-import { flattenGraph } from '@/core/graph/traversal';
 import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
 
 const NODE_RADIUS = 14;
@@ -63,12 +62,14 @@ export function GraphCanvas({
   const [exportError, setExportError] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
 
+  const layout = useMemo(() => (graph ? layoutGraph(graph) : null), [graph]);
+
   const nodeMap = useMemo(() => {
-    if (!graph) return new Map<string, ReasoningNode>();
+    if (!layout) return new Map<string, ReasoningNode>();
     const m = new Map<string, ReasoningNode>();
-    for (const n of flattenGraph(graph.rootNode)) m.set(n.id, n);
+    for (const laidOutNode of layout.nodes) m.set(laidOutNode.node.id, laidOutNode.node);
     return m;
-  }, [graph]);
+  }, [layout]);
 
   const handleNodeHover = useCallback(
     (e: React.MouseEvent, nodeId: string) => {
@@ -82,8 +83,6 @@ export function GraphCanvas({
   );
 
   const handleNodeLeave = useCallback(() => setHoverNode(null), []);
-
-  const layout = useMemo(() => (graph ? layoutGraph(graph) : null), [graph]);
 
   const createExportSnapshot = useCallback(() => {
     if (!svgRef.current || !graph) return null;

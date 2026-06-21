@@ -7,22 +7,41 @@ export interface GraphEdge {
 
 export function flattenGraph(root: ReasoningNode): ReasoningNode[] {
   const nodes: ReasoningNode[] = [];
-  const walk = (node: ReasoningNode) => {
+  const stack = [root];
+
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (!node) continue;
     nodes.push(node);
-    node.children.forEach(walk);
-  };
-  walk(root);
+
+    for (let index = node.children.length - 1; index >= 0; index -= 1) {
+      stack.push(node.children[index]);
+    }
+  }
+
   return nodes;
 }
 
 export function collectGraphEdges(root: ReasoningNode): GraphEdge[] {
   const edges: GraphEdge[] = [];
-  const walk = (node: ReasoningNode) => {
-    for (const child of node.children) {
-      edges.push({ from: node.id, to: child.id });
-      walk(child);
+  const stack: Array<{ node: ReasoningNode; nextChildIndex: number }> = [
+    { node: root, nextChildIndex: 0 },
+  ];
+
+  while (stack.length > 0) {
+    const frame = stack.at(-1);
+    if (!frame) break;
+
+    const child = frame.node.children[frame.nextChildIndex];
+    if (!child) {
+      stack.pop();
+      continue;
     }
-  };
-  walk(root);
+
+    frame.nextChildIndex += 1;
+    edges.push({ from: frame.node.id, to: child.id });
+    stack.push({ node: child, nextChildIndex: 0 });
+  }
+
   return edges;
 }
