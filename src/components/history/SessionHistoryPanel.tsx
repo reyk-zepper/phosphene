@@ -1,5 +1,9 @@
-import { Download, FileUp, History, RotateCcw, Trash2 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { CloudDownload, Download, FileUp, History, RotateCcw, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  loadHostedSessionBundle,
+  type HostedSessionLoadResult,
+} from '@/core/history/hostedSession';
 import {
   buildSessionBundleFileName,
   createPortableSessionBundle,
@@ -16,6 +20,19 @@ export function SessionHistoryPanel() {
   const clearHistory = useSessionStore((s) => s.clearHistory);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
+  const [hostedSession, setHostedSession] = useState<HostedSessionLoadResult | undefined>();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadHostedSessionBundle().then((result) => {
+      if (!cancelled) setHostedSession(result);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleExportSession = () => {
     if (!currentGraph) return;
@@ -42,7 +59,22 @@ export function SessionHistoryPanel() {
     setStatus({ tone: 'error', text: result.errors[0] ?? 'Session bundle blocked' });
   };
 
-  if (history.length === 0 && !currentGraph) return null;
+  const handleLoadHostedSession = () => {
+    if (!hostedSession?.bundleText) return;
+    const result = importPortableSessionBundle(hostedSession.bundleText);
+    if (result.status === 'imported') {
+      setStatus({ tone: 'ok', text: 'Hosted session loaded' });
+      return;
+    }
+
+    setStatus({ tone: 'error', text: result.errors[0] ?? 'Hosted session blocked' });
+  };
+
+  const hostedImport = hostedSession?.importResult;
+  const hostedEntry = hostedImport?.status === 'imported' ? hostedImport.historyEntry : undefined;
+  const showHostedSession = hostedSession && hostedSession.status !== 'unavailable';
+
+  if (history.length === 0 && !currentGraph && !showHostedSession) return null;
 
   return (
     <section className="pointer-events-auto mx-auto w-full max-w-3xl rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/70 px-3 py-2.5 backdrop-blur-xl">
@@ -109,6 +141,47 @@ export function SessionHistoryPanel() {
           }}
         >
           {status.text}
+        </div>
+      )}
+
+      {showHostedSession && (
+        <div
+          className="mt-2 grid grid-cols-[1fr_auto] items-center gap-2 rounded-md border border-[color:var(--border-subtle)] px-2.5 py-2"
+          style={{
+            background: 'color-mix(in srgb, var(--bg-surface) 54%, transparent)',
+          }}
+        >
+          <div className="min-w-0">
+            <span className="flex items-center gap-2">
+              <CloudDownload size={12} className="shrink-0 text-[color:var(--glow-analysis)]" />
+              <span className="truncate font-mono text-[9px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                Hosted Session
+              </span>
+              {hostedSession.marker && (
+                <span className="shrink-0 font-mono text-[9px] text-[color:var(--text-muted)]">
+                  {formatHistoryTime(Date.parse(hostedSession.marker.updatedAt))}
+                </span>
+              )}
+            </span>
+            <span className="mt-1 line-clamp-2 block text-xs leading-snug text-[color:var(--text-secondary)]">
+              {hostedEntry?.promptPreview ?? hostedSession.errors[0] ?? 'No hosted session available'}
+            </span>
+            {hostedEntry && (
+              <span className="mt-1 block font-mono text-[9px] tracking-wider text-[color:var(--text-muted)] uppercase">
+                {hostedEntry.nodeCount} nodes - {hostedEntry.totalTokens} tokens
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={handleLoadHostedSession}
+            aria-label="Load hosted session"
+            title="Load hosted session"
+            disabled={hostedSession.status !== 'available'}
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-[color:var(--border-subtle)] text-[color:var(--text-muted)] transition hover:border-[color:var(--glow-analysis)] hover:text-[color:var(--glow-analysis)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <CloudDownload size={13} />
+          </button>
         </div>
       )}
 

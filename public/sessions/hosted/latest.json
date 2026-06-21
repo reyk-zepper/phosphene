@@ -1,0 +1,10 @@
+{
+  "schema_version": "phosphene.hosted_session.v0.1.34",
+  "updated_at": "2026-06-21T22:00:00.000Z",
+  "source": "phosphene_hosted_session",
+  "data_classification": "public_reasoning_session_bundle",
+  "latest_session": "hosted-session-20260621T220000Z",
+  "session_file": "hosted-session-20260621T220000Z/session.json",
+  "session_sha256": "sha256:b2552cf328869d7c5bc507af49f2b1e4c1178a9dd1b6db96ea5f7e725c6470e4",
+  "retention_count": 1
+}

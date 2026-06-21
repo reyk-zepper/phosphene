@@ -270,6 +270,13 @@ v0.1.33 adds a redacted side-effect intent live adapter:
 - The generator still emits only category/count markers and excludes action arguments, recipients, provider payloads, message bodies, document bodies, host paths, credentials, and user content.
 - `latest.json.adapter_status` remains the technical adapter generation status; a side-effect trace can be `needs_approval` without marking the adapter pack as failed.
 
+v0.1.34 adds a static hosted session workflow:
+
+- A hosted-session marker at `/sessions/hosted/latest.json` identifies a public portable Reasoning Lab session bundle by relative file path and SHA-256 digest.
+- The browser blocks malformed markers, HTML fallbacks, path escapes, digest mismatches, and bundles rejected by the portable-session schema or secret-like-content guardrail.
+- The Session History panel can surface the hosted session as an explicit load action, without serializing graph content into the URL or auto-activating hosted content.
+- This is static hosting only; account-backed sessions, collaboration, server-side persistence, and automatic synchronization remain non-scope/open.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -283,7 +290,7 @@ v0.1.33 adds a redacted side-effect intent live adapter:
 - Graph canvas renders event order and parent/child relationships.
 - Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
-- Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions plus portable JSON export/import controls.
+- Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions, portable JSON export/import controls, and an explicit static hosted-session load action when `/sessions/hosted/latest.json` is available.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
 - Reasoning Lab shows a Live Compare control for running the active prompt against a second configured model.
 - Reasoning Lab shows two graph canvases side by side when a same-prompt comparison graph is available.
@@ -348,6 +355,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.31 exposes `pnpm --silent typecheck:packages`, proving the generated tarball resolves parser/graph types from a temporary NodeNext TypeScript consumer project.
 - v0.1.32 exposes scoped npm package metadata plus `pnpm --silent publish:packages:dry-run`, proving the package can pass the local release gate before a manual public npm publish.
 - v0.1.33 exposes a redacted side-effect intent adapter trace in the multi-service live-adapter pack, proving AAG approval-boundary intent can be shown without exposing action payloads or executing side effects.
+- v0.1.34 exposes a static hosted Reasoning Lab session workflow that verifies the marker, digest, and portable-session guardrails before an explicit user-triggered import.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

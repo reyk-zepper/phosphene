@@ -1,0 +1,56 @@
+{
+  "schema_version": "phosphene.session.v0.1.25",
+  "source": "phosphene_portable_session",
+  "data_classification": "client_local_reasoning_session",
+  "exported_at": "2026-06-21T22:00:00.000Z",
+  "graph_id": "hosted-session-workflow-demo",
+  "prompt_preview": "Inspect a hosted Phosphene session handoff without putting graph content in the URL.",
+  "graph": {
+    "id": "hosted-session-workflow-demo",
+    "prompt": "Inspect a hosted Phosphene session handoff without putting graph content in the URL.",
+    "model": {
+      "provider": "ollama",
+      "model": "hosted-session-demo",
+      "displayName": "Hosted Session Demo"
+    },
+    "rootNode": {
+      "id": "hosted-root",
+      "type": "hypothesis",
+      "label": "HOSTED SESSION",
+      "content": "A hosted session marker can point to a portable Reasoning Lab bundle without serializing graph content into the share URL.",
+      "summary": "Hosted marker references a portable bundle",
+      "children": [
+        {
+          "id": "hosted-guardrail",
+          "type": "evidence",
+          "label": "GUARDRAIL",
+          "content": "The bundle still passes the portable session schema and secret-like-content checks before it can become active.",
+          "summary": "Portable session guardrails still apply",
+          "children": [],
+          "depth": 1,
+          "tokenCount": 25,
+          "timestamp": 1200,
+          "metadata": {
+            "source": "hosted-session"
+          }
+        }
+      ],
+      "depth": 0,
+      "tokenCount": 31,
+      "timestamp": 0,
+      "metadata": {
+        "source": "hosted-session"
+      }
+    },
+    "metadata": {
+      "totalTokens": 56,
+      "reasoningTokens": 56,
+      "outputTokens": 0,
+      "maxDepth": 1,
+      "branchCount": 1,
+      "nodeCount": 2,
+      "timeToComplete": 1200
+    },
+    "createdAt": 1782088800000
+  }
+}
