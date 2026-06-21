@@ -12,6 +12,7 @@ import {
   buildGraphExportFileName,
   collectGraphEdges,
   compareGraphs,
+  detectReasoningPatterns,
   flattenGraph,
   searchGraphNodes,
   summarizeGraphStats,
@@ -35,6 +36,7 @@ describe('public parser and graph package surface', () => {
     expect(collectGraphEdges(DEMO_GRAPH.rootNode)[0]).toEqual({ from: 'n1', to: 'n2' });
     expect(searchGraphNodes(DEMO_GRAPH.rootNode, 'type:revision').map((result) => result.node.id)).toEqual(['n6']);
     expect(summarizeGraphStats(DEMO_GRAPH).overview.nodeCount).toBe(DEMO_GRAPH.metadata.nodeCount);
+    expect(detectReasoningPatterns(DEMO_GRAPH).catalog.length).toBeGreaterThan(0);
     expect(compareGraphs(DEMO_GRAPH, DEMO_GRAPH).samePrompt).toBe(true);
     expect(buildGraphExportFileName('Parser / Graph Surface', 'json', new Date('2026-06-21T20:30:00Z'))).toBe(
       'phosphene-parser-graph-surface-20260621-203000.json'

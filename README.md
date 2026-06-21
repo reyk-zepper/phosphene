@@ -64,6 +64,7 @@ Currently working:
 - Live same-prompt comparison runner for configured Anthropic, OpenAI, Gemini, or Ollama models
 - Side-by-side graph comparison stage for same-prompt primary and comparison runs
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
+- Reasoning Pattern Library panel that detects evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
 - Static hosted Reasoning Lab session workflow: `/sessions/hosted/latest.json` points to a public portable session bundle, the browser verifies SHA-256 and portable-session guardrails, and loading remains an explicit user action
@@ -86,6 +87,7 @@ Still not built:
 
 - Raw live AI-node telemetry, private payload capture, provider calls, or raw side-effect execution observation
 - Account-backed hosted sessions, collaborative editing, server-side session persistence, or automatic hosted graph activation
+- Custom plugin API, collaborative annotation workflow, or Constitution-mode rule testing
 
 ### Tech stack
 
@@ -196,6 +198,7 @@ phosphene/
 - **v0.3** — AI-node live adapters; generic, Hermes, multi-service marker, and redacted side-effect intent adapters ✅; raw side-effect execution observation remains non-scope
 - **v0.4** — Portable session bundles and static hosted session workflow ✅; account-backed/collaborative hosting remains non-scope/open
 - **v0.5+** — Scoped parser/graph package surface plus ESM/declaration builds, pack dry-run, runtime/type tarball smokes, scoped npm metadata, and dry-run publish gate ✅; real npm publish remains manual
+- **v0.6** — Reasoning Pattern Library ✅; custom plugin API, collaborative annotation, and Constitution Mode remain future/non-scope
 
 ### Contributing
 
@@ -258,6 +261,7 @@ Funktioniert bereits:
 - Live-Same-Prompt-Vergleich fuer konfigurierte Anthropic-, OpenAI-, Gemini- oder Ollama-Modelle
 - Side-by-side-Graph-Vergleich fuer Same-Prompt-Primary- und Vergleichslaeufe
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
+- Reasoning-Pattern-Library-Panel fuer Evidence-backed Hypotheses, Revision-Loops, Decision-Tradeoffs und Uncertainty-Probes mit stabilen Node-Ankern
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
 - Statischer gehosteter Reasoning-Lab-Session-Workflow: `/sessions/hosted/latest.json` verweist auf ein oeffentliches Portable-Session-Bundle, der Browser prueft SHA-256 und Portable-Session-Guardrails, und Laden bleibt eine explizite User-Aktion
@@ -280,6 +284,7 @@ Noch nicht gebaut:
 
 - Rohe Live-AI-Node-Telemetrie, private Payload-Erfassung oder Side-Effect-Level-Agentenbeobachtung
 - Accountbasierte gehostete Sessions, kollaboratives Bearbeiten, serverseitige Session-Persistenz oder automatische Aktivierung gehosteter Graphen
+- Custom-Plugin-API, kollaborativer Annotation-Workflow oder Constitution-Mode-Regeltests
 
 ### Tech-Stack
 
@@ -390,6 +395,7 @@ phosphene/
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes-, Multi-Service-Marker- und redigierter Side-Effect-Intent-Adapter ✅; rohe Side-Effect-Ausfuehrungsbeobachtung bleibt Non-Scope
 - **v0.4** — Portable Session-Bundles und statischer gehosteter Session-Workflow ✅; accountbasierte/kollaborative Hosting-Flows bleiben Non-Scope/offen
 - **v0.5+** — Scoped Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run, Runtime-/Type-Tarball-Smokes, scoped npm-Metadaten und Dry-Run-Publish-Gate ✅; realer npm Publish bleibt manuell
+- **v0.6** — Reasoning Pattern Library ✅; Custom-Plugin-API, kollaborative Annotation und Constitution Mode bleiben Future/Non-Scope
 
 ### Mitwirken
 

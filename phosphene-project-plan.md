@@ -60,7 +60,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 - [x] Keyboard-Shortcuts für Navigation
 
 **Future (v0.3+, → Constitution-Bridge):**
-- [ ] Reasoning-Pattern-Library (häufige Denkmuster taggen)
+- [x] Reasoning-Pattern-Library (häufige Denkmuster taggen)
 - [ ] Plugin-System für custom Modelle/APIs
 - [ ] Collaborative Annotation (Teams können Reasoning kommentieren)
 - [ ] Constitution-Mode: Regeln definieren & gegen Reasoning testen

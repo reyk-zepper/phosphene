@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.34`
+- App version: `v0.1.35`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -29,6 +29,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Generate a redacted side-effect intent trace from AAG approval-boundary markers and category counts only.
 - Export and import portable Reasoning Lab session JSON bundles locally without putting graph content into share URLs.
 - Load the static hosted Reasoning Lab session through `/sessions/hosted/latest.json`; the browser verifies the referenced public bundle digest and portable-session guardrails before an explicit user-triggered import.
+- Use the Reasoning Lab Pattern Library panel to spot evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors.
 - Use scoped source-level parser/graph package entry points for future standalone extraction without pulling in app, UI, store, adapter, or demo modules.
 - Build importable parser/graph ESM artifacts plus declarations via `pnpm build:packages`.
 - Inspect a publish-safe parser/graph package dry-run via `pnpm --silent pack:packages`.
@@ -107,6 +108,12 @@ Use this for the v0.1.34 hosted session path:
 Phosphene can now load a static hosted Reasoning Lab session marker from /sessions/hosted/latest.json. The marker points to a public portable session bundle, the browser verifies the SHA-256 digest and existing portable-session guardrails, and the user must explicitly load it; graph content is not serialized into the share URL.
 ```
 
+Use this for the v0.1.35 Pattern Library path:
+
+```text
+Phosphene can now detect a small catalog of reusable reasoning patterns in the active Reasoning Lab graph: evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes. The panel points back to stable graph nodes; it is local analysis, not a learned classifier or collaborative annotation system.
+```
+
 Use this when explaining the current limitation:
 
 ```text
@@ -124,6 +131,7 @@ Do not claim:
 - The near-live adapter exposes raw live telemetry, private files, provider payloads, Gmail/Workspace content, or host paths.
 - The snapshot publisher reads private provider data or performs live side effects.
 - Hosted sessions provide accounts, collaboration, server-side persistence, or automatic graph activation.
+- The Pattern Library is a fine-tuned classifier, a plugin marketplace, collaborative annotation, or Constitution-mode rule testing.
 - Phosphene stores or displays secrets, OAuth data, private URLs, raw provider IDs, or customer data.
 - Phosphene replaces AAG, Hermes, OpenClaw, or Sentinels.
 

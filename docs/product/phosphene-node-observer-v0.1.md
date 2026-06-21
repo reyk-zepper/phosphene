@@ -277,6 +277,12 @@ v0.1.34 adds a static hosted session workflow:
 - The Session History panel can surface the hosted session as an explicit load action, without serializing graph content into the URL or auto-activating hosted content.
 - This is static hosting only; account-backed sessions, collaboration, server-side persistence, and automatic synchronization remain non-scope/open.
 
+v0.1.35 adds a local Reasoning Pattern Library:
+
+- A package-safe `detectReasoningPatterns(graph)` core identifies evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors.
+- The Reasoning Lab Pattern Library panel surfaces matched pattern groups, counts, query hints, first-match summaries, and node coverage without contacting a server.
+- The catalog is deterministic local graph analysis; custom plugin APIs, collaborative annotation, learned classifiers, and Constitution-mode rule tests remain future/non-scope.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -290,6 +296,7 @@ v0.1.34 adds a static hosted session workflow:
 - Graph canvas renders event order and parent/child relationships.
 - Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
+- Reasoning Lab shows a compact Pattern Library panel for reusable reasoning-pattern matches and node anchors.
 - Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions, portable JSON export/import controls, and an explicit static hosted-session load action when `/sessions/hosted/latest.json` is available.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
 - Reasoning Lab shows a Live Compare control for running the active prompt against a second configured model.
@@ -356,6 +363,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.32 exposes scoped npm package metadata plus `pnpm --silent publish:packages:dry-run`, proving the package can pass the local release gate before a manual public npm publish.
 - v0.1.33 exposes a redacted side-effect intent adapter trace in the multi-service live-adapter pack, proving AAG approval-boundary intent can be shown without exposing action payloads or executing side effects.
 - v0.1.34 exposes a static hosted Reasoning Lab session workflow that verifies the marker, digest, and portable-session guardrails before an explicit user-triggered import.
+- v0.1.35 exposes deterministic local Reasoning Pattern Library detection through the app UI and package-safe graph export surface.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

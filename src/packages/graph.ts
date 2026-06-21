@@ -17,6 +17,15 @@ export {
   type StandaloneSvgDocumentInput,
 } from '../core/graph/export';
 export {
+  detectReasoningPatterns,
+  REASONING_PATTERN_LIBRARY,
+  type ReasoningPatternDefinition,
+  type ReasoningPatternGroup,
+  type ReasoningPatternId,
+  type ReasoningPatternMatch,
+  type ReasoningPatternReport,
+} from '../core/graph/patterns';
+export {
   createSideBySideComparison,
   type SideBySideComparison,
   type SideBySidePane,
