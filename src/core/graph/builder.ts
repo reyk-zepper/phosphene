@@ -4,9 +4,9 @@ import type {
   ReasoningGraph,
   ReasoningNode,
   ReasoningNodeType,
-} from '@/core/parser/types';
-import { parseText, type ParsedSegment } from '@/core/parser/heuristic';
-import { uuid } from '@/utils/id';
+} from '../parser/types';
+import { parseText, type ParsedSegment } from '../parser/heuristic';
+import { uuid } from '../../utils/id';
 
 const MIN_SEGMENT_LENGTH = 8;
 

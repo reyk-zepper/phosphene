@@ -1,6 +1,6 @@
 import dagre from 'dagre';
-import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
-import { collectGraphEdges, flattenGraph } from '@/core/graph/traversal';
+import type { ReasoningGraph, ReasoningNode } from '../parser/types';
+import { collectGraphEdges, flattenGraph } from './traversal';
 
 export interface LaidOutNode {
   node: ReasoningNode;

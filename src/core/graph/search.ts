@@ -1,4 +1,4 @@
-import type { ReasoningNode, ReasoningNodeType } from '@/core/parser/types';
+import type { ReasoningNode, ReasoningNodeType } from '../parser/types';
 
 export type GraphSearchField =
   | 'summary'

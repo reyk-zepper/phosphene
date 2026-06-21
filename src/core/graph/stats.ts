@@ -1,4 +1,4 @@
-import type { ReasoningGraph, ReasoningNode, ReasoningNodeType } from '@/core/parser/types';
+import type { ReasoningGraph, ReasoningNode, ReasoningNodeType } from '../parser/types';
 
 export type ConfidenceBandId = 'high' | 'medium' | 'low' | 'unknown';
 

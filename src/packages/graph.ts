@@ -1,4 +1,4 @@
-export { buildGraph, newGraphId, type BuildInput } from '@/core/graph/builder';
+export { buildGraph, newGraphId, type BuildInput } from '../core/graph/builder';
 export {
   compareGraphs,
   type GraphComparison,
@@ -7,7 +7,7 @@ export {
   type GraphComparisonMetricId,
   type GraphComparisonSubject,
   type GraphTypeDelta,
-} from '@/core/graph/compare';
+} from '../core/graph/compare';
 export {
   buildGraphExportFileName,
   buildStandaloneSvgDocument,
@@ -15,18 +15,18 @@ export {
   sanitizeGraphExportName,
   type GraphExportFormat,
   type StandaloneSvgDocumentInput,
-} from '@/core/graph/export';
+} from '../core/graph/export';
 export {
   createSideBySideComparison,
   type SideBySideComparison,
   type SideBySidePane,
   type SideBySidePaneRole,
-} from '@/core/graph/sideBySide';
+} from '../core/graph/sideBySide';
 export {
   searchGraphNodes,
   type GraphSearchField,
   type GraphSearchResult,
-} from '@/core/graph/search';
+} from '../core/graph/search';
 export {
   summarizeGraphStats,
   type ConfidenceBandId,
@@ -36,5 +36,5 @@ export {
   type GraphStatsSummary,
   type GraphTokenHotspot,
   type GraphTypeBreakdown,
-} from '@/core/graph/stats';
-export { collectGraphEdges, flattenGraph, type GraphEdge } from '@/core/graph/traversal';
+} from '../core/graph/stats';
+export { collectGraphEdges, flattenGraph, type GraphEdge } from '../core/graph/traversal';

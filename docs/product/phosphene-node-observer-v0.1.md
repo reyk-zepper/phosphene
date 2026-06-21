@@ -226,6 +226,12 @@ v0.1.26 adds the source-level package surface for later parser/graph extraction:
 - `src/packages/graph.ts` exposes graph build, compare, export, search, stats, side-by-side, and traversal primitives from one package-safe entry point.
 - Generic graph traversal moved into `src/core/graph/traversal.ts`, so reusable layout/compare code no longer imports demo graph constants.
 
+v0.1.27 adds a declaration-only package build for that surface:
+
+- `pnpm build:packages` emits parser/graph declaration artifacts under `dist-types/` using `tsconfig.packages.json`.
+- Package export `types` paths now point to generated `dist-types/packages/*.d.ts` files while runtime defaults remain source-level.
+- Package-relevant parser/graph imports use relative module specifiers, and tests reject workspace-only `@/` aliases in generated declarations.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -297,6 +303,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.24 exposes a redacted multi-service live-adapter generator and AI Node wrapper for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace marker traces through the shared `/snapshots/live/` boundary without leaking service file content.
 - v0.1.25 exposes portable Reasoning Lab session JSON export/import with schema validation, graph-shape validation, and secret-like-content rejection.
 - v0.1.26 exposes source-level `phosphene/parser` and `phosphene/graph` package entry points and keeps them independent from app, UI, stores, adapters, and demo constants.
+- v0.1.27 exposes `pnpm build:packages` for declaration-only parser/graph package artifacts and validates that generated declarations do not contain workspace-only aliases.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

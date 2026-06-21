@@ -1,5 +1,5 @@
-import type { ReasoningGraph, ReasoningNode, ReasoningNodeType } from '@/core/parser/types';
-import { flattenGraph } from '@/core/graph/traversal';
+import type { ReasoningGraph, ReasoningNode, ReasoningNodeType } from '../parser/types';
+import { flattenGraph } from './traversal';
 
 export type GraphComparisonMetricId =
   | 'nodes'

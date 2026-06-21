@@ -1,4 +1,4 @@
-import type { ReasoningNode } from '@/core/parser/types';
+import type { ReasoningNode } from '../parser/types';
 
 export interface GraphEdge {
   from: string;

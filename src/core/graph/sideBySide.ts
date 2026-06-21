@@ -1,5 +1,5 @@
-import { compareGraphs, type GraphComparison } from '@/core/graph/compare';
-import type { ReasoningGraph } from '@/core/parser/types';
+import { compareGraphs, type GraphComparison } from './compare';
+import type { ReasoningGraph } from '../parser/types';
 
 export type SideBySidePaneRole = 'primary' | 'comparison';
 
