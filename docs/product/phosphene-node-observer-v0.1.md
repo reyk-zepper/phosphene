@@ -244,6 +244,12 @@ v0.1.29 adds a publish-safe pack dry-run:
 - `pnpm --silent pack:packages` rebuilds package artifacts and prints `npm pack --dry-run --json` output for inspection without publishing.
 - Tests assert the dry-run pack includes only runtime JS, declaration files, package metadata, README, and license; source app code, tests, docs, scripts, ops files, public snapshots, maps, raw TypeScript, and JSON data are excluded.
 
+v0.1.30 adds a real package consumer smoke test:
+
+- `pnpm --silent smoke:packages` rebuilds parser/graph artifacts, creates an actual npm tarball, installs it into a temporary consumer project, and imports `phosphene/parser` plus `phosphene/graph`.
+- The smoke script prints a compact JSON result for automated verification and deletes its temporary pack/consumer directories afterward.
+- Tests assert the tarball consumer can call parser classification/segmentation and graph traversal/edge collection through the package export paths.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -318,6 +324,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.27 exposes `pnpm build:packages` for declaration-only parser/graph package artifacts and validates that generated declarations do not contain workspace-only aliases.
 - v0.1.28 exposes importable parser/graph ESM package artifacts under `dist-packages/` and validates runtime imports without copying public snapshot data.
 - v0.1.29 exposes a publish-safe `pnpm --silent pack:packages` dry-run manifest and validates that future npm packages include only package runtime, declarations, README, license, and package metadata.
+- v0.1.30 exposes `pnpm --silent smoke:packages`, proving the generated tarball installs and imports from a temporary external consumer project.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

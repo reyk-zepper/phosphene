@@ -1,7 +1,7 @@
 {
   "name": "phosphene",
   "private": true,
-  "version": "0.1.29",
+  "version": "0.1.30",
   "type": "module",
   "description": "See how AI thinks. Open-source AI reasoning visualizer.",
   "files": [
@@ -33,6 +33,7 @@
     "build": "tsc -b && vite build",
     "build:packages": "rm -rf dist-types dist-packages && tsc -p tsconfig.packages.json && vite build --config vite.packages.config.ts",
     "pack:packages": "pnpm --silent build:packages 1>&2 && npm pack --dry-run --json",
+    "smoke:packages": "pnpm --silent build:packages 1>&2 && node scripts/smoke-package-consumer.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
