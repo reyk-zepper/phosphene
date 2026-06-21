@@ -254,16 +254,17 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: implemented for the redacted marker-level adapter layer. Phosphene now has a generic redacted near-live adapter path, the first domain-specific Hermes adapter, and a multi-service marker adapter:
+Status: implemented for the redacted marker-level adapter layer. Phosphene now has a generic redacted near-live adapter path, the first domain-specific Hermes adapter, a multi-service marker adapter, and a redacted side-effect intent adapter:
 
 - the AI Node generator writes `ai-node-live-*` Boundary packs and a redacted `latest.json` marker under the handoff root, normally `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live`;
 - the deploy helper syncs that marker and pack into served static output at `/snapshots/live/`;
 - the browser loader polls `/snapshots/live/latest.json`, validates the marker, loads the referenced manifest/traces/report, and renders the adapter trace as `AI Node Live Adapter`;
 - the UI keeps `No raw live telemetry` visible and blocks marker content that contains host paths, private URLs, secrets, email addresses, or provider payload markers.
 - the Hermes adapter can publish `hermes-live-adapter.boundary.json` using only coarse Hermes operational markers, with no raw config values, prompts, logs, private URLs, credentials, provider payloads, or user content.
-- the service adapter can publish separated redacted marker traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace in one shared `ai-node-live-*` pack, with no raw service content, host paths, provider payloads, Gmail message content, or Workspace document content.
+- the service adapter can publish separated redacted marker traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, Workspace, and side-effect intent boundaries in one shared `ai-node-live-*` pack, with no raw service content, host paths, provider payloads, action arguments, Gmail message content, or Workspace document content.
+- the side-effect intent adapter emits only category counts, approval-gate marker counts, and held-intent status for AAG-managed side-effect boundaries; it does not read or emit action arguments, recipients, provider payloads, message bodies, document bodies, or execute side effects.
 
-This is still not raw live telemetry or side-effect-level agent observation. The current adapters are intentionally limited to redacted operational markers before attaching more sensitive agent-side systems.
+This is still not raw live telemetry or raw side-effect execution observation. The current adapters are intentionally limited to redacted operational markers and side-effect intent counts before attaching more sensitive agent-side systems.
 
 ## Security Rules
 

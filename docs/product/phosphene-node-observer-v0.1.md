@@ -263,6 +263,13 @@ v0.1.32 adds scoped npm package publishing readiness:
 - Package metadata includes MIT license, repository, homepage, bugs URL, keywords, Node engine, `sideEffects: false`, and public scoped `publishConfig`.
 - `pnpm --silent publish:packages:dry-run` runs the package verification gate and then `npm publish --dry-run --ignore-scripts --access public --json`; real npm publish remains a manual external release action and keeps `prepublishOnly`.
 
+v0.1.33 adds a redacted side-effect intent live adapter:
+
+- The multi-service AI Node generator now emits `side-effect-intent-live-adapter.boundary.json` in the shared `ai-node-live-*` pack.
+- The new trace models AAG approval-boundary markers, side-effect category counts, and held-intent status with `tool.requested`, `aag.decision`, and `approval.required` events.
+- The generator still emits only category/count markers and excludes action arguments, recipients, provider payloads, message bodies, document bodies, host paths, credentials, and user content.
+- `latest.json.adapter_status` remains the technical adapter generation status; a side-effect trace can be `needs_approval` without marking the adapter pack as failed.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -340,6 +347,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.30 exposes `pnpm --silent smoke:packages`, proving the generated tarball installs and imports from a temporary external consumer project.
 - v0.1.31 exposes `pnpm --silent typecheck:packages`, proving the generated tarball resolves parser/graph types from a temporary NodeNext TypeScript consumer project.
 - v0.1.32 exposes scoped npm package metadata plus `pnpm --silent publish:packages:dry-run`, proving the package can pass the local release gate before a manual public npm publish.
+- v0.1.33 exposes a redacted side-effect intent adapter trace in the multi-service live-adapter pack, proving AAG approval-boundary intent can be shown without exposing action payloads or executing side effects.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

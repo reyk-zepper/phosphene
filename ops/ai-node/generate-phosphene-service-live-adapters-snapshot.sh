@@ -20,7 +20,7 @@ Generate a redacted Phosphene multi-service near-live adapter Boundary pack.
 Default target:
   $OUTPUT_ROOT/ai-node-live-<utc-stamp>
 
-The script reads only redacted/coarse AI-node service markers from:
+The script reads only redacted/coarse AI-node service and side-effect intent markers from:
   $AI_STACK_ROOT
 
 The script updates:

@@ -43,6 +43,14 @@ const TRACE_DEFINITIONS = [
     title: 'Sentinel live adapter redacted status',
   },
   {
+    key: 'sideEffectIntent',
+    kind: 'side_effect_intent',
+    displayName: 'Side-effect intent',
+    source: 'aag',
+    file: 'side-effect-intent-live-adapter.boundary.json',
+    title: 'Side-effect intent live adapter redacted status',
+  },
+  {
     key: 'workspace',
     displayName: 'Workspace',
     source: 'aag',
@@ -194,6 +202,7 @@ function event({
   summary,
   parentEventId,
   decision,
+  risk = 'low',
   tool,
   links,
 }) {
@@ -203,7 +212,7 @@ function event({
     source,
     event_type: eventType,
     actor: 'ai-node-service-live-adapter',
-    risk: 'low',
+    risk,
     status,
     timestamp,
     summary,
@@ -302,17 +311,56 @@ async function collectWorkspace(root) {
   return { serviceMarkers, scriptCount, logCount, stateCount: 0, dataCount };
 }
 
+function intentBucket(label, ...counts) {
+  return {
+    label,
+    markerCount: counts.reduce((sum, count) => sum + count, 0),
+  };
+}
+
+async function collectSideEffectIntent(root) {
+  const serviceMarkers = [
+    await markerFor(path.join(root, 'services/agent-action-gateway')),
+    await markerFor(path.join(root, 'services/aag-gateway-live')),
+  ];
+  const gmailBucket = intentBucket(
+    'gmail',
+    await countEntries(path.join(root, 'bin'), (name) => /^aag-.*(gmail|draft)/i.test(name)),
+    await countEntries(path.join(root, 'logs/agent-action-gateway'), (name) => /(gmail|draft)/i.test(name)),
+    await countEntries(path.join(root, 'data/agent-action-gateway'), (name) => /(gmail|draft)/i.test(name)),
+    await countEntries(path.join(root, 'data/hermes/home'), (name) => /(gmail|draft)/i.test(name))
+  );
+  const workspaceBucket = intentBucket(
+    'workspace',
+    await countEntries(path.join(root, 'bin'), (name) => /^aag-.*(workspace|google|calendar|docs|drive|bundle)/i.test(name)),
+    await countEntries(path.join(root, 'logs/agent-action-gateway'), (name) => /(workspace|google|calendar|docs|drive|bundle)/i.test(name)),
+    await countEntries(path.join(root, 'data/agent-action-gateway'), (name) => /(workspace|google|calendar|docs|drive|bundle)/i.test(name)),
+    await countEntries(path.join(root, 'data/hermes/home'), (name) => /(workspace|attestation|calendar|docs|drive|bundle)/i.test(name))
+  );
+  const categoryBuckets = [gmailBucket, workspaceBucket].filter((bucket) => bucket.markerCount > 0);
+  const intentMarkerCount = categoryBuckets.reduce((sum, bucket) => sum + bucket.markerCount, 0);
+  const approvalGateCount = sumMarkers(serviceMarkers) + await countEntries(path.join(root, 'bin'), (name) => /^aag-/.test(name));
+
+  return {
+    serviceMarkers,
+    categoryBuckets,
+    intentMarkerCount,
+    approvalGateCount,
+  };
+}
+
 async function collectMarkers(root) {
-  const [aag, gmail, hermes, openclaw, sentinel, workspace] = await Promise.all([
+  const [aag, gmail, hermes, openclaw, sentinel, sideEffectIntent, workspace] = await Promise.all([
     collectAag(root),
     collectGmail(root),
     collectHermes(root),
     collectOpenClaw(root),
     collectSentinel(root),
+    collectSideEffectIntent(root),
     collectWorkspace(root),
   ]);
 
-  return { aag, gmail, hermes, openclaw, sentinel, workspace };
+  return { aag, gmail, hermes, openclaw, sentinel, sideEffectIntent, workspace };
 }
 
 function buildTrace({ definition, observedAt, markers }) {
@@ -398,6 +446,103 @@ function buildTrace({ definition, observedAt, markers }) {
   };
 }
 
+function buildSideEffectIntentTrace({ definition, observedAt, markers }) {
+  const runId = `run-side-effect-intent-live-${observedAt.replace(/[^0-9]/g, '').slice(0, 14)}`;
+  const hasIntentMarkers = markers.intentMarkerCount > 0;
+  const status = hasIntentMarkers ? 'needs_approval' : 'succeeded';
+  const bucketLabels = markers.categoryBuckets.map((bucket) => bucket.label).join(', ') || 'none';
+  const risk = hasIntentMarkers ? 'high' : 'low';
+
+  return {
+    schema_version: SCHEMA_VERSION,
+    metadata: {
+      id: runId,
+      title: definition.title,
+      subtitle: 'Near-live redacted AAG side-effect intent markers with private action details removed',
+      status,
+    },
+    events: [
+      event({
+        traceId: 'evt-side-effect-intent-live-root',
+        runId,
+        source: definition.source,
+        eventType: 'adapter.tick',
+        status: 'running',
+        timestamp: observedAt,
+        summary: 'Side-effect intent adapter emitted a redacted heartbeat from AAG approval-boundary markers.',
+        parentEventId: null,
+        links: [{ label: 'Side-effect intent heartbeat', href: 'trace://side-effect-intent-live/heartbeat' }],
+      }),
+      event({
+        traceId: 'evt-side-effect-intent-categories',
+        runId,
+        source: definition.source,
+        eventType: 'tool.requested',
+        status,
+        timestamp: observedAt,
+        summary: `Side-effect intent marker scan found ${markers.intentMarkerCount} redacted marker(s) across ${markers.categoryBuckets.length} category bucket(s): ${bucketLabels}.`,
+        parentEventId: 'evt-side-effect-intent-live-root',
+        risk: hasIntentMarkers ? 'medium' : 'low',
+        tool: 'redacted-side-effect-intent-counter',
+        decision: hasIntentMarkers ? 'side_effect_intent_detected' : 'no_side_effect_intent_detected',
+        links: [{ label: 'Category counts only', href: 'trace://side-effect-intent-live/categories' }],
+      }),
+      event({
+        traceId: 'evt-side-effect-intent-aag-decision',
+        runId,
+        source: definition.source,
+        eventType: 'aag.decision',
+        status,
+        timestamp: observedAt,
+        summary: `AAG side-effect policy marker was ${status}; ${markers.approvalGateCount} approval-gate marker(s) available without exposing action arguments.`,
+        parentEventId: 'evt-side-effect-intent-categories',
+        risk,
+        tool: 'redacted-aag-approval-boundary-counter',
+        decision: hasIntentMarkers ? 'side_effects_require_approval' : 'no_side_effects_detected',
+      }),
+      event({
+        traceId: 'evt-side-effect-intent-approval-required',
+        runId,
+        source: definition.source,
+        eventType: 'approval.required',
+        status,
+        timestamp: observedAt,
+        summary: hasIntentMarkers
+          ? `AAG kept ${markers.intentMarkerCount} redacted side-effect intent marker(s) behind approval; payload, recipient, provider, document, and argument values are excluded.`
+          : 'AAG found no redacted side-effect intent markers requiring approval.',
+        parentEventId: 'evt-side-effect-intent-aag-decision',
+        risk,
+        decision: hasIntentMarkers ? 'approval_required' : 'approval_not_required',
+      }),
+      event({
+        traceId: 'evt-side-effect-intent-privacy-boundary',
+        runId,
+        source: definition.source,
+        eventType: 'adapter.redacted_boundary',
+        status: hasIntentMarkers ? 'succeeded' : status,
+        timestamp: observedAt,
+        summary: 'Side-effect intent adapter emitted only category counts and approval-boundary status; raw action payloads and provider calls are excluded.',
+        parentEventId: 'evt-side-effect-intent-approval-required',
+        risk: 'low',
+        tool: 'side-effect-intent-redaction-boundary',
+        decision: 'redacted_boundary_ready',
+      }),
+      event({
+        traceId: 'evt-side-effect-intent-live-completed',
+        runId,
+        source: definition.source,
+        eventType: 'run.completed',
+        status,
+        timestamp: observedAt,
+        summary: `Side-effect intent live adapter completed with ${status} status using redacted approval markers only.`,
+        parentEventId: 'evt-side-effect-intent-privacy-boundary',
+        risk,
+        decision: hasIntentMarkers ? 'side_effect_intents_held' : 'side_effect_intents_clear',
+      }),
+    ],
+  };
+}
+
 function buildManifest(observedAt) {
   return {
     schema_version: SCHEMA_VERSION,
@@ -409,7 +554,7 @@ function buildManifest(observedAt) {
       description: `Redacted near-live ${definition.displayName} adapter Boundary output.`,
     })),
     import_contract: 'phosphene.boundary.v0.1.2-importable',
-    notes: 'Multi-service adapter snapshot generated on the AI Node. Redacted operational markers only; no raw live telemetry, credentials, private URLs, provider payloads, message bodies, document content, or user content.',
+    notes: 'Multi-service adapter snapshot generated on the AI Node. Redacted operational and side-effect intent markers only; no raw live telemetry, credentials, private URLs, provider payloads, action arguments, message bodies, document content, or user content.',
   };
 }
 
@@ -431,11 +576,11 @@ function buildReadme(observedAt) {
     '',
     `Generated at: ${observedAt}`,
     '',
-    'This pack contains redacted near-live adapter output for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace.',
+    'This pack contains redacted near-live adapter output for Hermes, AAG, OpenClaw, Sentinel, Gmail, Workspace, and side-effect intent boundaries.',
     '',
-    'It is not raw live telemetry. It does not include provider payloads, credentials, private URLs, real user data, message bodies, document content, or raw infrastructure details.',
+    'It is not raw live telemetry. It does not include provider payloads, credentials, private URLs, real user data, action arguments, message bodies, document content, or raw infrastructure details.',
     '',
-    'Only existence markers, coarse size bands, modified-time markers, and count-only operational shapes are emitted.',
+    'Only existence markers, coarse size bands, modified-time markers, count-only operational shapes, and side-effect category counts are emitted.',
     '',
     'The pack is suitable for Phosphene Boundary validation and served `/snapshots/live/` loading.',
     '',
@@ -505,13 +650,19 @@ async function generate(options) {
   const markerByKey = await collectMarkers(options.aiStackRoot);
   const traces = TRACE_DEFINITIONS.map((definition) => ({
     definition,
-    trace: buildTrace({
-      definition,
-      observedAt: options.observedAt,
-      markers: markerByKey[definition.key],
-    }),
+    trace: definition.kind === 'side_effect_intent'
+      ? buildSideEffectIntentTrace({
+        definition,
+        observedAt: options.observedAt,
+        markers: markerByKey[definition.key],
+      })
+      : buildTrace({
+        definition,
+        observedAt: options.observedAt,
+        markers: markerByKey[definition.key],
+      }),
   }));
-  const aggregateStatus = traces.every(({ trace }) => trace.metadata.status === 'succeeded') ? 'succeeded' : 'failed';
+  const aggregateStatus = traces.some(({ trace }) => trace.metadata.status === 'failed') ? 'failed' : 'succeeded';
 
   await rm(options.target, { recursive: true, force: true });
   await mkdir(options.target, { recursive: true });

@@ -16,6 +16,7 @@ const expectedTraceFiles = [
   'hermes-live-adapter.boundary.json',
   'openclaw-live-adapter.boundary.json',
   'sentinel-live-adapter.boundary.json',
+  'side-effect-intent-live-adapter.boundary.json',
   'workspace-live-adapter.boundary.json',
 ];
 
@@ -136,6 +137,8 @@ describe('generate-ai-node-service-live-adapters-snapshot CLI', () => {
     expect(rawPack).not.toContain('oauth');
     expect(rawPack).not.toContain('ACCESS_TOKEN');
     expect(rawPack).not.toContain('CLIENT_SECRET');
+    expect(rawPack).not.toContain('aag-gmail-draft-live-smoke');
+    expect(rawPack).not.toContain('aag-google-workspace-bundle-live-smoke');
 
     const manifest = JSON.parse(await readFile(path.join(targetDir, 'manifest.json'), 'utf8')) as {
       source_agent: string;
@@ -162,16 +165,56 @@ describe('generate-ai-node-service-live-adapters-snapshot CLI', () => {
       'Hermes live adapter redacted status',
       'OpenClaw live adapter redacted status',
       'Sentinel live adapter redacted status',
+      'Side-effect intent live adapter redacted status',
       'Workspace live adapter redacted status',
     ].sort());
-    expect(traces.every(({ trace }) => trace.metadata.status === 'succeeded')).toBe(true);
+    expect(traces.every(({ trace }) => ['needs_approval', 'succeeded'].includes(trace.metadata.status))).toBe(true);
     for (const { trace } of traces) {
       expect(trace.events.some((event) => event.event_type === 'adapter.tick')).toBe(true);
-      expect(trace.events.some((event) => event.event_type === 'health.check')).toBe(true);
       expect(trace.events.some((event) => event.event_type === 'adapter.redacted_boundary')).toBe(true);
       expect(trace.events.some((event) => event.event_type === 'run.completed')).toBe(true);
       expect(trace.events.every((event) => event.run_id === trace.metadata.id)).toBe(true);
     }
+    for (const { file, trace } of traces) {
+      if (file === 'side-effect-intent-live-adapter.boundary.json') continue;
+      expect(trace.events.some((event) => event.event_type === 'health.check')).toBe(true);
+    }
+
+    const sideEffectTrace = traces.find(({ file }) => file === 'side-effect-intent-live-adapter.boundary.json')?.trace;
+    expect(sideEffectTrace).toBeDefined();
+    expect(sideEffectTrace?.metadata.status).toBe('needs_approval');
+    expect(sideEffectTrace?.events.map((event) => event.event_type)).toEqual([
+      'adapter.tick',
+      'tool.requested',
+      'aag.decision',
+      'approval.required',
+      'adapter.redacted_boundary',
+      'run.completed',
+    ]);
+    expect(sideEffectTrace?.events).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          event_type: 'tool.requested',
+          risk: 'medium',
+          status: 'needs_approval',
+          tool: 'redacted-side-effect-intent-counter',
+          summary: expect.stringContaining('2 category bucket(s)'),
+        }),
+        expect.objectContaining({
+          event_type: 'aag.decision',
+          decision: 'side_effects_require_approval',
+          risk: 'high',
+          status: 'needs_approval',
+        }),
+        expect.objectContaining({
+          event_type: 'approval.required',
+          decision: 'approval_required',
+          risk: 'high',
+          status: 'needs_approval',
+          summary: expect.stringContaining('AAG kept'),
+        }),
+      ])
+    );
 
     await rm(aiStackRoot, { recursive: true, force: true });
     await rm(targetDir, { recursive: true, force: true });

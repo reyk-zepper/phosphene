@@ -56,6 +56,7 @@ Currently working:
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
 - AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, with a 30-minute freshness check and no live agent telemetry
 - AI Node Live Adapter panel loaded from `/snapshots/live/latest.json` as redacted near-live Boundary output, with a 10-minute freshness check and no raw live telemetry
+- Redacted side-effect intent adapter trace for AAG approval-boundary markers, category counts, and held side-effect intents without action arguments or provider payloads
 - Graph export buttons for SVG and PNG downloads from the current canvas
 - Copyable share links for the active mode, graph/trace, and selected node
 - Graph search with text, type, confidence, and mind-change pattern queries
@@ -72,7 +73,7 @@ Currently working:
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI AI Node live adapter generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
 - CLI Hermes live adapter generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
-- CLI multi-service live adapter generator for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
+- CLI multi-service live adapter generator for Hermes, AAG, OpenClaw, Sentinel, Gmail, Workspace, and side-effect intent boundaries via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
 - AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs redacted canary plus live-adapter status across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -82,7 +83,7 @@ Currently working:
 
 Still not built:
 
-- Raw live AI-node telemetry, private payload capture, or side-effect-level agent observation
+- Raw live AI-node telemetry, private payload capture, provider calls, or raw side-effect execution observation
 
 ### Tech stack
 
@@ -190,7 +191,7 @@ phosphene/
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
-- **v0.3** — AI-node live adapters; generic, Hermes, and multi-service marker adapters ✅; deeper side-effect-aware adapters remain
+- **v0.3** — AI-node live adapters; generic, Hermes, multi-service marker, and redacted side-effect intent adapters ✅; raw side-effect execution observation remains non-scope
 - **v0.4** — Portable session bundles ✅; hosted session workflows remain
 - **v0.5+** — Scoped parser/graph package surface plus ESM/declaration builds, pack dry-run, runtime/type tarball smokes, scoped npm metadata, and dry-run publish gate ✅; real npm publish remains manual
 
@@ -247,6 +248,7 @@ Funktioniert bereits:
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
 - AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status mit 30-Minuten-Freshness-Check, nicht als Live-Agenten-Telemetrie
 - AI-Node-Live-Adapter-Statuspanel aus `/snapshots/live/latest.json` als redigierte Near-Live-Boundary-Ausgabe mit 10-Minuten-Freshness-Check, nicht als rohe Live-Telemetrie
+- Redigierter Side-Effect-Intent-Adapter-Trace fuer AAG-Approval-Boundary-Marker, Kategorie-Counts und gehaltene Side-Effect-Intents ohne Action-Argumente oder Provider-Payloads
 - Graph-Export-Buttons fuer SVG- und PNG-Downloads aus dem aktuellen Canvas
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
@@ -263,7 +265,7 @@ Funktioniert bereits:
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI-AI-Node-Live-Adapter-Generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
 - CLI-Hermes-Live-Adapter-Generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
-- CLI-Multi-Service-Live-Adapter-Generator fuer Hermes, AAG, OpenClaw, Sentinel, Gmail und Workspace via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
+- CLI-Multi-Service-Live-Adapter-Generator fuer Hermes, AAG, OpenClaw, Sentinel, Gmail, Workspace und Side-Effect-Intent-Boundaries via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
 - AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert redigierten Canary- sowie Live-Adapter-Status über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -381,7 +383,7 @@ phosphene/
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
-- **v0.3** — AI-Node-Live-Adapter; generischer, Hermes- und Multi-Service-Marker-Adapter ✅; tiefere Side-Effect-Adapter offen
+- **v0.3** — AI-Node-Live-Adapter; generischer, Hermes-, Multi-Service-Marker- und redigierter Side-Effect-Intent-Adapter ✅; rohe Side-Effect-Ausfuehrungsbeobachtung bleibt Non-Scope
 - **v0.4** — Portable Session-Bundles ✅; gehostete Session-Workflows offen
 - **v0.5+** — Scoped Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run, Runtime-/Type-Tarball-Smokes, scoped npm-Metadaten und Dry-Run-Publish-Gate ✅; realer npm Publish bleibt manuell
 

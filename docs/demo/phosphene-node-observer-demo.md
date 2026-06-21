@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.32`
+- App version: `v0.1.33`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -26,6 +26,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Generate a redacted near-live AI Node adapter pack and sync it into served `/snapshots/live/` output.
 - Generate a redacted Hermes near-live adapter pack from coarse Hermes operational markers only.
 - Generate a redacted multi-service near-live adapter pack for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace from marker counts and file stats only.
+- Generate a redacted side-effect intent trace from AAG approval-boundary markers and category counts only.
 - Export and import portable Reasoning Lab session JSON bundles locally without putting graph content into share URLs.
 - Use scoped source-level parser/graph package entry points for future standalone extraction without pulling in app, UI, store, adapter, or demo modules.
 - Build importable parser/graph ESM artifacts plus declarations via `pnpm build:packages`.
@@ -93,10 +94,16 @@ Use this for the v0.1.24 multi-service adapter path:
 Phosphene can now show separated redacted near-live adapter traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace in the shared AI Node Live Adapter group. The AI Node adapter emits marker presence, count-only runtime shape, coarse file classes, and modified-time markers. It still does not expose logs, config values, prompts, host paths, private URLs, credentials, provider payloads, Gmail message content, or Workspace document content.
 ```
 
+Use this for the v0.1.33 side-effect intent adapter path:
+
+```text
+Phosphene can now show a redacted side-effect intent trace in the shared AI Node Live Adapter group. The adapter emits only AAG approval-boundary markers, side-effect category counts, and held-intent status. It still does not expose action arguments, recipients, provider payloads, Gmail message content, Workspace document content, or execute side effects.
+```
+
 Use this when explaining the current limitation:
 
 ```text
-The live adapter path is marker-level only. It proves redacted service boundaries and freshness, but Phosphene still does not observe raw live agent content, private side effects, provider calls, Gmail messages, or Workspace documents.
+The live adapter path is redacted-marker and intent-count only. It proves service boundaries, freshness, and AAG approval boundaries, but Phosphene still does not observe raw live agent content, private side effects, provider calls, Gmail messages, or Workspace documents.
 ```
 
 ## What Not To Claim
