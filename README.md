@@ -22,7 +22,7 @@ Phosphene has two modes:
 - **Reasoning Lab** turns model reasoning traces into an **interactive visual graph**. Instead of scrolling through walls of raw "thinking" text, you see each step of the model's thought process as a glowing node — categorized by type (hypothesis, analysis, revision, decision…), connected by organic edges, explorable with click, zoom, and pan.
 - **Node Observer** renders redacted AI-node traces so runs, events, systems, statuses, risks, decisions, and recovery steps are understandable without exposing private payloads.
 
-Node Observer v0.1 uses **redacted Boundary output only**, including built-in demos, grouped Hermes synthetic handoff fixtures generated on the AI Node, published redacted snapshots, and an optional near-live adapter snapshot boundary. It is not a raw live Hermes/AAG/OpenClaw/Sentinel telemetry integration.
+Node Observer v0.1 uses **redacted Boundary output only**, including built-in demos, grouped Hermes synthetic handoff fixtures generated on the AI Node, published redacted snapshots, and optional near-live adapter snapshot boundaries. It is not a raw live Hermes/AAG/OpenClaw/Sentinel/Gmail/Workspace telemetry or content integration.
 
 **The metaphor:** Phosphenes are the light patterns you see when you close your eyes and press on them — light generated *by the brain itself*, not by anything external. That's exactly what this tool does: it makes the inner light of AI reasoning visible.
 
@@ -70,6 +70,7 @@ Currently working:
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI AI Node live adapter generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
 - CLI Hermes live adapter generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
+- CLI multi-service live adapter generator for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
 - AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs redacted canary plus live-adapter status across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -77,9 +78,9 @@ Currently working:
 - Click to inspect, zoom & pan the canvas
 - Strict TypeScript, Tailwind 4, React 19
 
-Not yet built:
+Still not built:
 
-- Domain-specific live AI-node adapters for AAG, OpenClaw, Sentinel, Gmail, or Workspace
+- Raw live AI-node telemetry, private payload capture, or side-effect-level agent observation
 
 ### Tech stack
 
@@ -179,7 +180,7 @@ phosphene/
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
-- **v0.3** — AI-node live adapters; Hermes adapter ✅, AAG/OpenClaw/Sentinel/Gmail/Workspace remain
+- **v0.3** — AI-node live adapters; generic, Hermes, and multi-service marker adapters ✅; deeper side-effect-aware adapters remain
 - **v0.4** — Hosted/portable session workflows
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
@@ -202,7 +203,7 @@ Phosphene hat zwei Modi:
 - **Reasoning Lab** macht den verborgenen Denkprozess großer Sprachmodelle zu einem **interaktiven visuellen Graphen**. Statt endlose "Thinking"-Textblöcke zu scrollen, siehst du jeden Schritt des Reasonings als leuchtenden Node — kategorisiert nach Typ (Hypothese, Analyse, Korrektur, Entscheidung…), verbunden durch organische Kanten, explorierbar mit Klick, Zoom und Pan.
 - **Node Observer** rendert redigierte AI-Node-Traces, damit Runs, Events, beteiligte Systeme, Status, Risiko, Entscheidungen und Recovery-Schritte verständlich werden, ohne private Payloads offenzulegen.
 
-Node Observer v0.1 nutzt **nur redigierte Boundary-Ausgabe**, inklusive Built-in-Demos, gruppierter Hermes Synthetic Handoff Fixtures vom AI Node, veröffentlichter redigierter Snapshots und optionaler Near-Live-Adapter-Snapshot-Boundary. Es ist keine rohe Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
+Node Observer v0.1 nutzt **nur redigierte Boundary-Ausgabe**, inklusive Built-in-Demos, gruppierter Hermes Synthetic Handoff Fixtures vom AI Node, veröffentlichter redigierter Snapshots und optionaler Near-Live-Adapter-Snapshot-Boundaries. Es ist keine rohe Live-Telemetrie- oder Content-Integration für Hermes/AAG/OpenClaw/Sentinel/Gmail/Workspace.
 
 **Die Metapher:** Phosphene sind die Lichterscheinungen, die du siehst, wenn du die Augen schließt und darauf drückst — Licht, das vom *Gehirn selbst* erzeugt wird, nicht von außen. Genau das tut dieses Tool: es macht das innere Licht der KI sichtbar.
 
@@ -250,6 +251,7 @@ Funktioniert bereits:
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI-AI-Node-Live-Adapter-Generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
 - CLI-Hermes-Live-Adapter-Generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
+- CLI-Multi-Service-Live-Adapter-Generator fuer Hermes, AAG, OpenClaw, Sentinel, Gmail und Workspace via `pnpm generate:service-live-adapters -- --target <boundary-pack-dir>`
 - AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert redigierten Canary- sowie Live-Adapter-Status über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -259,7 +261,7 @@ Funktioniert bereits:
 
 Noch nicht gebaut:
 
-- Domain-spezifische Live-AI-Node-Adapter für AAG, OpenClaw, Sentinel, Gmail oder Workspace
+- Rohe Live-AI-Node-Telemetrie, private Payload-Erfassung oder Side-Effect-Level-Agentenbeobachtung
 
 ### Tech-Stack
 
@@ -359,7 +361,7 @@ phosphene/
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
-- **v0.3** — AI-Node-Live-Adapter; Hermes-Adapter ✅, AAG/OpenClaw/Sentinel/Gmail/Workspace offen
+- **v0.3** — AI-Node-Live-Adapter; generischer, Hermes- und Multi-Service-Marker-Adapter ✅; tiefere Side-Effect-Adapter offen
 - **v0.4** — Gehostete/portable Session-Workflows
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 

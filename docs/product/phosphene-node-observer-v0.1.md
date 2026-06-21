@@ -205,13 +205,20 @@ v0.1.23 adds the first domain-specific Hermes live adapter:
 - The generated Boundary pack uses a Hermes source manifest and `hermes-live-adapter.boundary.json`, but the served `latest.json` marker still follows the shared `/snapshots/live/` live-adapter contract.
 - The generator and wrapper explicitly prevent raw Hermes config values, prompts, log lines, private URLs, credentials, provider payloads, Gmail/Workspace content, or host paths from being emitted.
 
+v0.1.24 adds the multi-service live adapter suite:
+
+- The AI Node service generator writes one shared `ai-node-live-*` pack with separated redacted Boundary traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace.
+- The generator observes only marker existence, coarse size bands, modified-time markers, and count-only operational shapes from known AI-node service directories.
+- The AI Node wrapper syncs the pack through the same `/snapshots/live/latest.json` contract used by the generic and Hermes adapters.
+- The generator and tests prevent raw logs, config values, prompts, host paths, private URLs, credentials, provider payloads, Gmail message content, Workspace document content, and user content from being emitted.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
 - Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
 - Published snapshot status appears as an operator panel below the selected run summary.
-- AI Node Live Adapter status appears as an operator panel below the selected run summary and can add the latest redacted adapter trace as its own Observer group.
+- AI Node Live Adapter status appears as an operator panel below the selected run summary and can add the latest redacted adapter trace or multi-service adapter traces as its own Observer group.
 - Intake results appear as a compact table below the run summary after local JSON upload.
 - Readiness status appears below the run summary and shows live-adapter ready, partial, blocked, or not-connected state without claiming raw live telemetry.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
@@ -273,6 +280,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.21 exposes full side-by-side same-prompt graph canvases with graph-aware selection and pane metadata tests.
 - v0.1.22 exposes redacted near-live AI Node adapter loading from `/snapshots/live/latest.json`, AI Node generator/wrapper support, deployment sync, and no-raw-telemetry UI boundaries.
 - v0.1.23 exposes a redacted Hermes live-adapter generator and AI Node wrapper that publish Hermes operational markers through the shared `/snapshots/live/` boundary without leaking Hermes file content.
+- v0.1.24 exposes a redacted multi-service live-adapter generator and AI Node wrapper for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace marker traces through the shared `/snapshots/live/` boundary without leaking service file content.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

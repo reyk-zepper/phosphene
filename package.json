@@ -1,7 +1,7 @@
 {
   "name": "phosphene",
   "private": true,
-  "version": "0.1.23",
+  "version": "0.1.24",
   "type": "module",
   "description": "See how AI thinks. Open-source AI reasoning visualizer.",
   "packageManager": "pnpm@10.32.1",
@@ -16,7 +16,8 @@
     "publish:snapshot": "node scripts/publish-snapshot.mjs",
     "generate:canary": "node scripts/generate-ai-node-canary-snapshot.mjs",
     "generate:live-adapter": "node scripts/generate-ai-node-live-adapter-snapshot.mjs",
-    "generate:hermes-live-adapter": "node scripts/generate-ai-node-hermes-live-adapter-snapshot.mjs"
+    "generate:hermes-live-adapter": "node scripts/generate-ai-node-hermes-live-adapter-snapshot.mjs",
+    "generate:service-live-adapters": "node scripts/generate-ai-node-service-live-adapters-snapshot.mjs"
   },
   "dependencies": {
     "d3": "^7.9.0",

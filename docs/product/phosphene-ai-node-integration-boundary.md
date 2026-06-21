@@ -168,6 +168,29 @@ It emits only coarse Hermes operational markers:
 
 It must not emit Hermes config values, cron prompts, job IDs, log lines, private URLs, credentials, provider payloads, Gmail/Workspace content, host paths, or raw user content. The wrapper updates the same `/snapshots/live/latest.json` served boundary as the generic live adapter.
 
+Multi-service live adapter after v0.1.24:
+
+```bash
+/Users/raik./ai-stack/scripts/generate-phosphene-service-live-adapters-snapshot.sh
+```
+
+The service adapter writes one redacted Boundary pack below the shared live-adapter root:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live/
+```
+
+It emits separated Boundary trace files for:
+
+- `hermes-live-adapter.boundary.json`
+- `aag-live-adapter.boundary.json`
+- `openclaw-live-adapter.boundary.json`
+- `sentinel-live-adapter.boundary.json`
+- `gmail-live-adapter.boundary.json`
+- `workspace-live-adapter.boundary.json`
+
+It emits only service marker existence, coarse file classes, modified-time markers, and count-only operational shapes. It must not emit logs, config values, prompts, host paths, private URLs, credentials, provider payloads, Gmail message content, Workspace document content, or raw user content. The wrapper updates the same `/snapshots/live/latest.json` served boundary as the generic and Hermes adapters.
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -231,15 +254,16 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: partially implemented. Phosphene now has a generic redacted near-live adapter path and the first domain-specific Hermes adapter:
+Status: implemented for the redacted marker-level adapter layer. Phosphene now has a generic redacted near-live adapter path, the first domain-specific Hermes adapter, and a multi-service marker adapter:
 
 - the AI Node generator writes `ai-node-live-*` Boundary packs and a redacted `latest.json` marker under the handoff root, normally `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live`;
 - the deploy helper syncs that marker and pack into served static output at `/snapshots/live/`;
 - the browser loader polls `/snapshots/live/latest.json`, validates the marker, loads the referenced manifest/traces/report, and renders the adapter trace as `AI Node Live Adapter`;
 - the UI keeps `No raw live telemetry` visible and blocks marker content that contains host paths, private URLs, secrets, email addresses, or provider payload markers.
 - the Hermes adapter can publish `hermes-live-adapter.boundary.json` using only coarse Hermes operational markers, with no raw config values, prompts, logs, private URLs, credentials, provider payloads, or user content.
+- the service adapter can publish separated redacted marker traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace in one shared `ai-node-live-*` pack, with no raw service content, host paths, provider payloads, Gmail message content, or Workspace document content.
 
-This is not yet a domain-specific live AAG/OpenClaw/Sentinel/Gmail/Workspace adapter. The first Hermes adapter is intentionally limited to redacted operational markers before attaching more sensitive agent-side systems.
+This is still not raw live telemetry or side-effect-level agent observation. The current adapters are intentionally limited to redacted operational markers before attaching more sensitive agent-side systems.
 
 ## Security Rules
 

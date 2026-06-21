@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.23`
+- App version: `v0.1.24`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -25,6 +25,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - See the `AI Node Live Adapter` panel with freshness, manifest hash, retention, validation state, and no-raw-live-telemetry status.
 - Generate a redacted near-live AI Node adapter pack and sync it into served `/snapshots/live/` output.
 - Generate a redacted Hermes near-live adapter pack from coarse Hermes operational markers only.
+- Generate a redacted multi-service near-live adapter pack for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace from marker counts and file stats only.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -79,10 +80,16 @@ Use this for the v0.1.23 Hermes adapter path:
 Phosphene can now show a Hermes-specific near-live adapter trace generated on the AI Node from coarse operational markers only: marker presence, size bands, modified-time markers, public gateway status labels, and structural cron-job counts. It still does not expose Hermes prompts, logs, config values, credentials, private URLs, Gmail/Workspace content, or provider payloads.
 ```
 
+Use this for the v0.1.24 multi-service adapter path:
+
+```text
+Phosphene can now show separated redacted near-live adapter traces for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace in the shared AI Node Live Adapter group. The AI Node adapter emits marker presence, count-only runtime shape, coarse file classes, and modified-time markers. It still does not expose logs, config values, prompts, host paths, private URLs, credentials, provider payloads, Gmail message content, or Workspace document content.
+```
+
 Use this when explaining the current limitation:
 
 ```text
-The generic near-live adapter path and first Hermes operational adapter exist, but Phosphene does not yet observe live AAG/OpenClaw/Sentinel/Gmail/Workspace agent content. Those adapters still need their own redaction and Boundary emitters.
+The live adapter path is marker-level only. It proves redacted service boundaries and freshness, but Phosphene still does not observe raw live agent content, private side effects, provider calls, Gmail messages, or Workspace documents.
 ```
 
 ## What Not To Claim
@@ -133,6 +140,8 @@ pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphe
 pnpm generate:live-adapter -- --target /tmp/phosphene-live-adapter-check --latest-file /tmp/phosphene-live-adapter-latest.json
 mkdir -p /tmp/phosphene-empty-hermes-home/cron /tmp/phosphene-empty-hermes-home/logs
 pnpm generate:hermes-live-adapter -- --target /tmp/phosphene-hermes-live-adapter-check --latest-file /tmp/phosphene-hermes-live-adapter-latest.json --hermes-home /tmp/phosphene-empty-hermes-home
+mkdir -p /tmp/phosphene-empty-ai-stack
+pnpm generate:service-live-adapters -- --target /tmp/phosphene-service-live-adapters-check --latest-file /tmp/phosphene-service-live-adapters-latest.json --ai-stack-root /tmp/phosphene-empty-ai-stack
 pnpm lint
 pnpm build
 ```
@@ -151,6 +160,7 @@ ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-live-adapter-snapshot.sh'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-hermes-live-adapter-snapshot.sh'
+ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-service-live-adapters-snapshot.sh'
 ssh rAIk.mini 'launchctl print "gui/$(id -u)/com.raik.phosphene-canary" | grep -E "run interval|last exit code|runs"'
 ```
 
