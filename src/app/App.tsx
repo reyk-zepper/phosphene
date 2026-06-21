@@ -7,6 +7,7 @@ import { PromptInput } from '@/components/prompt/PromptInput';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
 import { GraphComparisonPanel } from '@/components/graph/GraphComparisonPanel';
+import { GraphStatsPanel } from '@/components/graph/GraphStatsPanel';
 import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
@@ -231,7 +232,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.14
+              v0.1.15
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -271,7 +272,8 @@ export function App() {
         <GraphCanvas shareUrl={shareUrl} />
       </main>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-w-[calc(100vw-2rem)] flex-col gap-3 sm:flex">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-h-[calc(100vh-9rem)] max-w-[calc(100vw-2rem)] flex-col gap-3 overflow-y-auto pr-1 sm:flex">
+        {mode === 'reasoning' && graph && <GraphStatsPanel graph={graph} />}
         {mode === 'reasoning' && graph && comparisonGraph && (
           <GraphComparisonPanel primaryGraph={graph} secondaryGraph={comparisonGraph} />
         )}

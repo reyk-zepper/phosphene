@@ -59,6 +59,7 @@ Currently working:
 - Copyable share links for the active mode, graph/trace, and selected node
 - Graph search with text, type, confidence, and mind-change pattern queries
 - Graph comparison panel for same-prompt demo runs with metric, confidence, and node-type deltas
+- Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -232,6 +233,7 @@ Funktioniert bereits:
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
 - Graph-Vergleichspanel fuer Same-Prompt-Demo-Runs mit Metrik-, Confidence- und Node-Typ-Deltas
+- Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`

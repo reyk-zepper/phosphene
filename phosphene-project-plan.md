@@ -54,7 +54,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 
 **Nice to Have (v0.2):**
 - [ ] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
-- [ ] Reasoning-Stats: Token-Count, Tiefe, Verzweigungen, Confidence-Heatmap
+- [x] Reasoning-Stats: Token-Count, Tiefe, Verzweigungen, Confidence-Heatmap
 - [x] Shareable Links (Graph als URL)
 - [ ] Prompt-History / Session-Management
 - [ ] Keyboard-Shortcuts für Navigation
@@ -318,13 +318,13 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 **Ziel:** Multi-Model, Community-Features
 
 - [ ] Side-by-Side-Vergleich (gleicher Prompt, zwei Modelle)
-- [ ] Reasoning-Heatmap (wo verbringt das Modell die meiste "Denkzeit"?)
+- [x] Reasoning-Heatmap (wo verbringt das Modell die meiste "Denkzeit"?)
 - [x] Shareable Graphs (URL-basiert)
 - [ ] Gemini Adapter
 - [ ] Ollama/Local Adapter
 - [x] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"
 - [x] Graph-Comparison-Foundation: Metrik-, Confidence- und Node-Typ-Deltas fuer Same-Prompt-Runs
-- [ ] Reasoning-Stats Dashboard
+- [x] Reasoning-Stats Dashboard
 
 ### Phase 5: Constitution Bridge (Monat 5+)
 **Ziel:** Cortex-Engine extrahieren, Constitution vorbereiten
