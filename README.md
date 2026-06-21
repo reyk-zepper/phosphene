@@ -65,6 +65,7 @@ Currently working:
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
+- Source-level public parser and graph entry points via `phosphene/parser` and `phosphene/graph` exports for future standalone package extraction
 - Prompt input with Anthropic/OpenAI/Gemini/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, and API key modal
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
@@ -169,6 +170,7 @@ phosphene/
 │   │   ├── adapters/        # LLM API adapters
 │   │   ├── graph/           # Graph operations (layout, search, compare, export)
 │   │   └── store/           # Zustand stores
+│   ├── packages/            # Source-level parser/graph public entry points
 │   ├── hooks/
 │   ├── styles/              # Design tokens + graph CSS
 │   ├── utils/
@@ -183,7 +185,7 @@ phosphene/
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
 - **v0.3** — AI-node live adapters; generic, Hermes, and multi-service marker adapters ✅; deeper side-effect-aware adapters remain
 - **v0.4** — Portable session bundles ✅; hosted session workflows remain
-- **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
+- **v0.5+** — Source-level parser/graph package surface ✅; standalone npm package publishing remains
 
 ### Contributing
 
@@ -247,6 +249,7 @@ Funktioniert bereits:
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
+- Source-Level Public Entry Points fuer Parser und Graph via `phosphene/parser` und `phosphene/graph` als Vorbereitung fuer spaetere Standalone-Packages
 - Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
@@ -351,6 +354,7 @@ phosphene/
 │   │   ├── adapters/        # LLM API-Adapter
 │   │   ├── graph/           # Graph-Operationen (Layout, Suche, Vergleich, Export)
 │   │   └── store/           # Zustand Stores
+│   ├── packages/            # Source-Level Public Entry Points fuer Parser/Graph
 │   ├── hooks/
 │   ├── styles/              # Design Tokens + Graph CSS
 │   ├── utils/
@@ -365,7 +369,7 @@ phosphene/
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes- und Multi-Service-Marker-Adapter ✅; tiefere Side-Effect-Adapter offen
 - **v0.4** — Portable Session-Bundles ✅; gehostete Session-Workflows offen
-- **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
+- **v0.5+** — Source-Level Parser/Graph Package Surface ✅; Standalone npm Publishing offen
 
 ### Mitwirken
 

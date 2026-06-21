@@ -1,4 +1,9 @@
 import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
+import {
+  collectGraphEdges,
+  flattenGraph as flattenReasoningGraph,
+  type GraphEdge,
+} from '@/core/graph/traversal';
 
 const node = (
   id: string,
@@ -509,29 +514,6 @@ export const DEMO_REASONING_PROMPTS: DemoReasoningPrompt[] = [
   },
 ];
 
-export function flattenGraph(root: ReasoningNode): ReasoningNode[] {
-  const out: ReasoningNode[] = [];
-  const walk = (n: ReasoningNode) => {
-    out.push(n);
-    n.children.forEach(walk);
-  };
-  walk(root);
-  return out;
-}
-
-export interface GraphEdgeTuple {
-  from: string;
-  to: string;
-}
-
-export function collectEdges(root: ReasoningNode): GraphEdgeTuple[] {
-  const edges: GraphEdgeTuple[] = [];
-  const walk = (n: ReasoningNode) => {
-    for (const child of n.children) {
-      edges.push({ from: n.id, to: child.id });
-      walk(child);
-    }
-  };
-  walk(root);
-  return edges;
-}
+export type GraphEdgeTuple = GraphEdge;
+export const flattenGraph = flattenReasoningGraph;
+export const collectEdges = collectGraphEdges;

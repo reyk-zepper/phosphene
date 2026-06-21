@@ -1,4 +1,5 @@
 import type { ReasoningGraph, ReasoningNode, ReasoningNodeType } from '@/core/parser/types';
+import { flattenGraph } from '@/core/graph/traversal';
 
 export type GraphComparisonMetricId =
   | 'nodes'
@@ -217,16 +218,6 @@ function averageConfidence(nodes: ReasoningNode[]): number | null {
     .filter((value): value is number => typeof value === 'number');
   if (values.length === 0) return null;
   return roundNumber(values.reduce((sum, value) => sum + value, 0) / values.length);
-}
-
-function flattenGraph(root: ReasoningNode): ReasoningNode[] {
-  const nodes: ReasoningNode[] = [];
-  const walk = (node: ReasoningNode) => {
-    nodes.push(node);
-    node.children.forEach(walk);
-  };
-  walk(root);
-  return nodes;
 }
 
 function normalizePrompt(prompt: string): string {

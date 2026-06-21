@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSessionStore } from '@/core/store/sessionStore';
-import { flattenGraph } from '@/constants/demoGraph';
+import { flattenGraph } from '@/core/graph/traversal';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 
 const EVENT_FIELD_GROUPS = [

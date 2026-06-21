@@ -10,7 +10,7 @@ import {
 import { layoutGraph, type LaidOutEdge } from '@/core/graph/layout';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 import { NodeTooltip } from './NodeTooltip';
-import { flattenGraph } from '@/constants/demoGraph';
+import { flattenGraph } from '@/core/graph/traversal';
 import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
 
 const NODE_RADIUS = 14;

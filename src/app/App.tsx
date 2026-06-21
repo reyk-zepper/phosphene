@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Settings } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
-import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
+import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH } from '@/constants/demoGraph';
+import { flattenGraph } from '@/core/graph/traversal';
 import { PromptInput } from '@/components/prompt/PromptInput';
 import { DemoPromptGallery } from '@/components/prompt/DemoPromptGallery';
 import { SessionHistoryPanel } from '@/components/history/SessionHistoryPanel';
@@ -278,7 +279,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.25
+              v0.1.26
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />

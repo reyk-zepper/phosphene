@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSessionStore } from '@/core/store/sessionStore';
-import { flattenGraph } from '@/constants/demoGraph';
+import { flattenGraph } from '@/core/graph/traversal';
 import { searchGraphNodes } from '@/core/graph/search';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
 

@@ -219,6 +219,13 @@ v0.1.25 adds portable Reasoning Lab session bundles:
 - Bundle import validates schema, source, classification, graph shape, and secret-like content before replacing the active graph and adding it to local history.
 - The Session History panel exposes compact icon controls for exporting the active graph and importing a local JSON session bundle without storing content in the URL or contacting a server.
 
+v0.1.26 adds the source-level package surface for later parser/graph extraction:
+
+- `package.json` declares `./parser` and `./graph` exports that point at source entry points under `src/packages/`.
+- `src/packages/parser.ts` exposes parser primitives and reasoning graph types without importing UI, app, store, adapter, or demo modules.
+- `src/packages/graph.ts` exposes graph build, compare, export, search, stats, side-by-side, and traversal primitives from one package-safe entry point.
+- Generic graph traversal moved into `src/core/graph/traversal.ts`, so reusable layout/compare code no longer imports demo graph constants.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -289,6 +296,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.23 exposes a redacted Hermes live-adapter generator and AI Node wrapper that publish Hermes operational markers through the shared `/snapshots/live/` boundary without leaking Hermes file content.
 - v0.1.24 exposes a redacted multi-service live-adapter generator and AI Node wrapper for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace marker traces through the shared `/snapshots/live/` boundary without leaking service file content.
 - v0.1.25 exposes portable Reasoning Lab session JSON export/import with schema validation, graph-shape validation, and secret-like-content rejection.
+- v0.1.26 exposes source-level `phosphene/parser` and `phosphene/graph` package entry points and keeps them independent from app, UI, stores, adapters, and demo constants.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

@@ -1,6 +1,6 @@
 import dagre from 'dagre';
 import type { ReasoningGraph, ReasoningNode } from '@/core/parser/types';
-import { collectEdges, flattenGraph } from '@/constants/demoGraph';
+import { collectGraphEdges, flattenGraph } from '@/core/graph/traversal';
 
 export interface LaidOutNode {
   node: ReasoningNode;
@@ -42,7 +42,7 @@ export function layoutGraph(graph: ReasoningGraph): LaidOutGraph {
     g.setNode(n.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
   }
 
-  const edgeTuples = collectEdges(graph.rootNode);
+  const edgeTuples = collectGraphEdges(graph.rootNode);
   for (const e of edgeTuples) {
     g.setEdge(e.from, e.to);
   }
