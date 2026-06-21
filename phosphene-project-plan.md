@@ -282,7 +282,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [ ] GitHub Org `phosphene-ai` erstellen
 - [x] Repo `phosphene` mit Vite + React + TypeScript
 - [x] Project Structure (siehe unten)
-- [ ] README mit Vision, Screenshots (Mockup), Contributing Guide
+- [x] README mit Vision, Screenshots (Mockup), Contributing Guide
 - [x] Basic UI Shell: Prompt-Input, Graph-Canvas, Detail-Panel
 - [x] Statischer Demo-Graph mit Fake-Data (zum Design iterieren)
 - [x] D3 Graph-Rendering mit dagre Layout
@@ -310,7 +310,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [x] Performance-Optimierung (große Graphen)
 - [x] Mobile-Responsive (mindestens viewable)
 - [ ] Landing Page (phosphene.dev)
-- [ ] README polieren: GIF-Demo, Badges, Quick Start
+- [x] README polieren: GIF-Demo, Badges, Quick Start
 - [x] Open Source License (MIT)
 - [ ] Launch: HackerNews, Reddit r/MachineLearning, Twitter/X
 

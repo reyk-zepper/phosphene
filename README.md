@@ -9,6 +9,22 @@ Explore two modes: **Reasoning Lab** for model reasoning graphs, and **Node Obse
 
 [English](#english) · [Deutsch](#deutsch)
 
+<p align="center">
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-00f5d4?style=flat-square">
+  <img alt="TypeScript strict" src="https://img.shields.io/badge/typescript-strict-4cc9f0?style=flat-square">
+  <img alt="React 19" src="https://img.shields.io/badge/react-19-7b61ff?style=flat-square">
+  <img alt="Vite 6" src="https://img.shields.io/badge/vite-6-f72585?style=flat-square">
+  <img alt="Client only" src="https://img.shields.io/badge/runtime-client--only-b5e48c?style=flat-square">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/reyk-zepper/phosphene/main/docs/assets/phosphene-reasoning-lab-v0.1.42.png" alt="Phosphene Reasoning Lab showing an answer-review reasoning graph with stats, detected patterns, annotations, and export controls." width="100%">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/reyk-zepper/phosphene/main/docs/assets/phosphene-demo-v0.1.42.gif" alt="Phosphene demo showing answer review, side-by-side comparison, and AI-node observability demo graphs." width="100%">
+</p>
+
 </div>
 
 ---
@@ -68,6 +84,8 @@ Currently working:
 - Reasoning Pattern Library panel that detects evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors
 - Client-local collaborative annotation panel for graph/node review notes, status, priority, author labels, and portable JSON annotation bundle import/export
 - Client-local Constitution panel for defining graph rules and evaluating reasoning against evidence, decision, uncertainty, confidence, text, and depth checks
+- Mobile/tablet shell that keeps controls viewable, scrollable, and clickable across narrow and tablet-width viewports
+- Stack-safe graph traversal for very deep graphs, including a 12,000-node regression case
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
 - Static hosted Reasoning Lab session workflow: `/sessions/hosted/latest.json` points to a public portable session bundle, the browser verifies SHA-256 and portable-session guardrails, and loading remains an explicit user action
@@ -118,7 +136,7 @@ Phosphene is a **client-only SPA**. No backend, no database, no server. Everythi
 
 For Node Observer, Hermes and live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, AI-node-published snapshots, or served redacted adapter markers. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
-### Getting started
+### Quick Start
 
 **Prerequisites:** Node.js ≥ 20, pnpm ≥ 9.
 
@@ -247,7 +265,7 @@ Gebaut für:
 Funktioniert bereits:
 
 - Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
-- Vier kuratierte Reasoning-Lab-Demo-Prompts fuer Reasoning-Exploration ohne API-Key
+- Fuenf kuratierte Reasoning-Lab-Demo-Prompts fuer Reasoning-Exploration ohne API-Key
 - Node Observer mit vier redigierten AI-Node-Demo-Traces, gruppierten Hermes Synthetic Handoff Fixtures, veröffentlichter redigierter Snapshot-Gruppe und redigierter Near-Live-Adapter-Gruppe, wenn AI-Node-Ausgabe verfügbar ist
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
@@ -268,6 +286,8 @@ Funktioniert bereits:
 - Reasoning-Pattern-Library-Panel fuer Evidence-backed Hypotheses, Revision-Loops, Decision-Tradeoffs und Uncertainty-Probes mit stabilen Node-Ankern
 - Client-lokales Collaborative-Annotation-Panel fuer Graph-/Node-Review-Notizen, Status, Prioritaet, Autor-Labels und portable JSON-Annotation-Bundle-Imports/-Exports
 - Client-lokales Constitution-Panel zum Definieren von Graph-Regeln und Evaluieren von Reasoning gegen Evidence-, Decision-, Uncertainty-, Confidence-, Text- und Depth-Checks
+- Mobile-/Tablet-Shell, bei der Controls auf schmalen und mittleren Viewports sichtbar, scrollbar und klickbar bleiben
+- Stack-sichere Graph-Traversierung fuer sehr tiefe Graphen, inklusive 12.000-Node-Regressionsfall
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
 - Statischer gehosteter Reasoning-Lab-Session-Workflow: `/sessions/hosted/latest.json` verweist auf ein oeffentliches Portable-Session-Bundle, der Browser prueft SHA-256 und Portable-Session-Guardrails, und Laden bleibt eine explizite User-Aktion
@@ -318,7 +338,7 @@ Phosphene ist eine **Client-Only SPA**. Kein Backend, keine Datenbank, kein Serv
 
 Für den Node Observer laufen Hermes und Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports, AI-Node-publizierte Snapshots oder served redigierte Adapter-Marker. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
-### Setup
+### Schnellstart
 
 **Voraussetzungen:** Node.js ≥ 20, pnpm ≥ 9.
 
