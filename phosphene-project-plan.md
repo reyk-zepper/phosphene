@@ -309,7 +309,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [x] Keyboard-Navigation
 - [x] Performance-Optimierung (große Graphen)
 - [x] Mobile-Responsive (mindestens viewable)
-- [ ] Landing Page (phosphene.dev)
+- [x] Landing Page (phosphene.dev)
 - [x] README polieren: GIF-Demo, Badges, Quick Start
 - [x] Open Source License (MIT)
 - [ ] Launch: HackerNews, Reddit r/MachineLearning, Twitter/X

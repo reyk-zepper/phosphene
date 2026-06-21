@@ -136,6 +136,8 @@ Phosphene is a **client-only SPA**. No backend, no database, no server. Everythi
 
 For Node Observer, Hermes and live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, AI-node-published snapshots, or served redacted adapter markers. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
+The phosphene.dev-ready landing page is served at `/landing/`, while `/` stays the actual app.
+
 ### Quick Start
 
 **Prerequisites:** Node.js ≥ 20, pnpm ≥ 9.
@@ -337,6 +339,8 @@ Phosphene ist eine **Client-Only SPA**. Kein Backend, keine Datenbank, kein Serv
 - Die Einstiegshürde für Contributions ist minimal: `git clone && pnpm install && pnpm dev`
 
 Für den Node Observer laufen Hermes und Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports, AI-Node-publizierte Snapshots oder served redigierte Adapter-Marker. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
+
+Die phosphene.dev-faehige Landing Page wird unter `/landing/` ausgeliefert, waehrend `/` die eigentliche App bleibt.
 
 ### Schnellstart
 
