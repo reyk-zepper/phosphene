@@ -50,7 +50,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 - [ ] Live-Streaming: Graph baut sich auf während das Modell denkt
 - [ ] 3-5 Demo-Prompts für sofortigen Wow-Effekt
 - [ ] Dark-Mode-First Design (passt zur "Phosphene"-Metapher)
-- [ ] Export: Screenshot/PNG des Graphen
+- [x] Export: Screenshot/PNG des Graphen
 
 **Nice to Have (v0.2):**
 - [ ] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
@@ -305,7 +305,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 **Ziel:** Demo-Ready, teilbar, GitHub-Launch
 
 - [ ] 5 kuratierte Demo-Prompts (kein API-Key nötig, pre-cached)
-- [ ] Graph-Export (PNG, SVG)
+- [x] Graph-Export (PNG, SVG)
 - [ ] Keyboard-Navigation
 - [ ] Performance-Optimierung (große Graphen)
 - [ ] Mobile-Responsive (mindestens viewable)

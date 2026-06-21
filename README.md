@@ -55,6 +55,7 @@ Currently working:
 - Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
 - AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, with a 30-minute freshness check and no live agent telemetry
+- Graph export buttons for SVG and PNG downloads from the current canvas
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -70,7 +71,7 @@ Not yet built:
 - Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
 - Streaming reasoning parser
 - API key management
-- Graph export, search, comparison
+- Graph search, comparison, shareable links
 
 ### Tech stack
 
@@ -169,7 +170,7 @@ phosphene/
 - **v0.1** — UI shell, demo graph, node types, detail panel ✅
 - **v0.2** — Claude adapter with extended thinking + streaming parser + API key management
 - **v0.3** — OpenAI o-series and Gemini adapters, multi-provider comparison, graph export
-- **v0.4** — Graph search, side-by-side model comparison, shareable links, PNG/SVG export
+- **v0.4** — Graph search, side-by-side model comparison, shareable links
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
 ### Contributing
@@ -224,6 +225,7 @@ Funktioniert bereits:
 - Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
 - AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status mit 30-Minuten-Freshness-Check, nicht als Live-Agenten-Telemetrie
+- Graph-Export-Buttons fuer SVG- und PNG-Downloads aus dem aktuellen Canvas
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -239,7 +241,7 @@ Noch nicht gebaut:
 - Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
 - Streaming Reasoning-Parser
 - API-Key-Management
-- Graph Export, Suche, Vergleich
+- Graph-Suche, Vergleich, teilbare Links
 
 ### Tech-Stack
 
@@ -337,8 +339,8 @@ phosphene/
 
 - **v0.1** — UI-Shell, Demo-Graph, Node-Typen, Detail-Panel ✅
 - **v0.2** — Claude-Adapter mit Extended Thinking + Streaming-Parser + API-Key-Management
-- **v0.3** — OpenAI o-Series und Gemini-Adapter, Multi-Provider-Vergleich, Graph-Export
-- **v0.4** — Graph-Suche, Modell-Vergleich nebeneinander, teilbare Links, PNG/SVG-Export
+- **v0.3** — OpenAI o-Series und Gemini-Adapter, Multi-Provider-Vergleich
+- **v0.4** — Graph-Suche, Modell-Vergleich nebeneinander, teilbare Links
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 
 ### Mitwirken

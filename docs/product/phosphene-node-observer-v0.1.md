@@ -124,6 +124,13 @@ v0.1.10 makes the published snapshot easier to demo:
 - The panel summarizes snapshot status, source agent, data classification, manifest file count, validation status, and the no-live-telemetry boundary.
 - Blocked or partial snapshots surface visible errors while static demo traces remain available.
 
+v0.1.11 adds graph export from the active canvas:
+
+- Graph Canvas exposes compact SVG and PNG download controls.
+- SVG export writes a standalone document with embedded graph styles and a dark background.
+- PNG export renders the same standalone SVG through a browser canvas before download.
+- Export filenames are deterministic and include the graph id plus UTC timestamp.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -170,6 +177,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.8 provides a validated snapshot publisher CLI for AI Node-side redacted Boundary packs.
 - v0.1.9 preserves the published snapshot across normal AI Node deploys.
 - v0.1.10 exposes published snapshot status, source, classification, manifest, validation, and blocked-state errors in Node Observer.
+- v0.1.11 exposes SVG and PNG graph export from the active Graph Canvas.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
