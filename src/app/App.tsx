@@ -282,7 +282,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.41
+              v0.1.42
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -336,7 +336,7 @@ export function App() {
         )}
       </main>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-h-[calc(100vh-9rem)] max-w-[calc(100vw-2rem)] flex-col gap-3 overflow-y-auto pr-1 sm:flex">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-h-[calc(100vh-9rem)] max-w-[calc(100vw-2rem)] flex-col gap-3 overflow-y-auto pr-1 xl:flex">
         {mode === 'reasoning' && graph && <GraphStatsPanel graph={graph} />}
         {mode === 'reasoning' && graph && <PatternLibraryPanel graph={graph} />}
         {mode === 'reasoning' && graph && <AnnotationPanel graph={graph} />}

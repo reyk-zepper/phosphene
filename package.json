@@ -1,6 +1,6 @@
 {
   "name": "@reyk-zepper/phosphene",
-  "version": "0.1.41",
+  "version": "0.1.42",
   "type": "module",
   "description": "See how AI thinks. Open-source AI reasoning visualizer.",
   "license": "MIT",
