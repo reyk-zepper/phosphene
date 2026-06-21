@@ -64,6 +64,11 @@ function canaryStatusClass(status: ReturnType<typeof createCanaryStatusDisplaySt
   return 'text-[color:var(--glow-decision)]';
 }
 
+function canaryDisplayClass(display: ReturnType<typeof createCanaryStatusDisplayState>): string {
+  if (display.freshness === 'stale') return 'text-[color:var(--glow-revision)]';
+  return canaryStatusClass(display.status);
+}
+
 function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[] }) {
   if (items.length === 0) return null;
 
@@ -143,10 +148,10 @@ function CanaryStatusPanel({ result }: { result?: CanaryStatusLoadResult }) {
         {display.role === 'alert' ? (
           <AlertTriangle size={12} className="text-[color:var(--glow-revision)]" />
         ) : (
-          <ShieldCheck size={12} className={canaryStatusClass(display.status)} />
+          <ShieldCheck size={12} className={canaryDisplayClass(display)} />
         )}
         <span className="tracking-wider text-[color:var(--text-primary)] uppercase">{display.title}</span>
-        <span className={`tracking-wider uppercase ${canaryStatusClass(display.status)}`}>
+        <span className={`tracking-wider uppercase ${canaryDisplayClass(display)}`}>
           {display.statusLabel}
         </span>
         <span className="text-[color:var(--text-muted)]">{display.summary}</span>

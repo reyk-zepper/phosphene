@@ -1,9 +1,11 @@
 import { BOUNDARY_TRACE_SCHEMA_VERSION } from './types';
 
 export const DEFAULT_CANARY_STATUS_BASE_PATH = '/snapshots/canary';
+export const DEFAULT_CANARY_FRESHNESS_WINDOW_MS = 30 * 60 * 1000;
 
 export type CanaryStatusLoadStatus = 'available' | 'blocked' | 'unavailable';
 export type CanaryStatusDisplayStatus = CanaryStatusLoadStatus | 'checking';
+export type CanaryStatusFreshness = 'fresh' | 'stale' | 'unknown';
 
 export interface CanaryStatusMarker {
   updatedAt: string;
@@ -28,6 +30,7 @@ export interface CanaryStatusDisplayState {
   title: string;
   status: CanaryStatusDisplayStatus;
   statusLabel: string;
+  freshness: CanaryStatusFreshness;
   role: 'status' | 'alert';
   summary: string;
   meta: Array<{ label: string; value: string }>;
@@ -165,15 +168,39 @@ function shortenSha(value: string): string {
   return `${value.slice(0, 15)}...`;
 }
 
-function statusLabel(result: CanaryStatusLoadResult | undefined): string {
+function markerAgeMs(marker: CanaryStatusMarker | undefined, now: Date): number | undefined {
+  if (!marker) return undefined;
+  return Math.max(0, now.getTime() - Date.parse(marker.updatedAt));
+}
+
+function markerFreshness(marker: CanaryStatusMarker | undefined, now: Date): CanaryStatusFreshness {
+  const age = markerAgeMs(marker, now);
+  if (age === undefined) return 'unknown';
+  return age <= DEFAULT_CANARY_FRESHNESS_WINDOW_MS ? 'fresh' : 'stale';
+}
+
+function ageLabel(ageMs: number): string {
+  const minutes = Math.floor(ageMs / 60_000);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (remainingMinutes === 0) return `${hours}h`;
+  return `${hours}h ${remainingMinutes}m`;
+}
+
+function statusLabel(result: CanaryStatusLoadResult | undefined, freshness: CanaryStatusFreshness): string {
   if (!result) return 'checking';
   if (result.status !== 'available') return result.status;
+  if (freshness === 'stale') return 'stale';
   return result.marker?.canaryStatus ?? 'unknown';
 }
 
-function summary(result: CanaryStatusLoadResult | undefined, basePath: string): string {
+function summary(result: CanaryStatusLoadResult | undefined, basePath: string, freshness: CanaryStatusFreshness): string {
   if (!result) return `Checking ${basePath} for a redacted AI Node canary marker.`;
   if (result.status === 'available' && result.marker) {
+    if (freshness === 'stale') {
+      return `AI Node canary marker is stale; last ${result.marker.canaryStatus} at ${result.marker.updatedAt}.`;
+    }
     return `AI Node canary ${result.marker.canaryStatus} at ${result.marker.updatedAt}.`;
   }
   if (result.status === 'blocked') return 'AI Node canary marker blocked. Static demo traces remain available.';
@@ -182,13 +209,19 @@ function summary(result: CanaryStatusLoadResult | undefined, basePath: string): 
 
 export function createCanaryStatusDisplayState(
   result?: CanaryStatusLoadResult,
-  basePath = DEFAULT_CANARY_STATUS_BASE_PATH
+  basePath = DEFAULT_CANARY_STATUS_BASE_PATH,
+  now = new Date()
 ): CanaryStatusDisplayState {
   const marker = result?.marker;
   const status: CanaryStatusDisplayStatus = result?.status ?? 'checking';
+  const freshness = markerFreshness(marker, now);
+  const age = markerAgeMs(marker, now);
   const meta: Array<{ label: string; value: string }> = [];
 
   if (marker) {
+    meta.push({ label: 'Freshness', value: freshness === 'stale' ? 'Stale' : 'Fresh' });
+    if (age !== undefined) meta.push({ label: 'Age', value: ageLabel(age) });
+    if (freshness === 'stale') meta.push({ label: 'Canary', value: marker.canaryStatus });
     meta.push({ label: 'Latest pack', value: marker.latestPack });
     meta.push({ label: 'Manifest hash', value: shortenSha(marker.manifestSha256) });
     if (marker.retentionCount) meta.push({ label: 'Retention', value: `${marker.retentionCount} packs` });
@@ -198,9 +231,10 @@ export function createCanaryStatusDisplayState(
   return {
     title: 'AI Node Canary',
     status,
-    statusLabel: statusLabel(result),
-    role: status === 'blocked' ? 'alert' : 'status',
-    summary: summary(result, basePath),
+    statusLabel: statusLabel(result, freshness),
+    freshness,
+    role: status === 'blocked' || freshness === 'stale' ? 'alert' : 'status',
+    summary: summary(result, basePath, freshness),
     meta,
     errors: result?.errors ?? [],
   };

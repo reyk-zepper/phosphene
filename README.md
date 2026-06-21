@@ -54,7 +54,7 @@ Currently working:
 - Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
 - Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
-- AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, not live agent telemetry
+- AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, with a 30-minute freshness check and no live agent telemetry
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -223,7 +223,7 @@ Funktioniert bereits:
 - Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
 - Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
-- AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status, nicht als Live-Agenten-Telemetrie
+- AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status mit 30-Minuten-Freshness-Check, nicht als Live-Agenten-Telemetrie
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`

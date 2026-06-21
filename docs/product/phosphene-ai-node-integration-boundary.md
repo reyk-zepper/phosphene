@@ -145,6 +145,8 @@ The AI Node wrapper syncs the handoff marker into:
 
 The deploy script also syncs the current marker after each Phosphene build, so a normal app deploy does not hide the latest canary state until the next scheduled run.
 
+Phosphene treats a served canary marker as fresh for 30 minutes. Older markers remain visible but are shown as stale operational status. This is a readiness signal for the AI Node canary path, not live Hermes/AAG/OpenClaw/Sentinel telemetry.
+
 Current v0.1.5 Hermes request document:
 
 ```text

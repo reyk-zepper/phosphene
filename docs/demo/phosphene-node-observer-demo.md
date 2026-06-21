@@ -60,7 +60,7 @@ Phosphene preserves the latest published snapshot across AI Node app deploys and
 Use this for the operational canary status:
 
 ```text
-Phosphene shows the latest redacted AI Node Canary marker from /snapshots/canary/latest.json. This proves the AI Node can produce sanitized operational status for the observer surface, but it is still not live agent telemetry.
+Phosphene shows the latest redacted AI Node Canary marker from /snapshots/canary/latest.json and marks it fresh or stale with a 30-minute window. This proves the AI Node can produce sanitized operational status for the observer surface, but it is still not live agent telemetry.
 ```
 
 Use this when explaining the current limitation:

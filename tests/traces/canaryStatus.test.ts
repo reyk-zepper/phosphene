@@ -85,18 +85,47 @@ describe('createCanaryStatusDisplayState', () => {
   it('describes an available canary without implying live telemetry', async () => {
     const result = await loadCanaryStatus(async () => jsonResponse(validLatest));
 
-    const display = createCanaryStatusDisplayState(result);
+    const display = createCanaryStatusDisplayState(
+      result,
+      '/snapshots/canary',
+      new Date('2026-06-20T22:40:00.000Z')
+    );
 
     expect(display.status).toBe('available');
     expect(display.statusLabel).toBe('succeeded');
+    expect(display.freshness).toBe('fresh');
     expect(display.role).toBe('status');
     expect(display.summary).toBe('AI Node canary succeeded at 2026-06-20T22:35:00.070Z.');
     expect(display.meta).toEqual([
+      { label: 'Freshness', value: 'Fresh' },
+      { label: 'Age', value: '4m' },
       { label: 'Latest pack', value: 'ai-node-canary-20260620T223459Z' },
       { label: 'Manifest hash', value: 'sha256:6a6e49eb...' },
       { label: 'Retention', value: '48 packs' },
       { label: 'Telemetry', value: 'No live telemetry' },
     ]);
+  });
+
+  it('marks an old canary marker as stale without treating it as live telemetry', async () => {
+    const result = await loadCanaryStatus(async () => jsonResponse(validLatest));
+
+    const display = createCanaryStatusDisplayState(
+      result,
+      '/snapshots/canary',
+      new Date('2026-06-20T23:20:00.000Z')
+    );
+
+    expect(display.status).toBe('available');
+    expect(display.statusLabel).toBe('stale');
+    expect(display.freshness).toBe('stale');
+    expect(display.role).toBe('alert');
+    expect(display.summary).toBe('AI Node canary marker is stale; last succeeded at 2026-06-20T22:35:00.070Z.');
+    expect(display.meta).toEqual(expect.arrayContaining([
+      { label: 'Freshness', value: 'Stale' },
+      { label: 'Age', value: '44m' },
+      { label: 'Canary', value: 'succeeded' },
+      { label: 'Telemetry', value: 'No live telemetry' },
+    ]));
   });
 
   it('surfaces blocked canary markers as an alert state', async () => {

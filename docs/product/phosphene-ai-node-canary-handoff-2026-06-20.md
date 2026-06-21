@@ -185,6 +185,8 @@ It must not contain absolute AI Node paths, private URLs, service URLs, credenti
 
 The Node Observer UI displays this marker as `AI Node Canary`. This is operational status only and still must not be described as live Hermes/AAG/OpenClaw/Sentinel telemetry.
 
+The UI treats markers updated within the last 30 minutes as fresh. Older markers remain visible but are shown as stale so demos can distinguish "canary path exists" from "scheduled canary is currently healthy."
+
 ## Pack Metadata
 
 Manifest:
