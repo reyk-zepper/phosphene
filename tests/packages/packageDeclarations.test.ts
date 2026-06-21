@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { access, readFile, rm } from 'node:fs/promises';
+import { access, readFile, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
@@ -9,6 +9,20 @@ import type { ReasoningNode } from '@/packages/parser';
 const execFileAsync = promisify(execFile);
 const rootDir = path.resolve(import.meta.dirname, '../..');
 
+async function listDeclarationFiles(dir: string): Promise<string[]> {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const nested = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        return listDeclarationFiles(entryPath);
+      }
+      return entry.name.endsWith('.d.ts') ? [entryPath] : [];
+    })
+  );
+  return nested.flat();
+}
+
 describe('parser and graph declaration package build', () => {
   it('declares a package build script plus generated runtime and type entry points', async () => {
     const pkg = JSON.parse(await readFile(path.join(rootDir, 'package.json'), 'utf8')) as {
@@ -17,7 +31,7 @@ describe('parser and graph declaration package build', () => {
     };
 
     expect(pkg.scripts?.['build:packages']).toBe(
-      'rm -rf dist-types dist-packages && tsc -p tsconfig.packages.json && vite build --config vite.packages.config.ts'
+      'rm -rf dist-types dist-packages && tsc -p tsconfig.packages.json && node scripts/normalize-package-declarations.mjs && vite build --config vite.packages.config.ts'
     );
     expect(pkg.exports).toMatchObject({
       './parser': {
@@ -47,14 +61,10 @@ describe('parser and graph declaration package build', () => {
       'dist-packages/parser.js',
       'dist-packages/graph.js',
     ];
-    const declarationFiles = [
-      'dist-types/packages/parser.d.ts',
-      'dist-types/packages/graph.d.ts',
-      'dist-types/core/graph/traversal.d.ts',
-    ];
+    const declarationFiles = await listDeclarationFiles(path.join(rootDir, 'dist-types'));
     const [runtimeSources, declarations] = await Promise.all([
       Promise.all(runtimeFiles.map(async (file) => readFile(path.join(rootDir, file), 'utf8'))),
-      Promise.all(declarationFiles.map(async (file) => readFile(path.join(rootDir, file), 'utf8'))),
+      Promise.all(declarationFiles.map(async (file) => readFile(file, 'utf8'))),
     ]);
     const combinedRuntime = runtimeSources.join('\n');
     const combinedDeclarations = declarations.join('\n');
@@ -102,6 +112,11 @@ describe('parser and graph declaration package build', () => {
     expect(combinedDeclarations).not.toMatch(
       /@\/(?:app|components|constants|hooks|core\/store|core\/adapters)\b/
     );
+    const relativeSpecifiers = [...combinedDeclarations.matchAll(/\bfrom ['"](\.{1,2}\/[^'"]+)['"]/g)];
+    expect(relativeSpecifiers.length).toBeGreaterThan(0);
+    for (const [, specifier] of relativeSpecifiers) {
+      expect(specifier, `${specifier} should be NodeNext-safe`).toMatch(/\.js$/);
+    }
     await expect(access(path.join(rootDir, 'dist-packages/snapshots'))).rejects.toMatchObject({
       code: 'ENOENT',
     });

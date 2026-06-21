@@ -65,7 +65,7 @@ Currently working:
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
-- Source-level public parser and graph entry points via `phosphene/parser` and `phosphene/graph` exports, importable ESM/declaration package builds, a publish-safe dry-run pack manifest, and a real tarball consumer smoke test for future standalone extraction
+- Source-level public parser and graph entry points via `phosphene/parser` and `phosphene/graph` exports, importable ESM/declaration package builds, a publish-safe dry-run pack manifest, a real tarball consumer smoke test, and a NodeNext TypeScript consumer typecheck for future standalone extraction
 - Prompt input with Anthropic/OpenAI/Gemini/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, and API key modal
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
@@ -132,6 +132,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm build:packages` | Emit parser/graph ESM runtime artifacts under `dist-packages/` and declarations under `dist-types/` |
 | `pnpm --silent pack:packages` | Build parser/graph package artifacts and print an npm pack dry-run manifest as JSON |
 | `pnpm --silent smoke:packages` | Build, pack, install, and import the generated package tarball in a temporary consumer project |
+| `pnpm --silent typecheck:packages` | Build, pack, install, and type-check parser/graph imports from a temporary NodeNext TypeScript consumer |
 | `pnpm preview` | Preview the production build locally |
 | `pnpm test` | Run the Vitest unit tests |
 | `pnpm lint` | Run ESLint |
@@ -188,7 +189,7 @@ phosphene/
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
 - **v0.3** — AI-node live adapters; generic, Hermes, and multi-service marker adapters ✅; deeper side-effect-aware adapters remain
 - **v0.4** — Portable session bundles ✅; hosted session workflows remain
-- **v0.5+** — Source-level parser/graph package surface plus ESM/declaration builds, pack dry-run, and tarball consumer smoke ✅; standalone npm package publishing remains
+- **v0.5+** — Source-level parser/graph package surface plus ESM/declaration builds, pack dry-run, runtime tarball smoke, and NodeNext type-consumer smoke ✅; standalone npm package publishing remains
 
 ### Contributing
 
@@ -319,6 +320,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm build:packages` | Parser-/Graph-ESM-Artefakte unter `dist-packages/` und Declarations unter `dist-types/` erzeugen |
 | `pnpm --silent pack:packages` | Parser-/Graph-Package-Artefakte bauen und ein npm-pack-Dry-Run-Manifest als JSON ausgeben |
 | `pnpm --silent smoke:packages` | Das erzeugte Package-Tarball bauen, installieren und in einem temporaeren Consumer-Projekt importieren |
+| `pnpm --silent typecheck:packages` | Das erzeugte Package-Tarball bauen, installieren und Parser-/Graph-Imports in einem temporaeren NodeNext-TypeScript-Consumer typechecken |
 | `pnpm preview` | Production-Build lokal ansehen |
 | `pnpm test` | Vitest Unit-Tests ausführen |
 | `pnpm lint` | ESLint ausführen |
@@ -375,7 +377,7 @@ phosphene/
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes- und Multi-Service-Marker-Adapter ✅; tiefere Side-Effect-Adapter offen
 - **v0.4** — Portable Session-Bundles ✅; gehostete Session-Workflows offen
-- **v0.5+** — Source-Level Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run und Tarball-Consumer-Smoke ✅; Standalone npm Publishing offen
+- **v0.5+** — Source-Level Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run, Runtime-Tarball-Smoke und NodeNext-Type-Consumer-Smoke ✅; Standalone npm Publishing offen
 
 ### Mitwirken
 
