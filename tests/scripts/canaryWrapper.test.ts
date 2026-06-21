@@ -14,6 +14,13 @@ async function tempPath(name: string): Promise<string> {
 }
 
 describe('generate-phosphene-canary-snapshot wrapper', () => {
+  it('includes the Homebrew Node runtime path for LaunchAgent contexts', async () => {
+    const script = await readFile(scriptPath, 'utf8');
+
+    expect(script).toContain('/opt/homebrew/opt/node@22/bin');
+    expect(script).toContain('export PATH="/opt/homebrew/opt/node@22/bin:');
+  });
+
   it('syncs the redacted latest marker into the served canary status directory', async () => {
     const tempRoot = await tempPath('canary-wrapper');
     const outputRoot = path.join(tempRoot, 'handoffs/boundary-canary');

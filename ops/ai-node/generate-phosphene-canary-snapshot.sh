@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PATH="/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin${PATH:+:$PATH}"
+
 AI_STACK_ROOT="${AI_STACK_ROOT:-/Users/raik./ai-stack}"
 SERVICE_DIR="${PHOSPHENE_SERVICE_DIR:-$AI_STACK_ROOT/services/phosphene}"
 OUTPUT_ROOT="${PHOSPHENE_CANARY_OUTPUT_ROOT:-$AI_STACK_ROOT/data/hermes/home/phosphene-handoffs/boundary-canary}"
