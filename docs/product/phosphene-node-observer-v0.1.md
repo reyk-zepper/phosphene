@@ -281,13 +281,19 @@ v0.1.35 adds a local Reasoning Pattern Library:
 
 - A package-safe `detectReasoningPatterns(graph)` core identifies evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors.
 - The Reasoning Lab Pattern Library panel surfaces matched pattern groups, counts, query hints, first-match summaries, and node coverage without contacting a server.
-- The catalog is deterministic local graph analysis; plugin marketplace/runtime execution, collaborative annotation, learned classifiers, and Constitution-mode rule tests remain future/non-scope.
+- The catalog is deterministic local graph analysis; plugin marketplace/runtime execution, realtime collaborative editing, learned classifiers, and Constitution-mode rule tests remain future/non-scope.
 
 v0.1.36 adds client-local custom API profiles:
 
 - Settings can store local OpenAI Responses-compatible profiles with label, model id, Responses URL, and optional bearer token.
 - The model picker exposes saved profiles in Reasoning Lab, and primary plus same-prompt comparison runs pass the selected profile endpoint into the custom adapter.
-- Endpoint guardrails allow `https` targets and local `http` development targets only; plugin marketplace/runtime execution, collaborative annotation, and Constitution-mode rule tests remain future/non-scope.
+- Endpoint guardrails allow `https` targets and local `http` development targets only; plugin marketplace/runtime execution, realtime collaborative editing, and Constitution-mode rule tests remain future/non-scope.
+
+v0.1.37 adds client-local collaborative annotations:
+
+- Reasoning Lab can persist graph-level and node-anchored review notes in browser storage with author label, priority, and open/question/resolved status.
+- Annotation bundles export/import as `phosphene.annotations.v0.1.37` JSON for asynchronous review handoff; import blocks graph mismatches, missing node anchors, malformed notes, and secret-like content.
+- This is portable client-local review, not account-backed realtime collaboration, server-side persistence, or Constitution-mode rule testing.
 
 ## UI layout
 
@@ -371,6 +377,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.34 exposes a static hosted Reasoning Lab session workflow that verifies the marker, digest, and portable-session guardrails before an explicit user-triggered import.
 - v0.1.35 exposes deterministic local Reasoning Pattern Library detection through the app UI and package-safe graph export surface.
 - v0.1.36 exposes client-local OpenAI Responses-compatible custom API profiles through settings, model picker selection, primary streaming, and live comparison.
+- v0.1.37 exposes client-local collaborative annotation bundles through a Reasoning Lab panel, browser-local persistence, graph/node review metadata, and guarded JSON import/export.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.36`
+- App version: `v0.1.37`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -120,6 +120,12 @@ Use this for the v0.1.36 custom API profile path:
 Phosphene can now save browser-local OpenAI Responses-compatible API profiles with a custom endpoint, model id, and optional bearer token. The profile appears in the model picker and works for both primary Reasoning Lab streams and same-prompt comparisons; this is not a plugin marketplace or runtime extension system.
 ```
 
+Use this for the v0.1.37 collaborative annotation path:
+
+```text
+Phosphene can now attach browser-local review notes to the active graph or a selected reasoning node, mark them open/question/resolved, set priority, and exchange them as guarded JSON annotation bundles. This is asynchronous review handoff, not realtime accounts or server-side collaboration.
+```
+
 Use this when explaining the current limitation:
 
 ```text
@@ -137,7 +143,7 @@ Do not claim:
 - The near-live adapter exposes raw live telemetry, private files, provider payloads, Gmail/Workspace content, or host paths.
 - The snapshot publisher reads private provider data or performs live side effects.
 - Hosted sessions provide accounts, collaboration, server-side persistence, or automatic graph activation.
-- The Pattern Library or custom API profile flow is a fine-tuned classifier, plugin marketplace, runtime extension system, collaborative annotation, or Constitution-mode rule testing.
+- The Pattern Library, custom API profile flow, or annotation panel is a fine-tuned classifier, plugin marketplace, runtime extension system, realtime collaboration system, server-side review backend, or Constitution-mode rule testing.
 - Phosphene stores or displays secrets, OAuth data, private URLs, raw provider IDs, or customer data.
 - Phosphene replaces AAG, Hermes, OpenClaw, or Sentinels.
 
