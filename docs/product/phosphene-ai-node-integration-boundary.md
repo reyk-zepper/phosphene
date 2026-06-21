@@ -210,7 +210,14 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: partially implemented. A first operational canary exists and Phosphene can display its redacted latest marker from `/snapshots/canary/latest.json`, but it observes only Phosphene service and snapshot health markers, not live Hermes/AAG/OpenClaw/Sentinel agent events.
+Status: partially implemented. Phosphene now has a generic redacted near-live adapter path:
+
+- the AI Node generator writes `ai-node-live-*` Boundary packs and a redacted `latest.json` marker under the handoff root, normally `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live`;
+- the deploy helper syncs that marker and pack into served static output at `/snapshots/live/`;
+- the browser loader polls `/snapshots/live/latest.json`, validates the marker, loads the referenced manifest/traces/report, and renders the adapter trace as `AI Node Live Adapter`;
+- the UI keeps `No raw live telemetry` visible and blocks marker content that contains host paths, private URLs, secrets, email addresses, or provider payload markers.
+
+This is not yet a domain-specific live Hermes/AAG/OpenClaw/Sentinel adapter. The first adapter summarizes already-redacted Phosphene deploy, snapshot, and canary boundaries so the path can be verified end to end before attaching private operational systems.
 
 ## Security Rules
 

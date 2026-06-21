@@ -16,11 +16,18 @@ export interface PublishedSnapshotReadinessInput {
   blockedCount: number;
 }
 
+export interface LiveAdapterReadinessInput {
+  status: 'available' | 'partial' | 'blocked' | 'unavailable';
+  traceCount: number;
+  blockedCount: number;
+}
+
 export interface ObserverReadinessInput {
   traceGroups: ObserverTraceGroup[];
   importedTraceCount: number;
   intakeResult?: TraceIntakeBatchResult;
   publishedSnapshot?: PublishedSnapshotReadinessInput;
+  liveAdapter?: LiveAdapterReadinessInput;
 }
 
 function totalTraceCount(traceGroups: ObserverTraceGroup[]): number {
@@ -57,11 +64,32 @@ function snapshotDetail(snapshot: PublishedSnapshotReadinessInput | undefined): 
   return `${snapshot.traceCount} published traces`;
 }
 
+function pluralizeAdapterTrace(count: number): string {
+  return count === 1 ? 'redacted adapter trace' : 'redacted adapter traces';
+}
+
+function liveAdapterStatus(adapter: LiveAdapterReadinessInput | undefined): ObserverReadinessStatus {
+  if (!adapter || adapter.status === 'unavailable') return 'not_connected';
+  if (adapter.status === 'available') return 'ready';
+  return 'partial';
+}
+
+function liveAdapterDetail(adapter: LiveAdapterReadinessInput | undefined): string {
+  if (!adapter) return 'AI Node adapter pending';
+  if (adapter.status === 'unavailable') return 'No adapter output';
+  if (adapter.status === 'blocked') return 'Adapter output blocked';
+  if (adapter.status === 'partial') {
+    return `${adapter.traceCount} ${pluralizeAdapterTrace(adapter.traceCount)} · ${adapter.blockedCount} blocked`;
+  }
+  return `${adapter.traceCount} ${pluralizeAdapterTrace(adapter.traceCount)}`;
+}
+
 export function createObserverReadiness({
   traceGroups,
   importedTraceCount,
   intakeResult,
   publishedSnapshot,
+  liveAdapter,
 }: ObserverReadinessInput): ObserverReadinessItem[] {
   return [
     {
@@ -85,8 +113,8 @@ export function createObserverReadiness({
     {
       id: 'ai_node_live_adapter',
       label: 'AI Node Live Adapter',
-      status: 'not_connected',
-      detail: 'AI Node adapter pending',
+      status: liveAdapterStatus(liveAdapter),
+      detail: liveAdapterDetail(liveAdapter),
     },
   ];
 }

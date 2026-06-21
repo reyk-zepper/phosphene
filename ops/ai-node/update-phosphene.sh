@@ -14,6 +14,9 @@ port="5173"
 snapshot_dir="$service_dir/dist/snapshots/current"
 canary_latest_file="$root/data/hermes/home/phosphene-handoffs/boundary-canary/latest.json"
 canary_served_dir="$service_dir/dist/snapshots/canary"
+live_adapter_root="$root/data/hermes/home/phosphene-handoffs/boundary-live"
+live_adapter_latest_file="$live_adapter_root/latest.json"
+live_adapter_served_dir="$service_dir/dist/snapshots/live"
 snapshot_backup_dir=""
 snapshot_preserved=0
 snapshot_restored=0
@@ -63,6 +66,40 @@ sync_canary_status() {
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene canary status synced target=$canary_served_dir/latest.json"
 }
 
+sync_live_adapter_output() {
+  if [ ! -f "$live_adapter_latest_file" ]; then
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene live adapter sync skipped: no latest marker at $live_adapter_latest_file"
+    return 0
+  fi
+
+  latest_pack="$(
+    python3 - "$live_adapter_latest_file" <<'PY' 2>/dev/null || true
+import json
+import sys
+with open(sys.argv[1], "r", encoding="utf-8") as handle:
+    print(json.load(handle).get("latest_pack", ""))
+PY
+  )"
+
+  if [[ ! "$latest_pack" =~ ^ai-node-live-[0-9]{8}T[0-9]{6}Z$ ]]; then
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene live adapter sync skipped: invalid latest_pack=$latest_pack"
+    return 0
+  fi
+
+  live_pack_dir="$live_adapter_root/$latest_pack"
+  if [ ! -d "$live_pack_dir" ]; then
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene live adapter sync skipped: missing pack dir $live_pack_dir"
+    return 0
+  fi
+
+  rm -rf "$live_adapter_served_dir"
+  mkdir -p "$live_adapter_served_dir"
+  cp "$live_adapter_latest_file" "$live_adapter_served_dir/latest.json"
+  cp -R "$live_pack_dir" "$live_adapter_served_dir/$latest_pack"
+
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] phosphene live adapter synced target=$live_adapter_served_dir latest_pack=$latest_pack"
+}
+
 cleanup_snapshot_backup() {
   if [ "$snapshot_preserved" -eq 1 ] && [ "$snapshot_restored" -eq 0 ]; then
     restore_snapshot || true
@@ -100,6 +137,7 @@ run_pnpm install --frozen-lockfile
 run_pnpm build
 restore_snapshot
 sync_canary_status
+sync_live_adapter_output
 
 commit="$(git rev-parse HEAD)"
 short_commit="$(git rev-parse --short HEAD)"

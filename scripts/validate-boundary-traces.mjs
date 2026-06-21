@@ -25,6 +25,8 @@ const EVENT_TYPES = new Set([
   'worker.started',
   'worker.completed',
   'health.check',
+  'adapter.tick',
+  'adapter.redacted_boundary',
   'sentinel.alert',
   'sentinel.recovery',
   'run.completed',

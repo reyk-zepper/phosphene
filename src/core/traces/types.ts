@@ -29,6 +29,8 @@ export const TRACE_EVENT_TYPES = [
   'worker.started',
   'worker.completed',
   'health.check',
+  'adapter.tick',
+  'adapter.redacted_boundary',
   'sentinel.alert',
   'sentinel.recovery',
   'run.completed',

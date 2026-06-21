@@ -193,14 +193,21 @@ v0.1.21 adds full side-by-side graph comparison:
 - Pane badges show primary/comparison role, model label, node count, and token count.
 - Node selection is graph-aware, so the Detail Panel and keyboard navigation inspect nodes from the pane that was selected.
 
+v0.1.22 adds the first redacted near-live AI Node adapter path:
+
+- Phosphene polls `/snapshots/live/latest.json`, validates the redacted marker, then loads the referenced Boundary manifest, trace files, and validation report from `/snapshots/live/<pack>/`.
+- Node Observer shows an AI Node Live Adapter panel with freshness, manifest hash, retention, blocked-state errors, and an explicit `No raw live telemetry` boundary.
+- The AI Node generator and deploy wrapper can produce, retain, and sync redacted live-adapter Boundary output without exposing host paths, private URLs, provider payloads, or raw user content.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
 - Node Observer Bar selects among grouped built-in demo traces, Hermes synthetic handoffs, and local imports.
 - Node Observer Bar explicitly labels handoff traces as synthetic handoffs and keeps the no-live-telemetry status visible.
 - Published snapshot status appears as an operator panel below the selected run summary.
+- AI Node Live Adapter status appears as an operator panel below the selected run summary and can add the latest redacted adapter trace as its own Observer group.
 - Intake results appear as a compact table below the run summary after local JSON upload.
-- Readiness status appears below the run summary and keeps the live adapter visibly disconnected until a real AI Node adapter exists.
+- Readiness status appears below the run summary and shows live-adapter ready, partial, blocked, or not-connected state without claiming raw live telemetry.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
 - Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
@@ -258,6 +265,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.19 exposes Gemini streaming, thought-summary parsing, model selection, local key storage, and adapter error tests.
 - v0.1.20 exposes live same-prompt comparison orchestration, cancellation UI, graph persistence, and runner tests.
 - v0.1.21 exposes full side-by-side same-prompt graph canvases with graph-aware selection and pane metadata tests.
+- v0.1.22 exposes redacted near-live AI Node adapter loading from `/snapshots/live/latest.json`, AI Node generator/wrapper support, deployment sync, and no-raw-telemetry UI boundaries.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

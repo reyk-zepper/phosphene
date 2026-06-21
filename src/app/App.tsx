@@ -25,6 +25,7 @@ import {
 import { createObserverReadiness } from '@/core/traces/readiness';
 import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
 import { startCanaryStatusRefresh, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
+import { startLiveAdapterRefresh, type LiveAdapterLoadResult } from '@/core/traces/liveAdapter';
 import { buildShareUrl, parseShareLinkState, type ShareLinkState } from '@/core/share/shareLink';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
@@ -59,7 +60,18 @@ export function App() {
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
   const [intakeResult, setIntakeResult] = useState<TraceIntakeBatchResult | undefined>();
   const [snapshotResult, setSnapshotResult] = useState<PublishedSnapshotLoadResult | undefined>();
+  const [liveAdapterResult, setLiveAdapterResult] = useState<LiveAdapterLoadResult | undefined>();
   const [canaryStatus, setCanaryStatus] = useState<CanaryStatusLoadResult | undefined>();
+  const liveAdapterGroup = useMemo<ObserverTraceGroup | undefined>(() => {
+    if (!liveAdapterResult || liveAdapterResult.traces.length === 0) return undefined;
+    return {
+      id: 'ai-node-live-adapter',
+      label: 'AI Node Live Adapter',
+      badge: 'Redacted adapter output',
+      description: 'Near-live Boundary output emitted on the AI Node after redaction.',
+      traces: liveAdapterResult.traces,
+    };
+  }, [liveAdapterResult]);
   const snapshotGroup = useMemo<ObserverTraceGroup | undefined>(() => {
     if (!snapshotResult || snapshotResult.traces.length === 0) return undefined;
     return {
@@ -71,18 +83,19 @@ export function App() {
     };
   }, [snapshotResult]);
   const observerTraceGroups = useMemo(() => {
-    if (!snapshotGroup) return OBSERVER_TRACE_GROUPS;
+    const dynamicGroups = [liveAdapterGroup, snapshotGroup].filter((group): group is ObserverTraceGroup => Boolean(group));
+    if (dynamicGroups.length === 0) return OBSERVER_TRACE_GROUPS;
 
-    const snapshotIds = new Set(snapshotGroup.traces.map((trace) => trace.id));
+    const dynamicTraceIds = new Set(dynamicGroups.flatMap((group) => group.traces.map((trace) => trace.id)));
     const staticGroups = OBSERVER_TRACE_GROUPS
       .map((group) => ({
         ...group,
-        traces: group.traces.filter((trace) => !snapshotIds.has(trace.id)),
+        traces: group.traces.filter((trace) => !dynamicTraceIds.has(trace.id)),
       }))
       .filter((group) => group.traces.length > 0);
 
-    return [snapshotGroup, ...staticGroups];
-  }, [snapshotGroup]);
+    return [...dynamicGroups, ...staticGroups];
+  }, [liveAdapterGroup, snapshotGroup]);
   const observerTraces = useMemo(
     () => [...importedTraces, ...observerTraceGroups.flatMap((group) => group.traces)],
     [importedTraces, observerTraceGroups]
@@ -95,14 +108,23 @@ export function App() {
       blockedCount: snapshotResult.intakeResult?.summary.blockedTraceCount ?? 0,
     };
   }, [snapshotResult]);
+  const liveAdapterReadiness = useMemo(() => {
+    if (!liveAdapterResult) return undefined;
+    return {
+      status: liveAdapterResult.status,
+      traceCount: liveAdapterResult.traces.length,
+      blockedCount: liveAdapterResult.intakeResult?.summary.blockedTraceCount ?? 0,
+    };
+  }, [liveAdapterResult]);
   const observerReadiness = useMemo(
     () => createObserverReadiness({
       traceGroups: observerTraceGroups,
       importedTraceCount: importedTraces.length,
       intakeResult,
       publishedSnapshot: publishedSnapshotReadiness,
+      liveAdapter: liveAdapterReadiness,
     }),
-    [importedTraces.length, intakeResult, observerTraceGroups, publishedSnapshotReadiness]
+    [importedTraces.length, intakeResult, liveAdapterReadiness, observerTraceGroups, publishedSnapshotReadiness]
   );
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') return '';
@@ -167,6 +189,18 @@ export function App() {
   useEffect(() => {
     return startCanaryStatusRefresh({ onResult: setCanaryStatus });
   }, []);
+
+  useEffect(() => {
+    return startLiveAdapterRefresh({ onResult: setLiveAdapterResult });
+  }, []);
+
+  useEffect(() => {
+    if (!liveAdapterResult || liveAdapterResult.traces.length === 0) return;
+    if (pendingSharedTraceId.current) return;
+    setSelectedTraceId((current) => (
+      current === OBSERVER_TRACES[0].id ? liveAdapterResult.traces[0].id : current
+    ));
+  }, [liveAdapterResult]);
 
   useEffect(() => {
     const pendingTraceId = pendingSharedTraceId.current;
@@ -244,7 +278,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.21
+              v0.1.22
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -278,6 +312,7 @@ export function App() {
             importedTraceIds={importedTraces.map((trace) => trace.id)}
             intakeResult={intakeResult}
             publishedSnapshot={snapshotResult}
+            liveAdapter={liveAdapterResult}
             canaryStatus={canaryStatus}
             readiness={observerReadiness}
             onImportTraceFiles={handleImportTraceFiles}

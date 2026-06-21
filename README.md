@@ -5,7 +5,7 @@
 ### See how AI thinks.
 
 **An open-source AI reasoning and node-run visualizer.**
-Explore two modes: **Reasoning Lab** for model reasoning graphs, and **Node Observer** for redacted AI-node demo traces. v0.1 does not claim live AI-node telemetry; live integration is a later adapter step.
+Explore two modes: **Reasoning Lab** for model reasoning graphs, and **Node Observer** for redacted AI-node traces. v0.1 does not claim raw live AI-node telemetry; the first near-live path reads redacted adapter snapshots only.
 
 [English](#english) · [Deutsch](#deutsch)
 
@@ -20,9 +20,9 @@ Explore two modes: **Reasoning Lab** for model reasoning graphs, and **Node Obse
 Phosphene has two modes:
 
 - **Reasoning Lab** turns model reasoning traces into an **interactive visual graph**. Instead of scrolling through walls of raw "thinking" text, you see each step of the model's thought process as a glowing node — categorized by type (hypothesis, analysis, revision, decision…), connected by organic edges, explorable with click, zoom, and pan.
-- **Node Observer** renders redacted AI-node demo traces so runs, events, systems, statuses, risks, decisions, and recovery steps are understandable without exposing private payloads.
+- **Node Observer** renders redacted AI-node traces so runs, events, systems, statuses, risks, decisions, and recovery steps are understandable without exposing private payloads.
 
-Node Observer v0.1 uses **synthetic/redacted demo traces only**, including grouped Hermes synthetic handoff fixtures generated on the AI Node and a published redacted snapshot boundary. It is not a live Hermes/AAG/OpenClaw/Sentinel telemetry integration yet.
+Node Observer v0.1 uses **redacted Boundary output only**, including built-in demos, grouped Hermes synthetic handoff fixtures generated on the AI Node, published redacted snapshots, and an optional near-live adapter snapshot boundary. It is not a raw live Hermes/AAG/OpenClaw/Sentinel telemetry integration.
 
 **The metaphor:** Phosphenes are the light patterns you see when you close your eyes and press on them — light generated *by the brain itself*, not by anything external. That's exactly what this tool does: it makes the inner light of AI reasoning visible.
 
@@ -42,19 +42,20 @@ Built for:
 
 ### Status
 
-> **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted built-in demos, Hermes synthetic handoff fixtures, and published redacted snapshots, not live AI-node telemetry.
+> **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted built-in demos, Hermes synthetic handoff fixtures, published redacted snapshots, and redacted near-live adapter snapshots, not raw live AI-node telemetry.
 
 Currently working:
 
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
 - Four curated Reasoning Lab demo prompts for model reasoning exploration without an API key
-- Node Observer mode with four redacted AI-node demo traces, grouped Hermes synthetic handoff fixtures, and a published redacted snapshot group
+- Node Observer mode with four redacted AI-node demo traces, grouped Hermes synthetic handoff fixtures, a published redacted snapshot group, and a redacted near-live adapter group when AI Node output is available
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
 - Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
 - Hermes handoff intake support for `manifest.json` and `validation-report.json` as local support context
-- Node Observer readiness state for Boundary Contract, Handoff Intake, and AI Node Live Adapter status
+- Node Observer readiness state for Boundary Contract, Handoff Intake, Published Snapshot, Canary, and AI Node Live Adapter status
 - Published snapshot status panel for source, classification, manifest size, validation state, and no-live-telemetry boundary
 - AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, with a 30-minute freshness check and no live agent telemetry
+- AI Node Live Adapter panel loaded from `/snapshots/live/latest.json` as redacted near-live Boundary output, with a 10-minute freshness check and no raw live telemetry
 - Graph export buttons for SVG and PNG downloads from the current canvas
 - Copyable share links for the active mode, graph/trace, and selected node
 - Graph search with text, type, confidence, and mind-change pattern queries
@@ -67,7 +68,8 @@ Currently working:
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
-- AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs the redacted canary status across app deploys
+- CLI AI Node live adapter generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
+- AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs redacted canary plus live-adapter status across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
 - Eight reasoning node types, each with its own glow color
@@ -76,7 +78,7 @@ Currently working:
 
 Not yet built:
 
-- Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
+- Domain-specific live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
 
 ### Tech stack
 
@@ -102,7 +104,7 @@ Phosphene is a **client-only SPA**. No backend, no database, no server. Everythi
 - Deployment is a static build — Vercel, Netlify, GitHub Pages, anything
 - Contribution barrier is minimal: `git clone && pnpm install && pnpm dev`
 
-For Node Observer, Hermes and future live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, or AI-node-published snapshots. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
+For Node Observer, Hermes and live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, AI-node-published snapshots, or served redacted adapter markers. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 ### Getting started
 
@@ -129,6 +131,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm validate:traces -- <paths>` | Validate Boundary trace fixtures plus local manifest/report support files |
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Validate and atomically publish a redacted Boundary pack into a served snapshot directory |
 | `pnpm generate:canary -- --target <dir>` | Generate a redacted AI Node operational canary Boundary pack; supports `--latest-file` and `--retention-count` for AI-Node status tracking |
+| `pnpm generate:live-adapter -- --target <dir>` | Generate a redacted near-live AI Node adapter Boundary pack; supports `--latest-file` and `--retention-count` for served `/snapshots/live/` output |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Install the non-publishing AI Node canary LaunchAgent |
 | `pnpm format` | Format with Prettier |
 
@@ -195,9 +198,9 @@ MIT — see [LICENSE](./LICENSE).
 Phosphene hat zwei Modi:
 
 - **Reasoning Lab** macht den verborgenen Denkprozess großer Sprachmodelle zu einem **interaktiven visuellen Graphen**. Statt endlose "Thinking"-Textblöcke zu scrollen, siehst du jeden Schritt des Reasonings als leuchtenden Node — kategorisiert nach Typ (Hypothese, Analyse, Korrektur, Entscheidung…), verbunden durch organische Kanten, explorierbar mit Klick, Zoom und Pan.
-- **Node Observer** rendert redigierte AI-Node-Demo-Traces, damit Runs, Events, beteiligte Systeme, Status, Risiko, Entscheidungen und Recovery-Schritte verständlich werden, ohne private Payloads offenzulegen.
+- **Node Observer** rendert redigierte AI-Node-Traces, damit Runs, Events, beteiligte Systeme, Status, Risiko, Entscheidungen und Recovery-Schritte verständlich werden, ohne private Payloads offenzulegen.
 
-Node Observer v0.1 nutzt **synthetische/redigierte Demo-Traces**, inklusive gruppierter Hermes Synthetic Handoff Fixtures vom AI Node und einer veröffentlichten redigierten Snapshot-Boundary. Es ist noch keine Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
+Node Observer v0.1 nutzt **nur redigierte Boundary-Ausgabe**, inklusive Built-in-Demos, gruppierter Hermes Synthetic Handoff Fixtures vom AI Node, veröffentlichter redigierter Snapshots und optionaler Near-Live-Adapter-Snapshot-Boundary. Es ist keine rohe Live-Telemetrie-Integration für Hermes/AAG/OpenClaw/Sentinel.
 
 **Die Metapher:** Phosphene sind die Lichterscheinungen, die du siehst, wenn du die Augen schließt und darauf drückst — Licht, das vom *Gehirn selbst* erzeugt wird, nicht von außen. Genau das tut dieses Tool: es macht das innere Licht der KI sichtbar.
 
@@ -217,19 +220,20 @@ Gebaut für:
 
 ### Status
 
-> **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Built-in-Demos, Hermes Synthetic Handoff Fixtures und veröffentlichte redigierte Snapshots, keine Live-AI-Node-Telemetrie.
+> **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Built-in-Demos, Hermes Synthetic Handoff Fixtures, veröffentlichte redigierte Snapshots und redigierte Near-Live-Adapter-Snapshots, keine rohe Live-AI-Node-Telemetrie.
 
 Funktioniert bereits:
 
 - Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
 - Vier kuratierte Reasoning-Lab-Demo-Prompts fuer Reasoning-Exploration ohne API-Key
-- Node Observer mit vier redigierten AI-Node-Demo-Traces, gruppierten Hermes Synthetic Handoff Fixtures und veröffentlichter redigierter Snapshot-Gruppe
+- Node Observer mit vier redigierten AI-Node-Demo-Traces, gruppierten Hermes Synthetic Handoff Fixtures, veröffentlichter redigierter Snapshot-Gruppe und redigierter Near-Live-Adapter-Gruppe, wenn AI-Node-Ausgabe verfügbar ist
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
 - Hermes-Handoff-Intake für `manifest.json` und `validation-report.json` als lokalen Support-Kontext
-- Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake und AI Node Live Adapter
+- Node-Observer-Readiness-Status für Boundary Contract, Handoff Intake, Published Snapshot, Canary und AI Node Live Adapter
 - Published-Snapshot-Statuspanel für Source, Classification, Manifest-Größe, Validation-Status und No-Live-Telemetry-Grenze
 - AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status mit 30-Minuten-Freshness-Check, nicht als Live-Agenten-Telemetrie
+- AI-Node-Live-Adapter-Statuspanel aus `/snapshots/live/latest.json` als redigierte Near-Live-Boundary-Ausgabe mit 10-Minuten-Freshness-Check, nicht als rohe Live-Telemetrie
 - Graph-Export-Buttons fuer SVG- und PNG-Downloads aus dem aktuellen Canvas
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
@@ -242,7 +246,8 @@ Funktioniert bereits:
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
-- AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert den redigierten Canary-Status über App-Deploys hinweg
+- CLI-AI-Node-Live-Adapter-Generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
+- AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert redigierten Canary- sowie Live-Adapter-Status über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
 - Acht Reasoning-Node-Typen, jeder mit eigener Glow-Farbe
@@ -251,7 +256,7 @@ Funktioniert bereits:
 
 Noch nicht gebaut:
 
-- Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
+- Domain-spezifische Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
 
 ### Tech-Stack
 
@@ -277,7 +282,7 @@ Phosphene ist eine **Client-Only SPA**. Kein Backend, keine Datenbank, kein Serv
 - Deployment ist ein statischer Build — Vercel, Netlify, GitHub Pages, egal was
 - Die Einstiegshürde für Contributions ist minimal: `git clone && pnpm install && pnpm dev`
 
-Für den Node Observer laufen Hermes und spätere Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports oder AI-Node-publizierte Snapshots. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
+Für den Node Observer laufen Hermes und Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports, AI-Node-publizierte Snapshots oder served redigierte Adapter-Marker. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 ### Setup
 
@@ -304,6 +309,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm validate:traces -- <paths>` | Boundary-Trace-Fixtures plus lokale Manifest-/Report-Support-Dateien validieren |
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Redigierten Boundary Pack validieren und atomar in einen served Snapshot-Pfad publizieren |
 | `pnpm generate:canary -- --target <dir>` | Redigierten AI-Node-Operational-Canary-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für AI-Node-Status-Tracking |
+| `pnpm generate:live-adapter -- --target <dir>` | Redigierten Near-Live-AI-Node-Adapter-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für served `/snapshots/live/` output |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Nicht-publizierenden AI-Node-Canary-LaunchAgent installieren |
 | `pnpm format` | Mit Prettier formatieren |
 

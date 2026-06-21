@@ -4,6 +4,7 @@ import type { TraceIntakeBatchResult, TraceIntakeItemResult } from '@/core/trace
 import type { ObserverReadinessItem } from '@/core/traces/readiness';
 import { createPublishedSnapshotDisplayState, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
 import { createCanaryStatusDisplayState, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
+import { createLiveAdapterDisplayState, type LiveAdapterLoadResult } from '@/core/traces/liveAdapter';
 import type { NodeTrace } from '@/core/traces/types';
 import { RunSummaryPanel } from './RunSummaryPanel';
 
@@ -15,6 +16,7 @@ interface Props {
   importedTraceIds?: string[];
   intakeResult?: TraceIntakeBatchResult;
   publishedSnapshot?: PublishedSnapshotLoadResult;
+  liveAdapter?: LiveAdapterLoadResult;
   canaryStatus?: CanaryStatusLoadResult;
   readiness?: ObserverReadinessItem[];
   onImportTraceFiles?: (files: File[]) => void;
@@ -67,6 +69,17 @@ function canaryStatusClass(status: ReturnType<typeof createCanaryStatusDisplaySt
 function canaryDisplayClass(display: ReturnType<typeof createCanaryStatusDisplayState>): string {
   if (display.freshness === 'stale') return 'text-[color:var(--glow-revision)]';
   return canaryStatusClass(display.status);
+}
+
+function liveAdapterStatusClass(status: ReturnType<typeof createLiveAdapterDisplayState>['status']): string {
+  if (status === 'checking' || status === 'unavailable') return 'text-[color:var(--text-muted)]';
+  if (status === 'partial' || status === 'blocked') return 'text-[color:var(--glow-revision)]';
+  return 'text-[color:var(--glow-decision)]';
+}
+
+function liveAdapterDisplayClass(display: ReturnType<typeof createLiveAdapterDisplayState>): string {
+  if (display.freshness === 'stale') return 'text-[color:var(--glow-revision)]';
+  return liveAdapterStatusClass(display.status);
 }
 
 function ObserverReadinessPanel({ items = [] }: { items?: ObserverReadinessItem[] }) {
@@ -181,6 +194,52 @@ function CanaryStatusPanel({ result }: { result?: CanaryStatusLoadResult }) {
   );
 }
 
+function LiveAdapterPanel({ result }: { result?: LiveAdapterLoadResult }) {
+  const display = createLiveAdapterDisplayState(result);
+
+  return (
+    <div
+      className="mt-2 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/80 px-3 py-2 font-mono text-[10px] text-[color:var(--text-secondary)] backdrop-blur-xl"
+      role={display.role}
+      aria-label={display.title}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        {display.role === 'alert' ? (
+          <AlertTriangle size={12} className="text-[color:var(--glow-revision)]" />
+        ) : (
+          <RadioTower size={12} className={liveAdapterDisplayClass(display)} />
+        )}
+        <span className="tracking-wider text-[color:var(--text-primary)] uppercase">{display.title}</span>
+        <span className={`tracking-wider uppercase ${liveAdapterDisplayClass(display)}`}>
+          {display.statusLabel}
+        </span>
+        <span className="text-[color:var(--text-muted)]">{display.summary}</span>
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {display.meta.map((item) => (
+          <span
+            key={`${item.label}-${item.value}`}
+            className="rounded-md border border-[color:var(--border-subtle)] px-2 py-1 tracking-wider text-[color:var(--text-muted)] uppercase"
+          >
+            {item.label}: <span className="text-[color:var(--text-secondary)]">{item.value}</span>
+          </span>
+        ))}
+      </div>
+
+      {display.errors.length > 0 && (
+        <div className="mt-2 overflow-hidden rounded-lg border border-[color:var(--border-subtle)]">
+          {display.errors.slice(0, 3).map((error) => (
+            <p key={error} className="truncate border-b border-[color:var(--border-subtle)] px-2 py-1.5 text-[color:var(--glow-revision)] last:border-b-0">
+              {error}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function IntakeResultsPanel({ result }: { result?: TraceIntakeBatchResult }) {
   if (!result) return null;
 
@@ -243,6 +302,7 @@ export function NodeObserverBar({
   importedTraceIds = [],
   intakeResult,
   publishedSnapshot,
+  liveAdapter,
   canaryStatus,
   readiness,
   onImportTraceFiles,
@@ -346,6 +406,8 @@ export function NodeObserverBar({
       {selected && <RunSummaryPanel trace={selected} />}
 
       <PublishedSnapshotPanel result={publishedSnapshot} />
+
+      <LiveAdapterPanel result={liveAdapter} />
 
       <CanaryStatusPanel result={canaryStatus} />
 

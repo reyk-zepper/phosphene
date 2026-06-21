@@ -38,6 +38,40 @@ describe('createObserverReadiness', () => {
     });
   });
 
+  it('reports the AI Node live adapter as ready when redacted adapter traces are loaded', () => {
+    const readiness = createObserverReadiness({
+      traceGroups: OBSERVER_TRACE_GROUPS,
+      importedTraceCount: 0,
+      liveAdapter: {
+        status: 'available',
+        traceCount: 1,
+        blockedCount: 0,
+      },
+    });
+
+    expect(readiness.find((item) => item.id === 'ai_node_live_adapter')).toMatchObject({
+      status: 'ready',
+      detail: '1 redacted adapter trace',
+    });
+  });
+
+  it('reports the AI Node live adapter as partial when adapter output has blocked traces', () => {
+    const readiness = createObserverReadiness({
+      traceGroups: OBSERVER_TRACE_GROUPS,
+      importedTraceCount: 0,
+      liveAdapter: {
+        status: 'partial',
+        traceCount: 2,
+        blockedCount: 1,
+      },
+    });
+
+    expect(readiness.find((item) => item.id === 'ai_node_live_adapter')).toMatchObject({
+      status: 'partial',
+      detail: '2 redacted adapter traces · 1 blocked',
+    });
+  });
+
   it('marks handoff intake partial when a selected batch has blocked files', () => {
     const intakeResult = {
       traces: [],
