@@ -1,9 +1,33 @@
 {
-  "name": "phosphene",
-  "private": true,
-  "version": "0.1.31",
+  "name": "@reyk-zepper/phosphene",
+  "version": "0.1.32",
   "type": "module",
   "description": "See how AI thinks. Open-source AI reasoning visualizer.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reyk-zepper/phosphene.git"
+  },
+  "homepage": "https://github.com/reyk-zepper/phosphene#readme",
+  "bugs": {
+    "url": "https://github.com/reyk-zepper/phosphene/issues"
+  },
+  "keywords": [
+    "ai",
+    "reasoning",
+    "visualization",
+    "trace",
+    "graph",
+    "typescript",
+    "observability"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist-packages",
     "dist-types",
@@ -32,9 +56,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:packages": "rm -rf dist-types dist-packages && tsc -p tsconfig.packages.json && node scripts/normalize-package-declarations.mjs && vite build --config vite.packages.config.ts",
+    "test:packages": "vitest run tests/packages tests/tooling/vitestConfig.test.ts tests/tooling/eslintConfig.test.ts",
+    "verify:packages": "pnpm --silent test:packages 1>&2 && pnpm --silent lint 1>&2 && pnpm --silent build 1>&2 && pnpm --silent pack:packages 1>&2 && pnpm --silent smoke:packages 1>&2 && pnpm --silent typecheck:packages",
     "pack:packages": "pnpm --silent build:packages 1>&2 && npm pack --dry-run --json",
     "smoke:packages": "pnpm --silent build:packages 1>&2 && node scripts/smoke-package-consumer.mjs",
     "typecheck:packages": "pnpm --silent build:packages 1>&2 && node scripts/typecheck-package-consumer.mjs",
+    "publish:packages:dry-run": "pnpm --silent verify:packages 1>&2 && npm publish --dry-run --ignore-scripts --access public --json",
+    "prepublishOnly": "pnpm --silent verify:packages",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",

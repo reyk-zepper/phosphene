@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.31`
+- App version: `v0.1.32`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -27,11 +27,12 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Generate a redacted Hermes near-live adapter pack from coarse Hermes operational markers only.
 - Generate a redacted multi-service near-live adapter pack for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace from marker counts and file stats only.
 - Export and import portable Reasoning Lab session JSON bundles locally without putting graph content into share URLs.
-- Use source-level parser/graph package entry points for future standalone extraction without pulling in app, UI, store, adapter, or demo modules.
+- Use scoped source-level parser/graph package entry points for future standalone extraction without pulling in app, UI, store, adapter, or demo modules.
 - Build importable parser/graph ESM artifacts plus declarations via `pnpm build:packages`.
 - Inspect a publish-safe parser/graph package dry-run via `pnpm --silent pack:packages`.
 - Run a real tarball consumer smoke via `pnpm --silent smoke:packages`.
 - Run a NodeNext TypeScript tarball consumer typecheck via `pnpm --silent typecheck:packages`.
+- Run a gated scoped-package npm publish dry-run via `pnpm --silent publish:packages:dry-run`.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.

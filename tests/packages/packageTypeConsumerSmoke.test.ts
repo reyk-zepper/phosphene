@@ -39,7 +39,7 @@ describe('package TypeScript consumer smoke', () => {
       classify: 'revision',
       edges: 1,
       flat: 2,
-      installedPackage: 'phosphene',
+      installedPackage: '@reyk-zepper/phosphene',
       parsed: 1,
       typecheck: true,
     });

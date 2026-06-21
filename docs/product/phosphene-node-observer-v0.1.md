@@ -246,15 +246,22 @@ v0.1.29 adds a publish-safe pack dry-run:
 
 v0.1.30 adds a real package consumer smoke test:
 
-- `pnpm --silent smoke:packages` rebuilds parser/graph artifacts, creates an actual npm tarball, installs it into a temporary consumer project, and imports `phosphene/parser` plus `phosphene/graph`.
+- `pnpm --silent smoke:packages` rebuilds parser/graph artifacts, creates an actual npm tarball, installs it into a temporary consumer project, and imports the public parser/graph package entry points.
 - The smoke script prints a compact JSON result for automated verification and deletes its temporary pack/consumer directories afterward.
 - Tests assert the tarball consumer can call parser classification/segmentation and graph traversal/edge collection through the package export paths.
 
 v0.1.31 adds a TypeScript package consumer smoke test:
 
-- `pnpm --silent typecheck:packages` rebuilds parser/graph artifacts, creates an actual npm tarball, installs it into a temporary consumer project, and type-checks `phosphene/parser` plus `phosphene/graph` imports through a NodeNext `tsconfig.json`.
+- `pnpm --silent typecheck:packages` rebuilds parser/graph artifacts, creates an actual npm tarball, installs it into a temporary consumer project, and type-checks the public parser/graph package entry points through a NodeNext `tsconfig.json`.
 - `pnpm build:packages` normalizes generated declaration import specifiers to `.js` extensions so NodeNext consumers can resolve packaged `.d.ts` files.
 - Tests assert the tarball consumer can use exported parser/graph types and that generated declarations do not retain extensionless relative specifiers.
+
+v0.1.32 adds scoped npm package publishing readiness:
+
+- The npm package name is `@reyk-zepper/phosphene` because the unscoped `phosphene` name already exists on npm under another repository.
+- Runtime and TypeScript consumer smokes import `@reyk-zepper/phosphene/parser` and `@reyk-zepper/phosphene/graph` from the generated tarball.
+- Package metadata includes MIT license, repository, homepage, bugs URL, keywords, Node engine, `sideEffects: false`, and public scoped `publishConfig`.
+- `pnpm --silent publish:packages:dry-run` runs the package verification gate and then `npm publish --dry-run --ignore-scripts --access public --json`; real npm publish remains a manual external release action and keeps `prepublishOnly`.
 
 ## UI layout
 
@@ -326,12 +333,13 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.23 exposes a redacted Hermes live-adapter generator and AI Node wrapper that publish Hermes operational markers through the shared `/snapshots/live/` boundary without leaking Hermes file content.
 - v0.1.24 exposes a redacted multi-service live-adapter generator and AI Node wrapper for Hermes, AAG, OpenClaw, Sentinel, Gmail, and Workspace marker traces through the shared `/snapshots/live/` boundary without leaking service file content.
 - v0.1.25 exposes portable Reasoning Lab session JSON export/import with schema validation, graph-shape validation, and secret-like-content rejection.
-- v0.1.26 exposes source-level `phosphene/parser` and `phosphene/graph` package entry points and keeps them independent from app, UI, stores, adapters, and demo constants.
+- v0.1.26 exposes source-level parser/graph package entry points and keeps them independent from app, UI, stores, adapters, and demo constants.
 - v0.1.27 exposes `pnpm build:packages` for declaration-only parser/graph package artifacts and validates that generated declarations do not contain workspace-only aliases.
 - v0.1.28 exposes importable parser/graph ESM package artifacts under `dist-packages/` and validates runtime imports without copying public snapshot data.
 - v0.1.29 exposes a publish-safe `pnpm --silent pack:packages` dry-run manifest and validates that future npm packages include only package runtime, declarations, README, license, and package metadata.
 - v0.1.30 exposes `pnpm --silent smoke:packages`, proving the generated tarball installs and imports from a temporary external consumer project.
 - v0.1.31 exposes `pnpm --silent typecheck:packages`, proving the generated tarball resolves parser/graph types from a temporary NodeNext TypeScript consumer project.
+- v0.1.32 exposes scoped npm package metadata plus `pnpm --silent publish:packages:dry-run`, proving the package can pass the local release gate before a manual public npm publish.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

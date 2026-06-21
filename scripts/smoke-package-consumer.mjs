@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +7,7 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packageName = JSON.parse(await readFile(path.join(rootDir, 'package.json'), 'utf8')).name;
 const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'phosphene-package-smoke-'));
 const packDir = path.join(tempRoot, 'pack');
 const consumerDir = path.join(tempRoot, 'consumer');
@@ -51,8 +52,8 @@ try {
   );
 
   const smokeSource = `
-import { classify, segment } from 'phosphene/parser';
-import { collectGraphEdges, flattenGraph } from 'phosphene/graph';
+import { classify, segment } from '${packageName}/parser';
+import { collectGraphEdges, flattenGraph } from '${packageName}/graph';
 const root = {
   id: 'root',
   type: 'hypothesis',
@@ -75,7 +76,7 @@ console.log(JSON.stringify({
   segments: segment('One.\\n\\nTwo.').length,
   flat: flattenGraph(root).length,
   edges: collectGraphEdges(root).length,
-  installedPackage: 'phosphene',
+  installedPackage: '${packageName}',
 }));
 `;
   const { stdout } = await run('node', ['--input-type=module', '--eval', smokeSource], {

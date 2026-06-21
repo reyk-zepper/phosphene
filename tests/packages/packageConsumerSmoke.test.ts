@@ -39,7 +39,7 @@ describe('package tarball consumer smoke', () => {
       segments: 2,
       flat: 2,
       edges: 1,
-      installedPackage: 'phosphene',
+      installedPackage: '@reyk-zepper/phosphene',
     });
   });
 });
