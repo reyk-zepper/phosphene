@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Settings } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
-import { DEMO_GRAPH } from '@/constants/demoGraph';
+import { DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
 import { PromptInput } from '@/components/prompt/PromptInput';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
@@ -19,20 +19,35 @@ import {
 import { createObserverReadiness } from '@/core/traces/readiness';
 import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
 import { startCanaryStatusRefresh, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
+import { buildShareUrl, parseShareLinkState, type ShareLinkState } from '@/core/share/shareLink';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
 
+function readInitialShareState(): ShareLinkState {
+  if (typeof window === 'undefined') return {};
+  return parseShareLinkState(window.location.href);
+}
+
 export function App() {
   const graph = useSessionStore((s) => s.currentGraph);
   const setGraph = useSessionStore((s) => s.setGraph);
+  const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
+  const selectNode = useSessionStore((s) => s.selectNode);
   const hasKey = useSettingsStore((s) =>
     Object.values(s.encodedKeys).some(Boolean)
   );
+  const initialShareState = useMemo(readInitialShareState, []);
+  const pendingSharedTraceId = useRef(
+    initialShareState.mode === 'observer' ? (initialShareState.traceId ?? null) : null
+  );
+  const pendingSharedNodeId = useRef(initialShareState.nodeId ?? null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [mode, setMode] = useState<AppMode>('observer');
-  const [selectedTraceId, setSelectedTraceId] = useState(OBSERVER_TRACES[0].id);
+  const [mode, setMode] = useState<AppMode>(initialShareState.mode ?? 'observer');
+  const [selectedTraceId, setSelectedTraceId] = useState(
+    initialShareState.mode === 'observer' ? (initialShareState.traceId ?? OBSERVER_TRACES[0].id) : OBSERVER_TRACES[0].id
+  );
   const [importedTraces, setImportedTraces] = useState<NodeTrace[]>([]);
   const [intakeResult, setIntakeResult] = useState<TraceIntakeBatchResult | undefined>();
   const [snapshotResult, setSnapshotResult] = useState<PublishedSnapshotLoadResult | undefined>();
@@ -81,6 +96,15 @@ export function App() {
     }),
     [importedTraces.length, intakeResult, observerTraceGroups, publishedSnapshotReadiness]
   );
+  const shareUrl = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+    return buildShareUrl(window.location.href, {
+      mode,
+      traceId: mode === 'observer' ? selectedTraceId : undefined,
+      graphId: mode === 'reasoning' ? graph?.id : undefined,
+      nodeId: selectedNodeId ?? undefined,
+    });
+  }, [graph?.id, mode, selectedNodeId, selectedTraceId]);
   useGraphNavigation();
 
   const handleImportTraceFiles = useCallback(async (files: File[]) => {
@@ -109,6 +133,7 @@ export function App() {
     void loadPublishedSnapshot().then((result) => {
       if (cancelled) return;
       setSnapshotResult(result);
+      if (pendingSharedTraceId.current) return;
       if (result.traces.length > 0) {
         setSelectedTraceId((current) => (
           current === OBSERVER_TRACES[0].id ? result.traces[0].id : current
@@ -126,10 +151,26 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    const pendingTraceId = pendingSharedTraceId.current;
+    if (!pendingTraceId) return;
+
+    if (observerTraces.some((trace) => trace.id === pendingTraceId)) {
+      setSelectedTraceId(pendingTraceId);
+      pendingSharedTraceId.current = null;
+      return;
+    }
+
+    if (snapshotResult) {
+      pendingSharedTraceId.current = null;
+    }
+  }, [observerTraces, snapshotResult]);
+
+  useEffect(() => {
     if (mode !== 'observer') return;
+    if (pendingSharedTraceId.current && !snapshotResult) return;
     if (observerTraces.some((trace) => trace.id === selectedTraceId)) return;
     setSelectedTraceId(observerTraces[0].id);
-  }, [mode, observerTraces, selectedTraceId]);
+  }, [mode, observerTraces, selectedTraceId, snapshotResult]);
 
   useEffect(() => {
     if (mode !== 'observer') return;
@@ -141,6 +182,22 @@ export function App() {
     if (mode !== 'reasoning') return;
     if ((!graph || graph.model.model === 'ai-node-trace') && !hasKey) setGraph(DEMO_GRAPH);
   }, [graph, hasKey, mode, setGraph]);
+
+  useEffect(() => {
+    const pendingNodeId = pendingSharedNodeId.current;
+    if (!graph || !pendingNodeId) return;
+
+    const nodeExists = flattenGraph(graph.rootNode).some((node) => node.id === pendingNodeId);
+    if (nodeExists) {
+      selectNode(pendingNodeId);
+      pendingSharedNodeId.current = null;
+      return;
+    }
+
+    if (!pendingSharedTraceId.current) {
+      pendingSharedNodeId.current = null;
+    }
+  }, [graph, selectNode]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -169,7 +226,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.11
+              v0.1.12
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -206,7 +263,7 @@ export function App() {
       </header>
 
       <main className="relative h-full w-full">
-        <GraphCanvas />
+        <GraphCanvas shareUrl={shareUrl} />
       </main>
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden sm:block">

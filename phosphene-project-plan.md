@@ -55,7 +55,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 **Nice to Have (v0.2):**
 - [ ] Multi-Model-Vergleich: Gleicher Prompt, zwei Modelle side-by-side
 - [ ] Reasoning-Stats: Token-Count, Tiefe, Verzweigungen, Confidence-Heatmap
-- [ ] Shareable Links (Graph als URL)
+- [x] Shareable Links (Graph als URL)
 - [ ] Prompt-History / Session-Management
 - [ ] Keyboard-Shortcuts für Navigation
 
@@ -319,7 +319,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 
 - [ ] Side-by-Side-Vergleich (gleicher Prompt, zwei Modelle)
 - [ ] Reasoning-Heatmap (wo verbringt das Modell die meiste "Denkzeit"?)
-- [ ] Shareable Graphs (URL-basiert)
+- [x] Shareable Graphs (URL-basiert)
 - [ ] Gemini Adapter
 - [ ] Ollama/Local Adapter
 - [ ] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"

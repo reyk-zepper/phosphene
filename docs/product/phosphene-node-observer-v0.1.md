@@ -131,6 +131,13 @@ v0.1.11 adds graph export from the active canvas:
 - PNG export renders the same standalone SVG through a browser canvas before download.
 - Export filenames are deterministic and include the graph id plus UTC timestamp.
 
+v0.1.12 adds shareable graph links:
+
+- Graph Canvas exposes a compact copy-link control next to SVG and PNG export.
+- Shared URLs encode only mode, trace or graph id, and selected node id.
+- Shared URLs restore Node Observer traces, Reasoning Lab demo graphs, and selected nodes when the target exists locally.
+- Share parsing rejects unsafe path-like, space-containing, or token-like values.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -178,6 +185,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.9 preserves the published snapshot across normal AI Node deploys.
 - v0.1.10 exposes published snapshot status, source, classification, manifest, validation, and blocked-state errors in Node Observer.
 - v0.1.11 exposes SVG and PNG graph export from the active Graph Canvas.
+- v0.1.12 exposes copyable share links for active mode, graph/trace id, and selected node without serializing private content.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

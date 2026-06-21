@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { Download, FileImage } from 'lucide-react';
+import { Download, FileImage, Share2 } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
 import {
   buildGraphExportFileName,
@@ -16,6 +16,10 @@ import type { ReasoningNode } from '@/core/parser/types';
 const NODE_RADIUS = 14;
 const EXPORT_BACKGROUND = '#0a0e17';
 
+interface GraphCanvasProps {
+  shareUrl?: string;
+}
+
 function edgePath(edge: LaidOutEdge): string {
   if (edge.points.length === 0) return '';
   const line = d3
@@ -26,7 +30,7 @@ function edgePath(edge: LaidOutEdge): string {
   return line(edge.points) ?? '';
 }
 
-export function GraphCanvas() {
+export function GraphCanvas({ shareUrl }: GraphCanvasProps) {
   const graph = useSessionStore((s) => s.currentGraph);
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
   const selectNode = useSessionStore((s) => s.selectNode);
@@ -37,6 +41,7 @@ export function GraphCanvas() {
   const [hoverNode, setHoverNode] = useState<ReasoningNode | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [exportError, setExportError] = useState<string | null>(null);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
 
   const nodeMap = useMemo(() => {
     if (!graph) return new Map<string, ReasoningNode>();
@@ -109,6 +114,26 @@ export function GraphCanvas() {
         setExportError(message);
       });
   }, [createExportSnapshot]);
+
+  const handleCopyShareUrl = useCallback(() => {
+    if (!shareUrl) return;
+    setExportError(null);
+
+    if (!navigator.clipboard?.writeText) {
+      setExportError('Clipboard is not available in this browser.');
+      return;
+    }
+
+    void navigator.clipboard.writeText(shareUrl)
+      .then(() => {
+        setShareStatus('Share link copied');
+        window.setTimeout(() => setShareStatus(null), 1800);
+      })
+      .catch((error) => {
+        const message = error instanceof Error ? error.message : 'Could not copy share link.';
+        setExportError(message);
+      });
+  }, [shareUrl]);
 
   useEffect(() => {
     if (!svgRef.current || !gRef.current || !layout) return;
@@ -265,11 +290,25 @@ export function GraphCanvas() {
         >
           <FileImage size={15} />
         </button>
+        <button
+          type="button"
+          onClick={handleCopyShareUrl}
+          title="Copy share link"
+          aria-label="Copy share link"
+          disabled={!shareUrl}
+          className="rounded-md border border-[color:var(--border-subtle)] p-2 text-[color:var(--text-secondary)] transition hover:border-[color:var(--glow-decision)] hover:text-[color:var(--glow-decision)] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <Share2 size={15} />
+        </button>
       </div>
 
-      {exportError && (
-        <div role="alert" className="absolute right-4 bottom-20 z-20 max-w-xs rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/90 px-3 py-2 font-mono text-[10px] text-[color:var(--glow-revision)] backdrop-blur-xl">
-          {exportError}
+      {(exportError || shareStatus) && (
+        <div
+          role={exportError ? 'alert' : 'status'}
+          className="absolute right-4 bottom-20 z-20 max-w-xs rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--bg-secondary)]/90 px-3 py-2 font-mono text-[10px] backdrop-blur-xl"
+          style={{ color: exportError ? 'var(--glow-revision)' : 'var(--glow-decision)' }}
+        >
+          {exportError ?? shareStatus}
         </div>
       )}
     </div>
