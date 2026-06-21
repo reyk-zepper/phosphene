@@ -4,6 +4,7 @@ import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
 import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
 import { PromptInput } from '@/components/prompt/PromptInput';
+import { DemoPromptGallery } from '@/components/prompt/DemoPromptGallery';
 import { SessionHistoryPanel } from '@/components/history/SessionHistoryPanel';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
@@ -110,7 +111,9 @@ export function App() {
   }, [graph?.id, mode, selectedNodeId, selectedTraceId]);
   const comparisonGraph = useMemo(() => {
     if (mode !== 'reasoning' || !graph) return null;
-    return graph.id === DEMO_COMPARISON_GRAPH.id ? DEMO_GRAPH : DEMO_COMPARISON_GRAPH;
+    if (graph.id === DEMO_GRAPH.id) return DEMO_COMPARISON_GRAPH;
+    if (graph.id === DEMO_COMPARISON_GRAPH.id) return DEMO_GRAPH;
+    return null;
   }, [graph, mode]);
   useGraphNavigation();
 
@@ -233,7 +236,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.16
+              v0.1.17
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -254,6 +257,7 @@ export function App() {
         {mode === 'reasoning' ? (
           <div className="space-y-2">
             <PromptInput onOpenSettings={() => setSettingsOpen(true)} />
+            <DemoPromptGallery />
             <SessionHistoryPanel />
           </div>
         ) : (

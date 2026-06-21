@@ -48,7 +48,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 - [x] Graph-Visualization: Reasoning als Baum/DAG
 - [x] Node-Detail-Panel: Klick auf einen Node zeigt den Reasoning-Schritt
 - [x] Live-Streaming: Graph baut sich auf während das Modell denkt
-- [ ] 3-5 Demo-Prompts für sofortigen Wow-Effekt
+- [x] 3-5 Demo-Prompts für sofortigen Wow-Effekt
 - [x] Dark-Mode-First Design (passt zur "Phosphene"-Metapher)
 - [x] Export: Screenshot/PNG des Graphen
 

@@ -47,7 +47,7 @@ Built for:
 Currently working:
 
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
-- Reasoning Lab demo graph for model reasoning exploration
+- Four curated Reasoning Lab demo prompts for model reasoning exploration without an API key
 - Node Observer mode with four redacted AI-node demo traces, grouped Hermes synthetic handoff fixtures, and a published redacted snapshot group
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
 - Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks
@@ -172,7 +172,7 @@ phosphene/
 
 ### Roadmap
 
-- **v0.1** — UI shell, demo graph, node types, detail panel ✅
+- **v0.1** — UI shell, demo prompts, node types, detail panel ✅
 - **v0.2** — OpenAI o-series and Gemini adapters, live multi-provider comparison
 - **v0.3** — Full side-by-side model comparison and adapter hardening
 - **v0.4** — Hosted/portable session workflows
@@ -222,7 +222,7 @@ Gebaut für:
 Funktioniert bereits:
 
 - Bioluminescent-Dark UI-Shell (Mode-Switch, Graph-Canvas, Detail-Panel, Legende)
-- Reasoning-Lab-Demo-Graph für Reasoning-Exploration
+- Vier kuratierte Reasoning-Lab-Demo-Prompts fuer Reasoning-Exploration ohne API-Key
 - Node Observer mit vier redigierten AI-Node-Demo-Traces, gruppierten Hermes Synthetic Handoff Fixtures und veröffentlichter redigierter Snapshot-Gruppe
 - Versionierte Boundary-JSON Import / Adapter Boundary für Trace-Events vor der internen Graph-Normalisierung
 - Lokaler Multi-file Boundary-JSON-Upload mit sichtbaren Schema-, Graph-, Enum- und Redaction-Checks
@@ -347,7 +347,7 @@ phosphene/
 
 ### Roadmap
 
-- **v0.1** — UI-Shell, Demo-Graph, Node-Typen, Detail-Panel ✅
+- **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
 - **v0.2** — OpenAI-o-Series- und Gemini-Adapter, Live-Multi-Provider-Vergleich
 - **v0.3** — Vollstaendiger Modell-Vergleich nebeneinander und Adapter-Haertung
 - **v0.4** — Gehostete/portable Session-Workflows
