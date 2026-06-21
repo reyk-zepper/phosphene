@@ -67,6 +67,7 @@ Currently working:
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Reasoning Pattern Library panel that detects evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors
 - Client-local collaborative annotation panel for graph/node review notes, status, priority, author labels, and portable JSON annotation bundle import/export
+- Client-local Constitution panel for defining graph rules and evaluating reasoning against evidence, decision, uncertainty, confidence, text, and depth checks
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
 - Static hosted Reasoning Lab session workflow: `/sessions/hosted/latest.json` points to a public portable session bundle, the browser verifies SHA-256 and portable-session guardrails, and loading remains an explicit user action
@@ -89,7 +90,7 @@ Still not built:
 
 - Raw live AI-node telemetry, private payload capture, provider calls, or raw side-effect execution observation
 - Account-backed hosted sessions, realtime collaborative editing, server-side session persistence, or automatic hosted graph activation
-- Plugin marketplace/runtime execution or Constitution-mode rule testing
+- Plugin marketplace/runtime execution, policy-server enforcement, or account-backed Constitution repositories
 
 ### Tech stack
 
@@ -200,7 +201,7 @@ phosphene/
 - **v0.3** — AI-node live adapters; generic, Hermes, multi-service marker, and redacted side-effect intent adapters ✅; raw side-effect execution observation remains non-scope
 - **v0.4** — Portable session bundles and static hosted session workflow ✅; account-backed/collaborative hosting remains non-scope/open
 - **v0.5+** — Scoped parser/graph package surface plus ESM/declaration builds, pack dry-run, runtime/type tarball smokes, scoped npm metadata, and dry-run publish gate ✅; real npm publish remains manual
-- **v0.6** — Reasoning Pattern Library ✅; local custom OpenAI Responses-compatible API profiles ✅; client-local collaborative annotation bundles ✅; plugin marketplace/runtime execution and Constitution Mode remain future/non-scope
+- **v0.6** — Reasoning Pattern Library ✅; local custom OpenAI Responses-compatible API profiles ✅; client-local collaborative annotation bundles ✅; client-local Constitution Mode ✅; plugin marketplace/runtime execution and policy-server enforcement remain future/non-scope
 
 ### Contributing
 
@@ -266,6 +267,7 @@ Funktioniert bereits:
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Reasoning-Pattern-Library-Panel fuer Evidence-backed Hypotheses, Revision-Loops, Decision-Tradeoffs und Uncertainty-Probes mit stabilen Node-Ankern
 - Client-lokales Collaborative-Annotation-Panel fuer Graph-/Node-Review-Notizen, Status, Prioritaet, Autor-Labels und portable JSON-Annotation-Bundle-Imports/-Exports
+- Client-lokales Constitution-Panel zum Definieren von Graph-Regeln und Evaluieren von Reasoning gegen Evidence-, Decision-, Uncertainty-, Confidence-, Text- und Depth-Checks
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
 - Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
 - Statischer gehosteter Reasoning-Lab-Session-Workflow: `/sessions/hosted/latest.json` verweist auf ein oeffentliches Portable-Session-Bundle, der Browser prueft SHA-256 und Portable-Session-Guardrails, und Laden bleibt eine explizite User-Aktion
@@ -288,7 +290,7 @@ Noch nicht gebaut:
 
 - Rohe Live-AI-Node-Telemetrie, private Payload-Erfassung oder Side-Effect-Level-Agentenbeobachtung
 - Accountbasierte gehostete Sessions, realtime-kollaboratives Bearbeiten, serverseitige Session-Persistenz oder automatische Aktivierung gehosteter Graphen
-- Plugin-Marketplace/Runtime-Ausfuehrung oder Constitution-Mode-Regeltests
+- Plugin-Marketplace/Runtime-Ausfuehrung, Policy-Server-Enforcement oder accountbasierte Constitution-Repositories
 
 ### Tech-Stack
 
@@ -399,7 +401,7 @@ phosphene/
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes-, Multi-Service-Marker- und redigierter Side-Effect-Intent-Adapter ✅; rohe Side-Effect-Ausfuehrungsbeobachtung bleibt Non-Scope
 - **v0.4** — Portable Session-Bundles und statischer gehosteter Session-Workflow ✅; accountbasierte/kollaborative Hosting-Flows bleiben Non-Scope/offen
 - **v0.5+** — Scoped Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run, Runtime-/Type-Tarball-Smokes, scoped npm-Metadaten und Dry-Run-Publish-Gate ✅; realer npm Publish bleibt manuell
-- **v0.6** — Reasoning Pattern Library ✅; lokale Custom-OpenAI-Responses-kompatible API-Profile ✅; client-lokale Collaborative-Annotation-Bundles ✅; Plugin-Marketplace/Runtime-Ausfuehrung und Constitution Mode bleiben Future/Non-Scope
+- **v0.6** — Reasoning Pattern Library ✅; lokale Custom-OpenAI-Responses-kompatible API-Profile ✅; client-lokale Collaborative-Annotation-Bundles ✅; client-lokaler Constitution Mode ✅; Plugin-Marketplace/Runtime-Ausfuehrung und Policy-Server-Enforcement bleiben Future/Non-Scope
 
 ### Mitwirken
 

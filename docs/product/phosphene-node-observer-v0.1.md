@@ -295,6 +295,12 @@ v0.1.37 adds client-local collaborative annotations:
 - Annotation bundles export/import as `phosphene.annotations.v0.1.37` JSON for asynchronous review handoff; import blocks graph mismatches, missing node anchors, malformed notes, and secret-like content.
 - This is portable client-local review, not account-backed realtime collaboration, server-side persistence, or Constitution-mode rule testing.
 
+v0.1.38 adds client-local Constitution Mode:
+
+- Reasoning Lab evaluates enabled local rules against the active graph and reports pass/fail score, failing count, rule messages, and node anchors.
+- Default rules require evidence, decision, uncertainty-probe, and confidence-floor coverage; users can define additional text, node-type, confidence, and max-depth rules in browser storage.
+- This is deterministic local graph evaluation, not a policy server, account-backed Constitution repository, runtime enforcement engine, or provider-side safety system.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -378,6 +384,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.35 exposes deterministic local Reasoning Pattern Library detection through the app UI and package-safe graph export surface.
 - v0.1.36 exposes client-local OpenAI Responses-compatible custom API profiles through settings, model picker selection, primary streaming, and live comparison.
 - v0.1.37 exposes client-local collaborative annotation bundles through a Reasoning Lab panel, browser-local persistence, graph/node review metadata, and guarded JSON import/export.
+- v0.1.38 exposes client-local Constitution Mode through default/custom rule definitions, browser-local persistence, deterministic graph evaluation, and visible pass/fail rule summaries.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

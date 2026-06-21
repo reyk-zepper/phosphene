@@ -15,6 +15,7 @@ import { LiveComparisonControls } from '@/components/graph/LiveComparisonControl
 import { GraphStatsPanel } from '@/components/graph/GraphStatsPanel';
 import { PatternLibraryPanel } from '@/components/graph/PatternLibraryPanel';
 import { AnnotationPanel } from '@/components/graph/AnnotationPanel';
+import { ConstitutionPanel } from '@/components/graph/ConstitutionPanel';
 import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
@@ -281,7 +282,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.37
+              v0.1.38
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -339,6 +340,7 @@ export function App() {
         {mode === 'reasoning' && graph && <GraphStatsPanel graph={graph} />}
         {mode === 'reasoning' && graph && <PatternLibraryPanel graph={graph} />}
         {mode === 'reasoning' && graph && <AnnotationPanel graph={graph} />}
+        {mode === 'reasoning' && graph && <ConstitutionPanel graph={graph} />}
         {mode === 'reasoning' && graph && comparisonGraph && (
           <GraphComparisonPanel primaryGraph={graph} secondaryGraph={comparisonGraph} />
         )}

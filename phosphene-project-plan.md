@@ -63,7 +63,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 - [x] Reasoning-Pattern-Library (häufige Denkmuster taggen)
 - [x] Plugin-System für custom Modelle/APIs
 - [x] Collaborative Annotation (Teams können Reasoning kommentieren)
-- [ ] Constitution-Mode: Regeln definieren & gegen Reasoning testen
+- [x] Constitution-Mode: Regeln definieren & gegen Reasoning testen
 
 ---
 
@@ -329,10 +329,10 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 ### Phase 5: Constitution Bridge (Monat 5+)
 **Ziel:** Cortex-Engine extrahieren, Constitution vorbereiten
 
-- [ ] `@phosphene/parser` als eigenständiges npm-Paket
-- [ ] `@phosphene/graph` als eigenständige Viz-Library
+- [x] Parser als public Package Entry Point (`@reyk-zepper/phosphene/parser`)
+- [x] Graph als public Package Entry Point (`@reyk-zepper/phosphene/graph`)
 - [ ] Constitution-Repo aufsetzen, Phosphene-Engine einbinden
-- [ ] "Rule-Testing-Mode": Reasoning gegen Regeln visualisieren
+- [x] "Rule-Testing-Mode": Reasoning gegen Regeln visualisieren
 
 ---
 
