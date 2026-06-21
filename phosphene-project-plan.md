@@ -323,6 +323,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [ ] Gemini Adapter
 - [ ] Ollama/Local Adapter
 - [x] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"
+- [x] Graph-Comparison-Foundation: Metrik-, Confidence- und Node-Typ-Deltas fuer Same-Prompt-Runs
 - [ ] Reasoning-Stats Dashboard
 
 ### Phase 5: Constitution Bridge (Monat 5+)
@@ -365,7 +366,8 @@ phosphene/
 │   │   ├── graph/            # Graph-Datenmodell & Algorithmen
 │   │   │   ├── builder.ts    # Stream → Graph-State
 │   │   │   ├── layout.ts     # dagre Layout-Wrapper
-│   │   │   └── search.ts     # Graph-Suche & Filter
+│   │   │   ├── search.ts     # Graph-Suche & Filter
+│   │   │   └── compare.ts    # Graph-Vergleich & Deltas
 │   │   └── store/            # Zustand Stores
 │   │       ├── session.ts
 │   │       ├── settings.ts

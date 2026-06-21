@@ -128,6 +128,71 @@ export const DEMO_GRAPH: ReasoningGraph = {
   createdAt: Date.now(),
 };
 
+const alternateDecision = node(
+  'o5',
+  'decision',
+  'Choose the return-trip sequence',
+  'The working sequence is goat across, farmer returns, wolf across, goat returns, cabbage across, farmer returns, goat across. The key is using the goat as the item that moves back once.',
+  2,
+  [],
+  4700,
+  0.92
+);
+
+const alternateEvidence = node(
+  'o4',
+  'evidence',
+  'Boat capacity forces return trips',
+  'The boat carries the farmer plus one item. Because two unsafe pairings exist, at least one item must be brought back to reset the bank state.',
+  2,
+  [],
+  3100,
+  0.75
+);
+
+const alternateAnalysis = node(
+  'o3',
+  'analysis',
+  'Enumerate unsafe bank states',
+  'Leaving wolf with goat or goat with cabbage without the farmer fails. Therefore the first move should isolate the goat, then use return trips to avoid both forbidden pairings.',
+  1,
+  [alternateEvidence, alternateDecision],
+  1600,
+  0.7
+);
+
+const alternateHypothesis = node(
+  'o1',
+  'hypothesis',
+  'Start by isolating the goat',
+  'The goat appears in both constraints, so the safest opening is to move it first and keep both banks from containing a forbidden pair without the farmer.',
+  0,
+  [alternateAnalysis],
+  300,
+  0.6
+);
+
+export const DEMO_COMPARISON_GRAPH: ReasoningGraph = {
+  id: 'demo-river-crossing-o3',
+  prompt: DEMO_GRAPH.prompt,
+  model: {
+    provider: 'openai',
+    model: 'o3-demo',
+    displayName: 'OpenAI o3 demo',
+  },
+  rootNode: alternateHypothesis,
+  metadata: {
+    totalTokens: 820,
+    reasoningTokens: 700,
+    outputTokens: 120,
+    maxDepth: 2,
+    branchCount: 2,
+    nodeCount: 4,
+    timeToComplete: 3900,
+  },
+  createdAt: Date.now(),
+};
+
 export function flattenGraph(root: ReasoningNode): ReasoningNode[] {
   const out: ReasoningNode[] = [];
   const walk = (n: ReasoningNode) => {

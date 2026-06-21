@@ -145,6 +145,12 @@ v0.1.13 adds graph search beyond plain text:
 - `confidence:high` surfaces high-confidence nodes first.
 - Natural-language mind-change queries map to revision nodes, including the planned German prompt shape: `Finde alle Stellen wo das Modell seine Meinung ändert`.
 
+v0.1.14 adds graph comparison foundations for Reasoning Lab:
+
+- A reusable graph comparison core computes node, depth, branch, token, confidence, and node-type deltas between two `ReasoningGraph` objects.
+- Reasoning Lab ships a second same-prompt demo run so comparison data is visible without live provider calls.
+- The canvas side panel surfaces strongest metric differences and node-type distribution changes without claiming full live side-by-side model execution.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -155,6 +161,7 @@ v0.1.13 adds graph search beyond plain text:
 - Readiness status appears below the run summary and keeps the live adapter visibly disconnected until a real AI Node adapter exists.
 - Run Summary Panel shows outcome, highest risk, participating systems, approvals, failures/recovery, and duration before the user clicks a node.
 - Graph canvas renders event order and parent/child relationships.
+- Reasoning Lab shows a compact Graph Compare panel for same-prompt demo comparisons.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
 
 ## Security/redaction rules
@@ -194,6 +201,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.11 exposes SVG and PNG graph export from the active Graph Canvas.
 - v0.1.12 exposes copyable share links for active mode, graph/trace id, and selected node without serializing private content.
 - v0.1.13 exposes graph search for text, type, confidence, metadata, and mind-change/revision patterns.
+- v0.1.14 exposes graph comparison metrics, highlights, and node-type deltas for same-prompt Reasoning Lab demo runs.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

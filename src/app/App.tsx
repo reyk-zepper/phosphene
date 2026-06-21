@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Settings } from 'lucide-react';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
-import { DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
+import { DEMO_COMPARISON_GRAPH, DEMO_GRAPH, flattenGraph } from '@/constants/demoGraph';
 import { PromptInput } from '@/components/prompt/PromptInput';
 import { GraphCanvas } from '@/components/graph/GraphCanvas';
 import { GraphLegend } from '@/components/graph/GraphLegend';
+import { GraphComparisonPanel } from '@/components/graph/GraphComparisonPanel';
 import { DetailPanel } from '@/components/detail/DetailPanel';
 import { ApiKeyModal } from '@/components/settings/ApiKeyModal';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
@@ -105,6 +106,10 @@ export function App() {
       nodeId: selectedNodeId ?? undefined,
     });
   }, [graph?.id, mode, selectedNodeId, selectedTraceId]);
+  const comparisonGraph = useMemo(() => {
+    if (mode !== 'reasoning' || !graph) return null;
+    return graph.id === DEMO_COMPARISON_GRAPH.id ? DEMO_GRAPH : DEMO_COMPARISON_GRAPH;
+  }, [graph, mode]);
   useGraphNavigation();
 
   const handleImportTraceFiles = useCallback(async (files: File[]) => {
@@ -226,7 +231,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.13
+              v0.1.14
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
@@ -266,7 +271,10 @@ export function App() {
         <GraphCanvas shareUrl={shareUrl} />
       </main>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden sm:block">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden max-w-[calc(100vw-2rem)] flex-col gap-3 sm:flex">
+        {mode === 'reasoning' && graph && comparisonGraph && (
+          <GraphComparisonPanel primaryGraph={graph} secondaryGraph={comparisonGraph} />
+        )}
         <GraphLegend variant={mode === 'observer' ? 'observer' : 'reasoning'} />
       </div>
 

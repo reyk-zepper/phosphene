@@ -58,6 +58,7 @@ Currently working:
 - Graph export buttons for SVG and PNG downloads from the current canvas
 - Copyable share links for the active mode, graph/trace, and selected node
 - Graph search with text, type, confidence, and mind-change pattern queries
+- Graph comparison panel for same-prompt demo runs with metric, confidence, and node-type deltas
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -73,7 +74,7 @@ Not yet built:
 - Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
 - Streaming reasoning parser
 - API key management
-- Graph comparison
+- Full live side-by-side model comparison
 
 ### Tech stack
 
@@ -157,7 +158,7 @@ phosphene/
 │   ├── core/
 │   │   ├── parser/          # Text → structured reasoning nodes
 │   │   ├── adapters/        # LLM API adapters
-│   │   ├── graph/           # Graph operations (layout, search, export)
+│   │   ├── graph/           # Graph operations (layout, search, compare, export)
 │   │   └── store/           # Zustand stores
 │   ├── hooks/
 │   ├── styles/              # Design tokens + graph CSS
@@ -172,7 +173,7 @@ phosphene/
 - **v0.1** — UI shell, demo graph, node types, detail panel ✅
 - **v0.2** — Claude adapter with extended thinking + streaming parser + API key management
 - **v0.3** — OpenAI o-series and Gemini adapters, multi-provider comparison, graph export
-- **v0.4** — Side-by-side model comparison
+- **v0.4** — Full side-by-side model comparison
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
 ### Contributing
@@ -230,6 +231,7 @@ Funktioniert bereits:
 - Graph-Export-Buttons fuer SVG- und PNG-Downloads aus dem aktuellen Canvas
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
 - Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
+- Graph-Vergleichspanel fuer Same-Prompt-Demo-Runs mit Metrik-, Confidence- und Node-Typ-Deltas
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -245,7 +247,7 @@ Noch nicht gebaut:
 - Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
 - Streaming Reasoning-Parser
 - API-Key-Management
-- Graph-Vergleich
+- Vollstaendiger Live-Modellvergleich nebeneinander
 
 ### Tech-Stack
 
@@ -329,7 +331,7 @@ phosphene/
 │   ├── core/
 │   │   ├── parser/          # Text → strukturierte Reasoning-Nodes
 │   │   ├── adapters/        # LLM API-Adapter
-│   │   ├── graph/           # Graph-Operationen (Layout, Suche, Export)
+│   │   ├── graph/           # Graph-Operationen (Layout, Suche, Vergleich, Export)
 │   │   └── store/           # Zustand Stores
 │   ├── hooks/
 │   ├── styles/              # Design Tokens + Graph CSS
@@ -344,7 +346,7 @@ phosphene/
 - **v0.1** — UI-Shell, Demo-Graph, Node-Typen, Detail-Panel ✅
 - **v0.2** — Claude-Adapter mit Extended Thinking + Streaming-Parser + API-Key-Management
 - **v0.3** — OpenAI o-Series und Gemini-Adapter, Multi-Provider-Vergleich
-- **v0.4** — Modell-Vergleich nebeneinander
+- **v0.4** — Vollstaendiger Modell-Vergleich nebeneinander
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 
 ### Mitwirken
