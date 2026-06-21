@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createCanaryStatusDisplayState,
   loadCanaryStatus,
+  startCanaryStatusRefresh,
 } from '@/core/traces/canaryStatus';
 import { BOUNDARY_TRACE_SCHEMA_VERSION } from '@/core/traces/types';
 
@@ -141,5 +142,51 @@ describe('createCanaryStatusDisplayState', () => {
     expect(display.role).toBe('alert');
     expect(display.summary).toBe('AI Node canary marker blocked. Static demo traces remain available.');
     expect(display.errors[0]).toContain('latest_pack');
+  });
+});
+
+describe('startCanaryStatusRefresh', () => {
+  it('loads immediately, refreshes on the interval, and clears the timer on stop', async () => {
+    const results = [
+      { status: 'unavailable', basePath: '/snapshots/canary', errors: [], loadedAt: '2026-06-20T22:00:00Z' },
+      { status: 'available', basePath: '/snapshots/canary', marker: {
+        updatedAt: '2026-06-20T22:01:00Z',
+        sourceAgent: 'ai_node_canary',
+        dataClassification: 'redacted_operational_canary',
+        latestPack: 'ai-node-canary-20260620T220100Z',
+        canaryStatus: 'succeeded',
+        manifestFile: 'ai-node-canary-20260620T220100Z/manifest.json',
+        manifestSha256: 'sha256:6a6e49ebecec000fc07dcd3da5631ed792ce5439381fa763623ffdcb767a340a',
+        retentionCount: 48,
+      }, errors: [], loadedAt: '2026-06-20T22:01:00Z' },
+    ] as const;
+    const received: unknown[] = [];
+    const intervals: Array<() => void> = [];
+    const cleared: unknown[] = [];
+
+    const stop = startCanaryStatusRefresh({
+      refreshMs: 60_000,
+      load: async () => results[Math.min(received.length, results.length - 1)],
+      onResult: (result) => received.push(result),
+      setIntervalFn: (callback, delay) => {
+        expect(delay).toBe(60_000);
+        intervals.push(callback);
+        return 'timer-1';
+      },
+      clearIntervalFn: (handle) => {
+        cleared.push(handle);
+      },
+    });
+
+    await Promise.resolve();
+    expect(received).toEqual([results[0]]);
+    expect(intervals).toHaveLength(1);
+
+    intervals[0]();
+    await Promise.resolve();
+    expect(received).toEqual([results[0], results[1]]);
+
+    stop();
+    expect(cleared).toEqual(['timer-1']);
   });
 });

@@ -2,6 +2,7 @@ import { BOUNDARY_TRACE_SCHEMA_VERSION } from './types';
 
 export const DEFAULT_CANARY_STATUS_BASE_PATH = '/snapshots/canary';
 export const DEFAULT_CANARY_FRESHNESS_WINDOW_MS = 30 * 60 * 1000;
+export const DEFAULT_CANARY_STATUS_REFRESH_MS = 60 * 1000;
 
 export type CanaryStatusLoadStatus = 'available' | 'blocked' | 'unavailable';
 export type CanaryStatusDisplayStatus = CanaryStatusLoadStatus | 'checking';
@@ -38,6 +39,15 @@ export interface CanaryStatusDisplayState {
 }
 
 type CanaryStatusFetcher = (input: string, init?: RequestInit) => Promise<Response>;
+type RefreshTimerHandle = ReturnType<typeof setInterval>;
+
+export interface CanaryStatusRefreshOptions {
+  refreshMs?: number;
+  load?: () => Promise<CanaryStatusLoadResult>;
+  onResult: (result: CanaryStatusLoadResult) => void;
+  setIntervalFn?: (callback: () => void, delay: number) => RefreshTimerHandle;
+  clearIntervalFn?: (handle: RefreshTimerHandle) => void;
+}
 
 const PACK_PATTERN = /^ai-node-canary-\d{8}T\d{6}Z$/;
 const MANIFEST_SHA_PATTERN = /^sha256:[a-f0-9]{64}$/;
@@ -273,5 +283,29 @@ export async function loadCanaryStatus(
     marker: validated.marker,
     errors: [],
     loadedAt,
+  };
+}
+
+export function startCanaryStatusRefresh({
+  refreshMs = DEFAULT_CANARY_STATUS_REFRESH_MS,
+  load = () => loadCanaryStatus(),
+  onResult,
+  setIntervalFn = setInterval,
+  clearIntervalFn = clearInterval,
+}: CanaryStatusRefreshOptions): () => void {
+  let stopped = false;
+
+  const refresh = () => {
+    void load().then((result) => {
+      if (!stopped) onResult(result);
+    });
+  };
+
+  refresh();
+  const handle = setIntervalFn(refresh, refreshMs);
+
+  return () => {
+    stopped = true;
+    clearIntervalFn(handle);
   };
 }

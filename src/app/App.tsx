@@ -18,7 +18,7 @@ import {
 } from '@/core/traces/intake';
 import { createObserverReadiness } from '@/core/traces/readiness';
 import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
-import { loadCanaryStatus, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
+import { startCanaryStatusRefresh, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
@@ -122,15 +122,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-
-    void loadCanaryStatus().then((result) => {
-      if (!cancelled) setCanaryStatus(result);
-    });
-
-    return () => {
-      cancelled = true;
-    };
+    return startCanaryStatusRefresh({ onResult: setCanaryStatus });
   }, []);
 
   useEffect(() => {
