@@ -21,6 +21,6 @@ export default defineConfig({
         preserveModules: false,
       },
     },
-    sourcemap: true,
+    sourcemap: false,
   },
 });

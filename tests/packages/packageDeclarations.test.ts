@@ -17,7 +17,7 @@ describe('parser and graph declaration package build', () => {
     };
 
     expect(pkg.scripts?.['build:packages']).toBe(
-      'tsc -p tsconfig.packages.json && vite build --config vite.packages.config.ts'
+      'rm -rf dist-types dist-packages && tsc -p tsconfig.packages.json && vite build --config vite.packages.config.ts'
     );
     expect(pkg.exports).toMatchObject({
       './parser': {
