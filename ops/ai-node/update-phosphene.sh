@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin"
 export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 root="/Users/raik./ai-stack"
