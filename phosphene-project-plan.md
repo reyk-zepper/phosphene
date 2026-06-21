@@ -294,7 +294,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 
 - [x] API-Key-Management (localStorage, UI)
 - [x] Claude Adapter (Extended Thinking)
-- [ ] OpenAI Adapter (o1/o3 Reasoning)
+- [x] OpenAI Adapter (o1/o3 Reasoning)
 - [x] Streaming-Pipeline: API → Parser → Graph-State → Render
 - [x] Live-Animation: Nodes erscheinen während Modell denkt
 - [x] Reasoning-Parser v1 (heuristisch)

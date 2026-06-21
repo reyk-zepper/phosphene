@@ -8,34 +8,74 @@ interface Props {
   onClose: () => void;
 }
 
+type KeyProvider = 'anthropic' | 'openai';
+
+interface KeyProviderConfig {
+  id: KeyProvider;
+  label: string;
+  placeholder: string;
+  format: string;
+  href: string;
+}
+
+const KEY_PROVIDERS: KeyProviderConfig[] = [
+  {
+    id: 'anthropic',
+    label: 'Anthropic Claude',
+    placeholder: 'sk-ant-...',
+    format: 'Expected format: sk-ant-...',
+    href: 'https://console.anthropic.com/settings/keys',
+  },
+  {
+    id: 'openai',
+    label: 'OpenAI',
+    placeholder: 'sk-...',
+    format: 'Expected format: sk-...',
+    href: 'https://platform.openai.com/api-keys',
+  },
+];
+
 export function ApiKeyModal({ open, onClose }: Props) {
-  const existing = useSettingsStore((s) => s.getApiKey('anthropic'));
+  const existingAnthropic = useSettingsStore((s) => s.getApiKey('anthropic'));
+  const existingOpenAI = useSettingsStore((s) => s.getApiKey('openai'));
   const setKey = useSettingsStore((s) => s.setApiKey);
   const clearKey = useSettingsStore((s) => s.clearApiKey);
 
-  const [draft, setDraft] = useState('');
-  const [touched, setTouched] = useState(false);
+  const [drafts, setDrafts] = useState<Record<KeyProvider, string>>({
+    anthropic: '',
+    openai: '',
+  });
+  const [touched, setTouched] = useState<Record<KeyProvider, boolean>>({
+    anthropic: false,
+    openai: false,
+  });
 
   useEffect(() => {
     if (open) {
-      setDraft(existing ?? '');
-      setTouched(false);
+      setDrafts({
+        anthropic: existingAnthropic ?? '',
+        openai: existingOpenAI ?? '',
+      });
+      setTouched({ anthropic: false, openai: false });
     }
-  }, [open, existing]);
+  }, [open, existingAnthropic, existingOpenAI]);
 
-  const valid = draft.trim().startsWith('sk-ant-') && draft.trim().length > 20;
-  const showError = touched && draft.length > 0 && !valid;
+  const existingKeys: Record<KeyProvider, string | null> = {
+    anthropic: existingAnthropic,
+    openai: existingOpenAI,
+  };
 
-  const handleSave = () => {
-    setTouched(true);
-    if (!valid) return;
-    setKey('anthropic', draft.trim());
+  const handleSave = (provider: KeyProvider) => {
+    setTouched((current) => ({ ...current, [provider]: true }));
+    const draft = drafts[provider].trim();
+    if (!isValidKey(provider, draft)) return;
+    setKey(provider, draft);
     onClose();
   };
 
-  const handleClear = () => {
-    clearKey('anthropic');
-    setDraft('');
+  const handleClear = (provider: KeyProvider) => {
+    clearKey(provider);
+    setDrafts((current) => ({ ...current, [provider]: '' }));
     onClose();
   };
 
@@ -83,86 +123,106 @@ export function ApiKeyModal({ open, onClose }: Props) {
               </button>
             </header>
 
-            <div className="px-5 py-5">
-              <label className="flex flex-col gap-2">
-                <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-                  Anthropic Claude
-                </span>
-                <input
-                  type="password"
-                  value={draft}
-                  placeholder="sk-ant-..."
-                  onChange={(e) => {
-                    setDraft(e.target.value);
-                    setTouched(true);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSave();
-                  }}
-                  className="w-full rounded-lg border bg-[color:var(--bg-surface)] px-3 py-2.5 font-[family-name:var(--font-mono)] text-[13px] text-[color:var(--text-primary)] outline-none placeholder:text-[color:var(--text-muted)] focus:border-[color:var(--glow-analysis)]"
-                  style={{
-                    borderColor: showError
-                      ? 'var(--glow-revision)'
-                      : 'var(--border-subtle)',
-                  }}
-                />
-                {showError && (
-                  <span className="font-mono text-[11px] text-[color:var(--glow-revision)]">
-                    Expected format: sk-ant-…
-                  </span>
-                )}
-              </label>
+            <div className="space-y-5 px-5 py-5">
+              {KEY_PROVIDERS.map((provider) => {
+                const draft = drafts[provider.id];
+                const valid = isValidKey(provider.id, draft.trim());
+                const showError = touched[provider.id] && draft.length > 0 && !valid;
 
-              <p className="mt-4 flex items-center gap-1.5 font-[family-name:var(--font-body)] text-[12px] leading-relaxed text-[color:var(--text-secondary)]">
-                Stored in your browser only. Never sent to any server except Anthropic.
-                <a
-                  href="https://console.anthropic.com/settings/keys"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="inline-flex items-center gap-0.5 text-[color:var(--glow-hypothesis)] underline decoration-dotted underline-offset-2 hover:text-[color:var(--glow-analysis)]"
-                >
-                  Get a key <ExternalLink size={11} />
-                </a>
+                return (
+                  <section key={provider.id} className="space-y-2">
+                    <label className="flex flex-col gap-2">
+                      <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
+                        {provider.label}
+                      </span>
+                      <input
+                        type="password"
+                        value={draft}
+                        placeholder={provider.placeholder}
+                        onChange={(e) => {
+                          setDrafts((current) => ({
+                            ...current,
+                            [provider.id]: e.target.value,
+                          }));
+                          setTouched((current) => ({ ...current, [provider.id]: true }));
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSave(provider.id);
+                        }}
+                        className="w-full rounded-lg border bg-[color:var(--bg-surface)] px-3 py-2.5 font-[family-name:var(--font-mono)] text-[13px] text-[color:var(--text-primary)] outline-none placeholder:text-[color:var(--text-muted)] focus:border-[color:var(--glow-analysis)]"
+                        style={{
+                          borderColor: showError
+                            ? 'var(--glow-revision)'
+                            : 'var(--border-subtle)',
+                        }}
+                      />
+                      {showError && (
+                        <span className="font-mono text-[11px] text-[color:var(--glow-revision)]">
+                          {provider.format}
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex items-center justify-between gap-3">
+                      <a
+                        href={provider.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="inline-flex items-center gap-1 text-[12px] text-[color:var(--glow-hypothesis)] underline decoration-dotted underline-offset-2 hover:text-[color:var(--glow-analysis)]"
+                      >
+                        Get a key <ExternalLink size={11} />
+                      </a>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleClear(provider.id)}
+                          disabled={!existingKeys[provider.id]}
+                          className="font-mono text-[11px] tracking-wider text-[color:var(--text-muted)] uppercase transition hover:text-[color:var(--glow-revision)] disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSave(provider.id)}
+                          disabled={!valid}
+                          className="rounded-lg border px-3 py-1.5 font-[family-name:var(--font-display)] text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
+                          style={{
+                            borderColor: 'var(--glow-analysis)',
+                            color: 'var(--glow-analysis)',
+                            boxShadow: valid
+                              ? '0 0 20px color-mix(in srgb, var(--glow-analysis) 30%, transparent)'
+                              : 'none',
+                          }}
+                        >
+                          Save key
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                );
+              })}
+
+              <p className="font-[family-name:var(--font-body)] text-[12px] leading-relaxed text-[color:var(--text-secondary)]">
+                Stored in your browser only. Keys are sent only to their selected provider.
               </p>
             </div>
 
-            <footer className="flex items-center justify-between gap-2 border-t border-[color:var(--border-subtle)] px-5 py-3">
+            <footer className="flex justify-end border-t border-[color:var(--border-subtle)] px-5 py-3">
               <button
                 type="button"
-                onClick={handleClear}
-                disabled={!existing}
-                className="font-mono text-[11px] tracking-wider text-[color:var(--text-muted)] uppercase transition hover:text-[color:var(--glow-revision)] disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={onClose}
+                className="rounded-lg px-3 py-1.5 font-[family-name:var(--font-display)] text-[12px] text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)]"
               >
-                Remove
+                Close
               </button>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-lg px-3 py-1.5 font-[family-name:var(--font-display)] text-[12px] text-[color:var(--text-secondary)] transition hover:bg-white/5 hover:text-[color:var(--text-primary)]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  disabled={!valid}
-                  className="rounded-lg border px-3 py-1.5 font-[family-name:var(--font-display)] text-[12px] font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
-                  style={{
-                    borderColor: 'var(--glow-analysis)',
-                    color: 'var(--glow-analysis)',
-                    boxShadow: valid
-                      ? '0 0 20px color-mix(in srgb, var(--glow-analysis) 30%, transparent)'
-                      : 'none',
-                  }}
-                >
-                  Save key
-                </button>
-              </div>
             </footer>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
+}
+
+function isValidKey(provider: KeyProvider, key: string): boolean {
+  if (provider === 'anthropic') return key.startsWith('sk-ant-') && key.length > 20;
+  return key.startsWith('sk-') && key.length > 20;
 }

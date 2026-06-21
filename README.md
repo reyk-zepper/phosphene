@@ -61,7 +61,7 @@ Currently working:
 - Graph comparison panel for same-prompt demo runs with metric, confidence, and node-type deltas
 - Reasoning stats dashboard with token totals, depth/branch metrics, confidence bands, depth token heatmap, and token hotspots
 - Client-local session history for safe Reasoning Lab graph snapshots, prompt previews, and one-click restore
-- Prompt input with Anthropic/Ollama model picker, Claude streaming adapter, Ollama reasoning adapter, and API key modal
+- Prompt input with Anthropic/OpenAI/Ollama model picker, Claude streaming adapter, OpenAI Responses adapter, Ollama reasoning adapter, and API key modal
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -75,7 +75,7 @@ Currently working:
 Not yet built:
 
 - Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
-- OpenAI o-series and Gemini reasoning adapters
+- Gemini reasoning adapter
 - Full live side-by-side model comparison
 
 ### Tech stack
@@ -173,7 +173,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
-- **v0.2** — OpenAI o-series and Gemini adapters, live multi-provider comparison
+- **v0.2** — Gemini adapter and live multi-provider comparison
 - **v0.3** — Full side-by-side model comparison and adapter hardening
 - **v0.4** — Hosted/portable session workflows
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
@@ -236,7 +236,7 @@ Funktioniert bereits:
 - Graph-Vergleichspanel fuer Same-Prompt-Demo-Runs mit Metrik-, Confidence- und Node-Typ-Deltas
 - Reasoning-Stats-Dashboard mit Token-Summen, Tiefen-/Branch-Metriken, Confidence-Bands, Tiefen-Token-Heatmap und Token-Hotspots
 - Client-lokale Session-History fuer sichere Reasoning-Lab-Graph-Snapshots, Prompt-Previews und One-Click-Restore
-- Prompt-Input mit Anthropic/Ollama-Model-Picker, Claude-Streaming-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
+- Prompt-Input mit Anthropic/OpenAI/Ollama-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Ollama-Reasoning-Adapter und API-Key-Modal
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -250,7 +250,7 @@ Funktioniert bereits:
 Noch nicht gebaut:
 
 - Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
-- OpenAI-o-Series- und Gemini-Reasoning-Adapter
+- Gemini-Reasoning-Adapter
 - Vollstaendiger Live-Modellvergleich nebeneinander
 
 ### Tech-Stack
@@ -348,7 +348,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
-- **v0.2** — OpenAI-o-Series- und Gemini-Adapter, Live-Multi-Provider-Vergleich
+- **v0.2** — Gemini-Adapter und Live-Multi-Provider-Vergleich
 - **v0.3** — Vollstaendiger Modell-Vergleich nebeneinander und Adapter-Haertung
 - **v0.4** — Gehostete/portable Session-Workflows
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren

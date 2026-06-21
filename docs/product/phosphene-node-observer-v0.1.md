@@ -169,6 +169,12 @@ v0.1.17 adds curated Reasoning Lab demos:
 - Demo prompts cover puzzle solving, release triage, agent approval boundaries, and local AI node observability.
 - The Demo Prompts panel restores demo graphs locally without writing them into Session History.
 
+v0.1.18 adds OpenAI Responses support:
+
+- A browser-side OpenAI adapter calls `POST /v1/responses` with `stream=true`, `store=false`, and reasoning summaries enabled.
+- OpenAI SSE events are normalized into Phosphene `ReasoningChunk` values for text, reasoning summaries, completion, and API errors.
+- The model picker exposes OpenAI o-series/GPT options when an OpenAI key is stored locally in the API Keys modal.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -183,6 +189,7 @@ v0.1.17 adds curated Reasoning Lab demos:
 - Reasoning Lab shows a compact Reasoning Stats panel for tokens, depth, branches, confidence, and token hotspots.
 - Reasoning Lab shows a compact Session History panel for recent client-local prompt/graph sessions.
 - Reasoning Lab shows a compact Demo Prompts panel for curated API-key-free examples.
+- Reasoning Lab can stream OpenAI Responses output and reasoning summaries through the same graph builder used by Claude/Ollama.
 - Detail Panel groups event fields into Identity, Action, Gate, and Evidence so actor, source, tool, decision, risk, status, redacted payload hash, and links are easier to scan.
 
 ## Security/redaction rules
@@ -226,6 +233,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.15 exposes reasoning stats, confidence bands, depth-token distribution, and token hotspots for active Reasoning Lab graphs.
 - v0.1.16 exposes client-local session history with prompt previews, graph restore, bounded retention, and secret-like content rejection.
 - v0.1.17 exposes four curated safe demo prompts and validates demo graph metadata.
+- v0.1.18 exposes OpenAI Responses streaming, model selection, local key storage, and adapter error tests.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
