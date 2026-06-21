@@ -280,14 +280,14 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 **Ziel:** Repo-Setup, Core Architecture, erster statischer Graph
 
 - [ ] GitHub Org `phosphene-ai` erstellen
-- [ ] Repo `phosphene` mit Vite + React + TypeScript
-- [ ] Project Structure (siehe unten)
+- [x] Repo `phosphene` mit Vite + React + TypeScript
+- [x] Project Structure (siehe unten)
 - [ ] README mit Vision, Screenshots (Mockup), Contributing Guide
-- [ ] Basic UI Shell: Prompt-Input, Graph-Canvas, Detail-Panel
-- [ ] Statischer Demo-Graph mit Fake-Data (zum Design iterieren)
-- [ ] D3 Graph-Rendering mit dagre Layout
-- [ ] Node-Component mit Typ-basiertem Styling
-- [ ] Dark Theme implementieren
+- [x] Basic UI Shell: Prompt-Input, Graph-Canvas, Detail-Panel
+- [x] Statischer Demo-Graph mit Fake-Data (zum Design iterieren)
+- [x] D3 Graph-Rendering mit dagre Layout
+- [x] Node-Component mit Typ-basiertem Styling
+- [x] Dark Theme implementieren
 
 ### Phase 2: Live Connection (Wochen 4-6)
 **Ziel:** Echte API-Calls, Streaming, Live-Graph-Aufbau
