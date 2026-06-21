@@ -69,6 +69,7 @@ Currently working:
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI AI Node live adapter generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
+- CLI Hermes live adapter generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
 - AI Node deploy helper preserves the latest published `dist/snapshots/current` and syncs redacted canary plus live-adapter status across app deploys
 - Run summary panel for outcome, risk, systems, approvals, failures, recovery, and duration
 - Hierarchical graph layout via `dagre` with D3-rendered nodes and bézier edges
@@ -78,7 +79,7 @@ Currently working:
 
 Not yet built:
 
-- Domain-specific live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
+- Domain-specific live AI-node adapters for AAG, OpenClaw, Sentinel, Gmail, or Workspace
 
 ### Tech stack
 
@@ -132,6 +133,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Validate and atomically publish a redacted Boundary pack into a served snapshot directory |
 | `pnpm generate:canary -- --target <dir>` | Generate a redacted AI Node operational canary Boundary pack; supports `--latest-file` and `--retention-count` for AI-Node status tracking |
 | `pnpm generate:live-adapter -- --target <dir>` | Generate a redacted near-live AI Node adapter Boundary pack; supports `--latest-file` and `--retention-count` for served `/snapshots/live/` output |
+| `pnpm generate:hermes-live-adapter -- --target <dir>` | Generate a redacted near-live Hermes adapter Boundary pack from coarse Hermes operational markers only |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Install the non-publishing AI Node canary LaunchAgent |
 | `pnpm format` | Format with Prettier |
 
@@ -177,7 +179,7 @@ phosphene/
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
 - **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
-- **v0.3** — AI-node live adapters
+- **v0.3** — AI-node live adapters; Hermes adapter ✅, AAG/OpenClaw/Sentinel/Gmail/Workspace remain
 - **v0.4** — Hosted/portable session workflows
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
@@ -247,6 +249,7 @@ Funktioniert bereits:
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
 - CLI-AI-Node-Live-Adapter-Generator via `pnpm generate:live-adapter -- --target <boundary-pack-dir>`
+- CLI-Hermes-Live-Adapter-Generator via `pnpm generate:hermes-live-adapter -- --target <boundary-pack-dir>`
 - AI-Node-Deploy-Helper erhält den zuletzt veröffentlichten `dist/snapshots/current` und synchronisiert redigierten Canary- sowie Live-Adapter-Status über App-Deploys hinweg
 - Run-Summary-Panel für Ergebnis, Risiko, Systeme, Approvals, Fehler, Recovery und Dauer
 - Hierarchisches Graph-Layout via `dagre`, gerendert mit D3-Nodes und Bézier-Kanten
@@ -256,7 +259,7 @@ Funktioniert bereits:
 
 Noch nicht gebaut:
 
-- Domain-spezifische Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
+- Domain-spezifische Live-AI-Node-Adapter für AAG, OpenClaw, Sentinel, Gmail oder Workspace
 
 ### Tech-Stack
 
@@ -310,6 +313,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm publish:snapshot -- --source <dir> --target <dir>` | Redigierten Boundary Pack validieren und atomar in einen served Snapshot-Pfad publizieren |
 | `pnpm generate:canary -- --target <dir>` | Redigierten AI-Node-Operational-Canary-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für AI-Node-Status-Tracking |
 | `pnpm generate:live-adapter -- --target <dir>` | Redigierten Near-Live-AI-Node-Adapter-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für served `/snapshots/live/` output |
+| `pnpm generate:hermes-live-adapter -- --target <dir>` | Redigierten Near-Live-Hermes-Adapter-Boundary-Pack nur aus groben Hermes-Operational-Markern erzeugen |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Nicht-publizierenden AI-Node-Canary-LaunchAgent installieren |
 | `pnpm format` | Mit Prettier formatieren |
 
@@ -355,7 +359,7 @@ phosphene/
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
 - **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
-- **v0.3** — AI-Node-Live-Adapter
+- **v0.3** — AI-Node-Live-Adapter; Hermes-Adapter ✅, AAG/OpenClaw/Sentinel/Gmail/Workspace offen
 - **v0.4** — Gehostete/portable Session-Workflows
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 

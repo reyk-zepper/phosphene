@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.22`
+- App version: `v0.1.23`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -24,6 +24,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 - Load the redacted near-live AI Node adapter marker from `/snapshots/live/latest.json`.
 - See the `AI Node Live Adapter` panel with freshness, manifest hash, retention, validation state, and no-raw-live-telemetry status.
 - Generate a redacted near-live AI Node adapter pack and sync it into served `/snapshots/live/` output.
+- Generate a redacted Hermes near-live adapter pack from coarse Hermes operational markers only.
 - Import multiple Boundary JSON files at once.
 - Import `manifest.json` and `validation-report.json` as support context.
 - See accepted traces, blocked files, and failed checks in the intake table.
@@ -72,17 +73,23 @@ Use this for the v0.1.22 near-live adapter path:
 Phosphene can now read a redacted near-live adapter marker from /snapshots/live/latest.json, load its referenced Boundary pack, and render the adapter output as an AI Node Live Adapter trace. This is a sanitized adapter boundary, not raw live telemetry.
 ```
 
+Use this for the v0.1.23 Hermes adapter path:
+
+```text
+Phosphene can now show a Hermes-specific near-live adapter trace generated on the AI Node from coarse operational markers only: marker presence, size bands, modified-time markers, public gateway status labels, and structural cron-job counts. It still does not expose Hermes prompts, logs, config values, credentials, private URLs, Gmail/Workspace content, or provider payloads.
+```
+
 Use this when explaining the current limitation:
 
 ```text
-The generic near-live adapter path exists, but it does not yet observe domain-specific live Hermes/AAG/OpenClaw/Sentinel agent runs. Those adapters still need their own redaction and Boundary emitters.
+The generic near-live adapter path and first Hermes operational adapter exist, but Phosphene does not yet observe live AAG/OpenClaw/Sentinel/Gmail/Workspace agent content. Those adapters still need their own redaction and Boundary emitters.
 ```
 
 ## What Not To Claim
 
 Do not claim:
 
-- Phosphene is observing live Hermes runs today.
+- Phosphene is observing raw live Hermes prompts, logs, config values, or private run payloads today.
 - Hermes runs locally on the development machine.
 - The browser reads private AI Node filesystem paths.
 - The published snapshot is a streaming or near-live adapter.
@@ -124,6 +131,8 @@ pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18
 pnpm validate:traces -- public/snapshots/current
 pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-snapshot-publish-check --dry-run
 pnpm generate:live-adapter -- --target /tmp/phosphene-live-adapter-check --latest-file /tmp/phosphene-live-adapter-latest.json
+mkdir -p /tmp/phosphene-empty-hermes-home/cron /tmp/phosphene-empty-hermes-home/logs
+pnpm generate:hermes-live-adapter -- --target /tmp/phosphene-hermes-live-adapter-check --latest-file /tmp/phosphene-hermes-live-adapter-latest.json --hermes-home /tmp/phosphene-empty-hermes-home
 pnpm lint
 pnpm build
 ```
@@ -141,6 +150,7 @@ ssh rAIk.mini 'cd /Users/raik./ai-stack/services/phosphene && corepack pnpm publ
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/publish-phosphene-snapshot.sh --dry-run /Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-v0.1.10/hermes-snapshot-2026-06-20-operator-demo'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-canary-snapshot.sh'
 ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-live-adapter-snapshot.sh'
+ssh rAIk.mini '/Users/raik./ai-stack/scripts/generate-phosphene-hermes-live-adapter-snapshot.sh'
 ssh rAIk.mini 'launchctl print "gui/$(id -u)/com.raik.phosphene-canary" | grep -E "run interval|last exit code|runs"'
 ```
 

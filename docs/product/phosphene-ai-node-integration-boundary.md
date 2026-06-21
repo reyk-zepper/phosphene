@@ -147,6 +147,27 @@ The deploy script also syncs the current marker after each Phosphene build, so a
 
 Phosphene treats a served canary marker as fresh for 30 minutes. Older markers remain visible but are shown as stale operational status. This is a readiness signal for the AI Node canary path, not live Hermes/AAG/OpenClaw/Sentinel telemetry.
 
+Hermes live adapter after the first domain-specific live-adapter slice:
+
+```bash
+/Users/raik./ai-stack/scripts/generate-phosphene-hermes-live-adapter-snapshot.sh
+```
+
+The Hermes adapter writes a redacted Boundary pack below the shared live-adapter root:
+
+```text
+/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live/
+```
+
+It emits only coarse Hermes operational markers:
+
+- `config.yaml` existence, coarse size band, and modified-time marker
+- `cron/jobs.json` existence, parseability, configured job slot count, and enabled marker count
+- `gateway_state.json`, `gateway.pid`, and `gateway.lock` marker presence plus a whitelisted public status label
+- `logs/agent.log` existence, coarse size band, and modified-time marker
+
+It must not emit Hermes config values, cron prompts, job IDs, log lines, private URLs, credentials, provider payloads, Gmail/Workspace content, host paths, or raw user content. The wrapper updates the same `/snapshots/live/latest.json` served boundary as the generic live adapter.
+
 Current v0.1.5 Hermes request document:
 
 ```text
@@ -210,14 +231,15 @@ Status: implemented for static published snapshots, the executable snapshot publ
 
 An AI Node-side adapter streams or periodically writes redacted Boundary events. Phosphene reads only the adapter output. Redaction and normalization happen before Phosphene sees the data.
 
-Status: partially implemented. Phosphene now has a generic redacted near-live adapter path:
+Status: partially implemented. Phosphene now has a generic redacted near-live adapter path and the first domain-specific Hermes adapter:
 
 - the AI Node generator writes `ai-node-live-*` Boundary packs and a redacted `latest.json` marker under the handoff root, normally `/Users/raik./ai-stack/data/hermes/home/phosphene-handoffs/boundary-live`;
 - the deploy helper syncs that marker and pack into served static output at `/snapshots/live/`;
 - the browser loader polls `/snapshots/live/latest.json`, validates the marker, loads the referenced manifest/traces/report, and renders the adapter trace as `AI Node Live Adapter`;
 - the UI keeps `No raw live telemetry` visible and blocks marker content that contains host paths, private URLs, secrets, email addresses, or provider payload markers.
+- the Hermes adapter can publish `hermes-live-adapter.boundary.json` using only coarse Hermes operational markers, with no raw config values, prompts, logs, private URLs, credentials, provider payloads, or user content.
 
-This is not yet a domain-specific live Hermes/AAG/OpenClaw/Sentinel adapter. The first adapter summarizes already-redacted Phosphene deploy, snapshot, and canary boundaries so the path can be verified end to end before attaching private operational systems.
+This is not yet a domain-specific live AAG/OpenClaw/Sentinel/Gmail/Workspace adapter. The first Hermes adapter is intentionally limited to redacted operational markers before attaching more sensitive agent-side systems.
 
 ## Security Rules
 

@@ -199,6 +199,12 @@ v0.1.22 adds the first redacted near-live AI Node adapter path:
 - Node Observer shows an AI Node Live Adapter panel with freshness, manifest hash, retention, blocked-state errors, and an explicit `No raw live telemetry` boundary.
 - The AI Node generator and deploy wrapper can produce, retain, and sync redacted live-adapter Boundary output without exposing host paths, private URLs, provider payloads, or raw user content.
 
+v0.1.23 adds the first domain-specific Hermes live adapter:
+
+- The AI Node Hermes generator reads only coarse Hermes operational markers: file existence, coarse size bands, modified-time markers, public gateway status labels, and structural cron-job counts.
+- The generated Boundary pack uses a Hermes source manifest and `hermes-live-adapter.boundary.json`, but the served `latest.json` marker still follows the shared `/snapshots/live/` live-adapter contract.
+- The generator and wrapper explicitly prevent raw Hermes config values, prompts, log lines, private URLs, credentials, provider payloads, Gmail/Workspace content, or host paths from being emitted.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -266,6 +272,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.20 exposes live same-prompt comparison orchestration, cancellation UI, graph persistence, and runner tests.
 - v0.1.21 exposes full side-by-side same-prompt graph canvases with graph-aware selection and pane metadata tests.
 - v0.1.22 exposes redacted near-live AI Node adapter loading from `/snapshots/live/latest.json`, AI Node generator/wrapper support, deployment sync, and no-raw-telemetry UI boundaries.
+- v0.1.23 exposes a redacted Hermes live-adapter generator and AI Node wrapper that publish Hermes operational markers through the shared `/snapshots/live/` boundary without leaking Hermes file content.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
