@@ -3,6 +3,7 @@ import { claudeAdapter } from './claude';
 import { geminiAdapter } from './gemini';
 import { openaiAdapter } from './openai';
 import { ollamaAdapter } from './ollama';
+import { customOpenAIAdapter } from './customOpenAI';
 
 export type { LLMAdapter, PromptParams, ReasoningChunk, ProviderId } from './types';
 export { probeOllama, ollamaBaseUrl } from './ollama';
@@ -13,6 +14,7 @@ export const ADAPTERS: Record<ProviderId, LLMAdapter | null> = {
   openai: openaiAdapter,
   google: geminiAdapter,
   ollama: ollamaAdapter,
+  'custom-openai': customOpenAIAdapter,
   demo: null,
 };
 

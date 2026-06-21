@@ -1,11 +1,12 @@
-import type { ModelIdentifier } from '@/core/parser/types';
+import type { ModelIdentifier, ModelProvider } from '@/core/parser/types';
 
-export type ProviderId = 'anthropic' | 'openai' | 'google' | 'ollama' | 'demo';
+export type ProviderId = ModelProvider | 'demo';
 
 export interface PromptParams {
   prompt: string;
   model: string;
   apiKey?: string;
+  endpointUrl?: string;
   maxTokens?: number;
   thinkingBudget?: number;
   signal?: AbortSignal;

@@ -24,7 +24,19 @@ export function useStreaming() {
     }
 
     let apiKey: string | undefined;
-    if (adapter.requiresApiKey) {
+    let endpointUrl: string | undefined;
+    let requestModel = model.model;
+
+    if (model.provider === 'custom-openai') {
+      const config = settings.getCustomOpenAIPromptConfig(model.model);
+      if (!config) {
+        session.setError(`No custom API profile configured for ${model.displayName}.`);
+        return;
+      }
+      apiKey = config.apiKey;
+      endpointUrl = config.endpointUrl;
+      requestModel = config.model;
+    } else if (adapter.requiresApiKey) {
       const key = settings.getApiKey(model.provider);
       if (!key) {
         session.setError('No API key configured. Open settings to add one.');
@@ -72,8 +84,9 @@ export function useStreaming() {
     try {
       const stream = adapter.sendPrompt({
         prompt,
-        model: model.model,
+        model: requestModel,
         apiKey,
+        endpointUrl,
         signal: controller.signal,
       });
 

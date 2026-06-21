@@ -61,7 +61,7 @@ Die kleinste Version, die bereits einen Wow-Effekt erzeugt und teilbar ist.
 
 **Future (v0.3+, → Constitution-Bridge):**
 - [x] Reasoning-Pattern-Library (häufige Denkmuster taggen)
-- [ ] Plugin-System für custom Modelle/APIs
+- [x] Plugin-System für custom Modelle/APIs
 - [ ] Collaborative Annotation (Teams können Reasoning kommentieren)
 - [ ] Constitution-Mode: Regeln definieren & gegen Reasoning testen
 

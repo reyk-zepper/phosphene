@@ -281,7 +281,13 @@ v0.1.35 adds a local Reasoning Pattern Library:
 
 - A package-safe `detectReasoningPatterns(graph)` core identifies evidence-backed hypotheses, revision loops, decision tradeoffs, and uncertainty probes with stable node anchors.
 - The Reasoning Lab Pattern Library panel surfaces matched pattern groups, counts, query hints, first-match summaries, and node coverage without contacting a server.
-- The catalog is deterministic local graph analysis; custom plugin APIs, collaborative annotation, learned classifiers, and Constitution-mode rule tests remain future/non-scope.
+- The catalog is deterministic local graph analysis; plugin marketplace/runtime execution, collaborative annotation, learned classifiers, and Constitution-mode rule tests remain future/non-scope.
+
+v0.1.36 adds client-local custom API profiles:
+
+- Settings can store local OpenAI Responses-compatible profiles with label, model id, Responses URL, and optional bearer token.
+- The model picker exposes saved profiles in Reasoning Lab, and primary plus same-prompt comparison runs pass the selected profile endpoint into the custom adapter.
+- Endpoint guardrails allow `https` targets and local `http` development targets only; plugin marketplace/runtime execution, collaborative annotation, and Constitution-mode rule tests remain future/non-scope.
 
 ## UI layout
 
@@ -364,6 +370,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.33 exposes a redacted side-effect intent adapter trace in the multi-service live-adapter pack, proving AAG approval-boundary intent can be shown without exposing action payloads or executing side effects.
 - v0.1.34 exposes a static hosted Reasoning Lab session workflow that verifies the marker, digest, and portable-session guardrails before an explicit user-triggered import.
 - v0.1.35 exposes deterministic local Reasoning Pattern Library detection through the app UI and package-safe graph export surface.
+- v0.1.36 exposes client-local OpenAI Responses-compatible custom API profiles through settings, model picker selection, primary streaming, and live comparison.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

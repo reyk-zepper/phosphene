@@ -14,7 +14,15 @@ export function PromptInput({ onOpenSettings }: Props) {
   const isStreaming = useSessionStore((s) => s.isStreaming);
   const error = useSessionStore((s) => s.error);
   const model = useSettingsStore((s) => s.defaultModel);
-  const hasKey = useSettingsStore((s) => Boolean(s.encodedKeys[s.defaultModel.provider]));
+  const hasKey = useSettingsStore((s) => {
+    if (s.defaultModel.provider === 'custom-openai') return false;
+    return Boolean(s.encodedKeys[s.defaultModel.provider]);
+  });
+  const customProfileReady = useSettingsStore(
+    (s) =>
+      s.defaultModel.provider !== 'custom-openai' ||
+      s.customOpenAIProfiles.some((profile) => profile.id === s.defaultModel.model)
+  );
   const { submit, cancel } = useStreaming();
 
   const [draft, setDraft] = useState('');
@@ -22,7 +30,12 @@ export function PromptInput({ onOpenSettings }: Props) {
 
   const adapter = getAdapter(model.provider);
   const requiresKey = adapter?.requiresApiKey ?? true;
-  const canSubmit = !requiresKey || hasKey;
+  const canSubmit = model.provider === 'custom-openai' ? customProfileReady : !requiresKey || hasKey;
+  const placeholder = canSubmit
+    ? 'Ask anything…'
+    : model.provider === 'custom-openai'
+      ? 'Add a custom API profile to start'
+      : 'Add your API key to start (click ⚙)';
 
   const handleSubmit = useCallback(() => {
     const trimmed = draft.trim();
@@ -50,7 +63,7 @@ export function PromptInput({ onOpenSettings }: Props) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder={canSubmit ? 'Ask anything…' : 'Add your Claude API key to start (click ⚙)'}
+          placeholder={placeholder}
           disabled={isStreaming}
           className="max-h-48 min-h-[22px] flex-1 resize-none bg-transparent font-[family-name:var(--font-body)] text-sm leading-relaxed text-[color:var(--text-primary)] placeholder:text-[color:var(--text-muted)] focus:outline-none disabled:opacity-60"
         />
@@ -61,7 +74,7 @@ export function PromptInput({ onOpenSettings }: Props) {
             aria-label="Change model"
             className="flex items-center gap-1 rounded-md border border-[color:var(--border-subtle)] px-2 py-1 font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase transition hover:border-[color:var(--glow-analysis)] hover:text-[color:var(--text-primary)]"
           >
-            {model.displayName}
+            <span className="max-w-36 truncate">{model.displayName}</span>
             <ChevronDown size={10} />
           </button>
           <ModelPicker

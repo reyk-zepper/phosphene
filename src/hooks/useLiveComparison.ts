@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { ADAPTERS, getAdapter } from '@/core/adapters';
 import { runLiveComparison } from '@/core/compare/liveComparison';
 import type { ModelIdentifier } from '@/core/parser/types';
+import { buildCustomOpenAIModel } from '@/core/settings/customApiProfiles';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { useSettingsStore } from '@/core/store/settingsStore';
 
@@ -26,8 +27,9 @@ export function useLiveComparison() {
       if (!hasKey) continue;
       models.push(...adapter.supportedModels);
     }
+    models.push(...settings.customOpenAIProfiles.map(buildCustomOpenAIModel));
     return models;
-  }, [settings.encodedKeys]);
+  }, [settings.customOpenAIProfiles, settings.encodedKeys]);
 
   const effectiveModel = useMemo(() => {
     if (selectedModel && availableModels.some((model) => isSameModel(model, selectedModel))) {
@@ -45,9 +47,24 @@ export function useLiveComparison() {
       return;
     }
 
-    const apiKey = adapter.requiresApiKey
-      ? (settings.getApiKey(effectiveModel.provider) ?? undefined)
-      : undefined;
+    let apiKey: string | undefined;
+    let endpointUrl: string | undefined;
+    let requestModel: string | undefined;
+
+    if (effectiveModel.provider === 'custom-openai') {
+      const config = settings.getCustomOpenAIPromptConfig(effectiveModel.model);
+      if (!config) {
+        setComparisonError(`No custom API profile configured for ${effectiveModel.displayName}.`);
+        return;
+      }
+      apiKey = config.apiKey;
+      endpointUrl = config.endpointUrl;
+      requestModel = config.model;
+    } else {
+      apiKey = adapter.requiresApiKey
+        ? (settings.getApiKey(effectiveModel.provider) ?? undefined)
+        : undefined;
+    }
 
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -62,6 +79,8 @@ export function useLiveComparison() {
         model: effectiveModel,
         adapter,
         apiKey,
+        endpointUrl,
+        requestModel,
         signal: controller.signal,
       });
       useSessionStore.getState().setComparisonGraph(graph);

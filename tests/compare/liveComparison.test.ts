@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { runLiveComparison } from '@/core/compare/liveComparison';
 import type { LLMAdapter, ReasoningChunk } from '@/core/adapters';
 import type { ModelIdentifier } from '@/core/parser/types';
@@ -98,5 +98,45 @@ describe('live comparison runner', () => {
         signal: controller.signal,
       })
     ).rejects.toMatchObject({ name: 'AbortError' });
+  });
+
+  it('forwards endpoint overrides into custom comparison adapters', async () => {
+    const sendPrompt = vi.fn(() =>
+      chunks([
+        { type: 'thinking', content: 'Compare custom endpoint. ', timestamp: 1 },
+        { type: 'text', content: 'Endpoint comparison complete.', timestamp: 2 },
+        { type: 'done', content: '', timestamp: 3 },
+      ])
+    );
+    const customModel: ModelIdentifier = {
+      provider: 'custom-openai',
+      model: 'custom-openai-ai-node',
+      displayName: 'AI Node Gateway',
+    };
+
+    await runLiveComparison({
+      prompt: 'Compare through custom endpoint.',
+      model: customModel,
+      adapter: {
+        ...fakeAdapter,
+        id: 'custom-openai',
+        name: 'Custom OpenAI',
+        requiresApiKey: false,
+        supportedModels: [customModel],
+        sendPrompt,
+      },
+      apiKey: 'local-token',
+      endpointUrl: 'http://localhost:8787/v1/responses',
+      graphId: 'comparison-custom',
+      now: 10_000,
+    });
+
+    expect(sendPrompt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: 'custom-openai-ai-node',
+        apiKey: 'local-token',
+        endpointUrl: 'http://localhost:8787/v1/responses',
+      })
+    );
   });
 });

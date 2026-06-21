@@ -32,8 +32,10 @@ export interface GraphMetadata {
   timeToComplete: number;
 }
 
+export type ModelProvider = 'anthropic' | 'openai' | 'google' | 'ollama' | 'custom-openai';
+
 export interface ModelIdentifier {
-  provider: 'anthropic' | 'openai' | 'google' | 'ollama';
+  provider: ModelProvider;
   model: string;
   displayName: string;
 }

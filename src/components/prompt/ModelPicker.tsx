@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, Cpu, KeyRound, RefreshCw, Sparkles } from 'lucide-react';
+import { Check, Cpu, KeyRound, Plus, Plug, RefreshCw, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import type { LLMAdapter } from '@/core/adapters';
 import { ADAPTERS } from '@/core/adapters';
 import type { ModelIdentifier } from '@/core/parser/types';
+import { buildCustomOpenAIModel } from '@/core/settings/customApiProfiles';
 import { useSettingsStore } from '@/core/store/settingsStore';
 import { useOllamaStatus } from '@/hooks/useOllamaStatus';
 
@@ -19,6 +20,7 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
   const hasAnthropicKey = useSettingsStore((s) => Boolean(s.encodedKeys.anthropic));
   const hasOpenAIKey = useSettingsStore((s) => Boolean(s.encodedKeys.openai));
   const hasGoogleKey = useSettingsStore((s) => Boolean(s.encodedKeys.google));
+  const customProfiles = useSettingsStore((s) => s.customOpenAIProfiles);
 
   const ollama = useOllamaStatus();
   const ref = useRef<HTMLDivElement>(null);
@@ -48,6 +50,7 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
   const openai = ADAPTERS.openai;
   const gemini = ADAPTERS.google;
   const ollamaAdapter: LLMAdapter | null = ADAPTERS.ollama;
+  const customModels = customProfiles.map(buildCustomOpenAIModel);
 
   const ollamaModels: ModelIdentifier[] =
     ollama.data?.status === 'ok' && ollama.data.models.length > 0
@@ -164,6 +167,60 @@ export function ModelPicker({ open, onClose, onOpenSettings }: Props) {
                 </button>
               );
             })}
+          </section>
+
+          <section className="border-t border-[color:var(--border-subtle)] px-2 py-2">
+            <header className="flex items-center justify-between px-2 py-1.5">
+              <div className="flex items-center gap-1.5">
+                <Plug size={11} className="text-[color:var(--glow-decision)]" />
+                <span className="font-mono text-[10px] tracking-wider text-[color:var(--text-secondary)] uppercase">
+                  Custom APIs
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenSettings();
+                }}
+                className="flex items-center gap-1 font-mono text-[10px] text-[color:var(--glow-analysis)] uppercase hover:text-[color:var(--glow-hypothesis)]"
+              >
+                <Plus size={10} /> Add profile
+              </button>
+            </header>
+
+            {customModels.length > 0 ? (
+              customModels.map((m) => {
+                const active = current.provider === m.provider && current.model === m.model;
+                const profile = customProfiles.find((item) => item.id === m.model);
+                return (
+                  <button
+                    key={`${m.provider}:${m.model}`}
+                    type="button"
+                    onClick={() => handleSelect(m)}
+                    className="flex w-full items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left transition hover:bg-white/5"
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate font-[family-name:var(--font-display)] text-[12px] text-[color:var(--text-primary)]">
+                        {m.displayName}
+                      </span>
+                      {profile && (
+                        <span className="block truncate font-mono text-[10px] text-[color:var(--text-muted)]">
+                          {profile.model}
+                        </span>
+                      )}
+                    </span>
+                    {active && (
+                      <Check size={12} className="shrink-0 text-[color:var(--glow-hypothesis)]" />
+                    )}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="px-2 pb-2 font-mono text-[11px] text-[color:var(--text-muted)]">
+                No profiles yet.
+              </div>
+            )}
           </section>
 
           <section className="border-t border-[color:var(--border-subtle)] px-2 py-2">

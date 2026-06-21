@@ -7,6 +7,8 @@ export interface LiveComparisonInput {
   model: ModelIdentifier;
   adapter: LLMAdapter;
   apiKey?: string;
+  endpointUrl?: string;
+  requestModel?: string;
   graphId?: string;
   now?: number;
   signal?: AbortSignal;
@@ -26,8 +28,9 @@ export async function runLiveComparison(input: LiveComparisonInput): Promise<Rea
 
   const stream = adapter.sendPrompt({
     prompt,
-    model: model.model,
+    model: input.requestModel ?? model.model,
     apiKey: input.apiKey,
+    endpointUrl: input.endpointUrl,
     signal,
   });
 

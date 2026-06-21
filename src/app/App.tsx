@@ -45,8 +45,8 @@ export function App() {
   const selectedNodeId = useSessionStore((s) => s.selectedNodeId);
   const selectedGraphId = useSessionStore((s) => s.selectedGraphId);
   const selectNode = useSessionStore((s) => s.selectNode);
-  const hasKey = useSettingsStore((s) =>
-    Object.values(s.encodedKeys).some(Boolean)
+  const hasConfiguredModel = useSettingsStore((s) =>
+    Object.values(s.encodedKeys).some(Boolean) || s.customOpenAIProfiles.length > 0
   );
   const initialShareState = useMemo(readInitialShareState, []);
   const pendingSharedTraceId = useRef(
@@ -234,8 +234,8 @@ export function App() {
 
   useEffect(() => {
     if (mode !== 'reasoning') return;
-    if ((!graph || graph.model.model === 'ai-node-trace') && !hasKey) setGraph(DEMO_GRAPH);
-  }, [graph, hasKey, mode, setGraph]);
+    if ((!graph || graph.model.model === 'ai-node-trace') && !hasConfiguredModel) setGraph(DEMO_GRAPH);
+  }, [graph, hasConfiguredModel, mode, setGraph]);
 
   useEffect(() => {
     const pendingNodeId = pendingSharedNodeId.current;
@@ -280,7 +280,7 @@ export function App() {
               Phosphene
             </span>
             <span className="font-mono text-[10px] tracking-widest text-[color:var(--text-muted)] uppercase">
-              v0.1.35
+              v0.1.36
             </span>
           </div>
           <ModeSwitch mode={mode} onChange={setMode} />
