@@ -45,7 +45,7 @@ describe('package publishing dry-run manifest', () => {
     const paths = pack.files.map((file) => file.path).sort();
 
     expect(pack.name).toBe('@reyk-zepper/phosphene');
-    expect(pack.version).toBe('0.1.38');
+    expect(pack.version).toBe('0.1.39');
     expect(paths).toContain('package.json');
     expect(paths).toContain('README.md');
     expect(paths).toContain('LICENSE');

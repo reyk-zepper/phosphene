@@ -473,11 +473,111 @@ export const DEMO_DASHBOARD_GRAPH: ReasoningGraph = {
   createdAt: Date.now(),
 };
 
+const reviewDecision = node(
+  'review-7',
+  'decision',
+  'Ship with an evidence checklist',
+  'The answer should ship only after it cites the measurement source, names the uncertainty, and keeps the recommendation bounded to the observed system state.',
+  3,
+  [],
+  6100,
+  0.88
+);
+
+const reviewRevision = node(
+  'review-6',
+  'revision',
+  'Tighten the claim before publishing',
+  'The first draft sounded too broad. I should narrow it from "the system is healthy" to "the checked service and redacted markers are healthy at this timestamp."',
+  3,
+  [reviewDecision],
+  5000,
+  0.78
+);
+
+const reviewQuestion = node(
+  'review-5',
+  'question',
+  'What could make this answer misleading?',
+  'A stale marker, missing source timestamp, or hidden failing subsystem could make a confident answer misleading. The response needs to expose those limits.',
+  2,
+  [],
+  4100,
+  0.7
+);
+
+const reviewComparison = node(
+  'review-4',
+  'comparison',
+  'Concise answer vs. auditable answer',
+  'A concise answer is easier to read, but an auditable answer is safer for operations. The final response should be short while still naming evidence and limits.',
+  2,
+  [reviewRevision],
+  3200,
+  0.82
+);
+
+const reviewEvidence = node(
+  'review-3',
+  'evidence',
+  'Evidence comes from redacted markers',
+  'The available evidence is the deploy marker, HTTP status, canary status, and live-adapter status. None of these exposes raw prompts, credentials, or private payloads.',
+  2,
+  [],
+  2300,
+  0.84
+);
+
+const reviewAnalysis = node(
+  'review-2',
+  'analysis',
+  'Apply review rules to the answer',
+  'The review should test three rules: cite evidence, state uncertainty, and avoid overclaiming live telemetry. Passing all three makes the answer safer to share.',
+  1,
+  [reviewEvidence, reviewComparison, reviewQuestion],
+  1100,
+  0.74
+);
+
+const reviewHypothesis = node(
+  'review-1',
+  'hypothesis',
+  'Treat answer review as rule testing',
+  'Before publishing an operational answer, I should evaluate whether the reasoning has evidence, a decision, and an uncertainty probe rather than only a confident conclusion.',
+  0,
+  [reviewAnalysis],
+  300,
+  0.68
+);
+
+export const DEMO_ANSWER_REVIEW_GRAPH: ReasoningGraph = {
+  id: 'demo-answer-review',
+  prompt:
+    'Review an AI-generated operations answer before sharing it: does it cite evidence, state uncertainty, and avoid overclaiming live telemetry?',
+  model: {
+    provider: 'anthropic',
+    model: 'claude-sonnet-4-20250514',
+    displayName: 'Claude Sonnet 4 (demo)',
+  },
+  rootNode: reviewHypothesis,
+  metadata: {
+    totalTokens: 1100,
+    reasoningTokens: 930,
+    outputTokens: 170,
+    maxDepth: 3,
+    branchCount: 3,
+    nodeCount: 7,
+    timeToComplete: 6100,
+  },
+  createdAt: Date.now(),
+};
+
 export const DEMO_REASONING_GRAPHS = [
   DEMO_GRAPH,
   DEMO_RELEASE_GRAPH,
   DEMO_APPROVAL_GRAPH,
   DEMO_DASHBOARD_GRAPH,
+  DEMO_ANSWER_REVIEW_GRAPH,
 ];
 
 export interface DemoReasoningPrompt {
@@ -511,6 +611,12 @@ export const DEMO_REASONING_PROMPTS: DemoReasoningPrompt[] = [
     title: 'Node dashboard',
     subtitle: 'Observable AI node',
     graph: DEMO_DASHBOARD_GRAPH,
+  },
+  {
+    id: DEMO_ANSWER_REVIEW_GRAPH.id,
+    title: 'Answer review',
+    subtitle: 'Constitution check',
+    graph: DEMO_ANSWER_REVIEW_GRAPH,
   },
 ];
 

@@ -165,8 +165,8 @@ v0.1.16 adds client-local session history:
 
 v0.1.17 adds curated Reasoning Lab demos:
 
-- Reasoning Lab now ships four safe, curated demo prompts instead of a single default graph.
-- Demo prompts cover puzzle solving, release triage, agent approval boundaries, and local AI node observability.
+- Reasoning Lab now ships safe, curated demo prompts instead of a single default graph.
+- Demo prompts cover puzzle solving, release triage, agent approval boundaries, local AI node observability, and answer-review Constitution checks.
 - The Demo Prompts panel restores demo graphs locally without writing them into Session History.
 
 v0.1.18 adds OpenAI Responses support:
@@ -385,6 +385,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.36 exposes client-local OpenAI Responses-compatible custom API profiles through settings, model picker selection, primary streaming, and live comparison.
 - v0.1.37 exposes client-local collaborative annotation bundles through a Reasoning Lab panel, browser-local persistence, graph/node review metadata, and guarded JSON import/export.
 - v0.1.38 exposes client-local Constitution Mode through default/custom rule definitions, browser-local persistence, deterministic graph evaluation, and visible pass/fail rule summaries.
+- v0.1.39 expands the API-key-free Reasoning Lab demo set to five curated graphs with an answer-review Constitution-check scenario.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.

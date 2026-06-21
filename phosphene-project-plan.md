@@ -304,7 +304,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 ### Phase 3: Polish & Launch (Wochen 7-10)
 **Ziel:** Demo-Ready, teilbar, GitHub-Launch
 
-- [ ] 5 kuratierte Demo-Prompts (kein API-Key nötig, pre-cached)
+- [x] 5 kuratierte Demo-Prompts (kein API-Key nötig, pre-cached)
 - [x] Graph-Export (PNG, SVG)
 - [x] Keyboard-Navigation
 - [ ] Performance-Optimierung (große Graphen)

@@ -16,7 +16,7 @@ export function DemoPromptGallery() {
         </span>
       </header>
 
-      <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
+      <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-5">
         {DEMO_REASONING_PROMPTS.map((prompt) => (
           <DemoPromptButton
             key={prompt.id}

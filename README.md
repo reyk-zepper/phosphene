@@ -47,7 +47,7 @@ Built for:
 Currently working:
 
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
-- Four curated Reasoning Lab demo prompts for model reasoning exploration without an API key
+- Five curated Reasoning Lab demo prompts for model reasoning exploration without an API key
 - Node Observer mode with four redacted AI-node demo traces, grouped Hermes synthetic handoff fixtures, a published redacted snapshot group, and a redacted near-live adapter group when AI Node output is available
 - Versioned Boundary JSON import / adapter boundary for trace events before they become internal graph data
 - Local multi-file Boundary JSON upload with visible schema, graph, enum, and redaction validation checks

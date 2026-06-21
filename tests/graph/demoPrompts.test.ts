@@ -3,9 +3,8 @@ import { DEMO_REASONING_GRAPHS, flattenGraph } from '@/constants/demoGraph';
 import { isGraphSafeForHistory } from '@/core/history/sessionHistory';
 
 describe('demo reasoning prompts', () => {
-  it('ships three to five curated safe demo graphs', () => {
-    expect(DEMO_REASONING_GRAPHS.length).toBeGreaterThanOrEqual(3);
-    expect(DEMO_REASONING_GRAPHS.length).toBeLessThanOrEqual(5);
+  it('ships five curated safe demo graphs', () => {
+    expect(DEMO_REASONING_GRAPHS).toHaveLength(5);
 
     const ids = new Set(DEMO_REASONING_GRAPHS.map((graph) => graph.id));
     const prompts = new Set(DEMO_REASONING_GRAPHS.map((graph) => graph.prompt));

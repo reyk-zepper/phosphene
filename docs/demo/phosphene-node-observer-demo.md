@@ -6,7 +6,7 @@ Show that Phosphene can explain AI-Node behavior from redacted Boundary traces w
 
 ## Current Build
 
-- App version: `v0.1.38`
+- App version: `v0.1.39`
 - Deployed service: Phosphene on the Mac mini AI Node
 - Mode to show: `Node Observer`
 - Data class: synthetic/redacted fixtures, locally imported Boundary JSON, published redacted AI Node snapshots, redacted canary markers, and redacted near-live adapter snapshots
@@ -130,6 +130,12 @@ Use this for the v0.1.38 Constitution Mode path:
 
 ```text
 Phosphene can now evaluate the active reasoning graph against local Constitution rules. Built-in checks look for evidence, decisions, uncertainty probes, and a confidence floor; custom rules can require text, node types, confidence thresholds, or max depth. This is deterministic local review, not policy-server enforcement.
+```
+
+Use this for the v0.1.39 curated demo path:
+
+```text
+Phosphene now ships five API-key-free Reasoning Lab demo graphs, adding an answer-review scenario that checks whether an operational response cites evidence, states uncertainty, and avoids overclaiming live telemetry.
 ```
 
 Use this when explaining the current limitation:
