@@ -3,21 +3,20 @@ import { Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSessionStore } from '@/core/store/sessionStore';
 import { flattenGraph } from '@/constants/demoGraph';
+import { searchGraphNodes } from '@/core/graph/search';
 import { NODE_TYPE_CONFIG } from '@/constants/nodeTypes';
-import type { ReasoningNode } from '@/core/parser/types';
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-function searchNodes(nodes: ReasoningNode[], query: string): ReasoningNode[] {
-  const q = query.toLowerCase();
-  return nodes.filter(
-    (n) =>
-      n.summary.toLowerCase().includes(q) || n.content.toLowerCase().includes(q)
-  );
-}
+const SEARCH_PRESETS = [
+  { label: 'Mind changes', query: 'pattern:mind-change' },
+  { label: 'Decisions', query: 'type:decision' },
+  { label: 'Evidence', query: 'type:evidence' },
+  { label: 'High confidence', query: 'confidence:high' },
+] as const;
 
 export function SearchOverlay({ open, onClose }: Props) {
   const graph = useSessionStore((s) => s.currentGraph);
@@ -30,10 +29,9 @@ export function SearchOverlay({ open, onClose }: Props) {
     [graph]
   );
 
-  const results = useMemo(
-    () => (query.trim().length > 0 ? searchNodes(allNodes, query) : []),
-    [allNodes, query]
-  );
+  const results = useMemo(() => (
+    graph && query.trim().length > 0 ? searchGraphNodes(graph.rootNode, query) : []
+  ), [graph, query]);
 
   useEffect(() => {
     if (open) {
@@ -92,7 +90,7 @@ export function SearchOverlay({ open, onClose }: Props) {
                 onKeyDown={(e) => {
                   if (e.key === 'Escape') onClose();
                   if (e.key === 'Enter' && results.length > 0) {
-                    handleSelect(results[0].id);
+                    handleSelect(results[0].node.id);
                   }
                 }}
                 placeholder="Search reasoning nodes…"
@@ -103,13 +101,30 @@ export function SearchOverlay({ open, onClose }: Props) {
               </kbd>
             </div>
 
+            <div className="flex flex-wrap gap-2 border-b border-[color:var(--border-subtle)] px-4 py-3">
+              {SEARCH_PRESETS.map((preset) => (
+                <button
+                  key={preset.query}
+                  type="button"
+                  onClick={() => {
+                    setQuery(preset.query);
+                    inputRef.current?.focus();
+                  }}
+                  className="rounded-md border border-[color:var(--border-subtle)] px-2 py-1 font-mono text-[10px] tracking-wider text-[color:var(--text-muted)] uppercase transition hover:border-[color:var(--glow-hypothesis)] hover:text-[color:var(--glow-hypothesis)]"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
             <div className="max-h-72 overflow-y-auto">
               {query.trim().length > 0 && results.length === 0 && (
                 <div className="px-4 py-6 text-center font-mono text-[12px] text-[color:var(--text-muted)]">
                   No matching nodes
                 </div>
               )}
-              {results.map((node) => {
+              {results.map((result) => {
+                const { node } = result;
                 const cfg = NODE_TYPE_CONFIG[node.type];
                 return (
                   <button
@@ -132,6 +147,16 @@ export function SearchOverlay({ open, onClose }: Props) {
                       <p className="mt-0.5 truncate font-[family-name:var(--font-display)] text-[13px] text-[color:var(--text-primary)]">
                         {node.summary}
                       </p>
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {result.matchedFields.slice(0, 3).map((field) => (
+                          <span
+                            key={field}
+                            className="rounded border border-[color:var(--border-subtle)] px-1.5 py-0.5 font-mono text-[9px] tracking-wider text-[color:var(--text-muted)] uppercase"
+                          >
+                            {field}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                     <span className="shrink-0 font-mono text-[10px] text-[color:var(--text-muted)]">
                       {node.tokenCount}t
@@ -144,6 +169,11 @@ export function SearchOverlay({ open, onClose }: Props) {
             {!query.trim() && allNodes.length > 0 && (
               <div className="border-t border-[color:var(--border-subtle)] px-4 py-2.5 font-mono text-[10px] text-[color:var(--text-muted)]">
                 {allNodes.length} nodes · type to search
+              </div>
+            )}
+            {query.trim() && results.length > 0 && (
+              <div className="border-t border-[color:var(--border-subtle)] px-4 py-2.5 font-mono text-[10px] text-[color:var(--text-muted)]">
+                {results.length} match{results.length === 1 ? '' : 'es'}
               </div>
             )}
           </motion.div>

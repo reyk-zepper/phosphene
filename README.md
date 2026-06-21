@@ -57,6 +57,7 @@ Currently working:
 - AI Node Canary status panel loaded from `/snapshots/canary/latest.json` as redacted operational status, with a 30-minute freshness check and no live agent telemetry
 - Graph export buttons for SVG and PNG downloads from the current canvas
 - Copyable share links for the active mode, graph/trace, and selected node
+- Graph search with text, type, confidence, and mind-change pattern queries
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -72,7 +73,7 @@ Not yet built:
 - Live AI-node adapters for Hermes, AAG, OpenClaw, Sentinel, Gmail, or Workspace
 - Streaming reasoning parser
 - API key management
-- Graph search and comparison
+- Graph comparison
 
 ### Tech stack
 
@@ -171,7 +172,7 @@ phosphene/
 - **v0.1** — UI shell, demo graph, node types, detail panel ✅
 - **v0.2** — Claude adapter with extended thinking + streaming parser + API key management
 - **v0.3** — OpenAI o-series and Gemini adapters, multi-provider comparison, graph export
-- **v0.4** — Graph search and side-by-side model comparison
+- **v0.4** — Side-by-side model comparison
 - **v0.5+** — Extracted `@phosphene/parser` and `@phosphene/graph` as standalone npm packages
 
 ### Contributing
@@ -228,6 +229,7 @@ Funktioniert bereits:
 - AI-Node-Canary-Statuspanel aus `/snapshots/canary/latest.json` als redigierter Operational-Status mit 30-Minuten-Freshness-Check, nicht als Live-Agenten-Telemetrie
 - Graph-Export-Buttons fuer SVG- und PNG-Downloads aus dem aktuellen Canvas
 - Kopierbare Share-Links fuer aktiven Modus, Graph/Trace und ausgewaehlten Node
+- Graph-Suche mit Text-, Typ-, Confidence- und Mind-change-Pattern-Queries
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -243,7 +245,7 @@ Noch nicht gebaut:
 - Live-AI-Node-Adapter für Hermes, AAG, OpenClaw, Sentinel, Gmail oder Workspace
 - Streaming Reasoning-Parser
 - API-Key-Management
-- Graph-Suche und Vergleich
+- Graph-Vergleich
 
 ### Tech-Stack
 
@@ -342,7 +344,7 @@ phosphene/
 - **v0.1** — UI-Shell, Demo-Graph, Node-Typen, Detail-Panel ✅
 - **v0.2** — Claude-Adapter mit Extended Thinking + Streaming-Parser + API-Key-Management
 - **v0.3** — OpenAI o-Series und Gemini-Adapter, Multi-Provider-Vergleich
-- **v0.4** — Graph-Suche und Modell-Vergleich nebeneinander
+- **v0.4** — Modell-Vergleich nebeneinander
 - **v0.5+** — `@phosphene/parser` und `@phosphene/graph` als eigenständige npm-Packages extrahieren
 
 ### Mitwirken

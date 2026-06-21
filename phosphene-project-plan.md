@@ -322,7 +322,7 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [x] Shareable Graphs (URL-basiert)
 - [ ] Gemini Adapter
 - [ ] Ollama/Local Adapter
-- [ ] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"
+- [x] Graph-Search: "Finde alle Stellen wo das Modell seine Meinung ändert"
 - [ ] Reasoning-Stats Dashboard
 
 ### Phase 5: Constitution Bridge (Monat 5+)

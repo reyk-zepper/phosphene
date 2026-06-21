@@ -138,6 +138,13 @@ v0.1.12 adds shareable graph links:
 - Shared URLs restore Node Observer traces, Reasoning Lab demo graphs, and selected nodes when the target exists locally.
 - Share parsing rejects unsafe path-like, space-containing, or token-like values.
 
+v0.1.13 adds graph search beyond plain text:
+
+- Search supports plain text across summary, content, label, type, and metadata.
+- `type:<node-type>` filters find specific reasoning or observer event classes.
+- `confidence:high` surfaces high-confidence nodes first.
+- Natural-language mind-change queries map to revision nodes, including the planned German prompt shape: `Finde alle Stellen wo das Modell seine Meinung ändert`.
+
 ## UI layout
 
 - Header mode switch distinguishes Reasoning Lab from Node Observer.
@@ -186,6 +193,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.10 exposes published snapshot status, source, classification, manifest, validation, and blocked-state errors in Node Observer.
 - v0.1.11 exposes SVG and PNG graph export from the active Graph Canvas.
 - v0.1.12 exposes copyable share links for active mode, graph/trace id, and selected node without serializing private content.
+- v0.1.13 exposes graph search for text, type, confidence, metadata, and mind-change/revision patterns.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
