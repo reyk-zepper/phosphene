@@ -3,6 +3,10 @@
 Status: ready-to-use copy, not posted.
 Checked: 2026-06-22.
 
+Publication is deferred while technical development is considered complete for
+the agreed scope. See [Phosphene Release Status](./phosphene-release-status.md)
+for the checkpoint, verification evidence, and resume checklist.
+
 ## Current Launch Blockers
 
 - GitHub org `phosphene-ai` is not created.

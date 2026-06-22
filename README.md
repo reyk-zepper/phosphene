@@ -60,6 +60,11 @@ Built for:
 
 > **🚧 Early development — v0.1 foundation.** Reasoning Lab and Node Observer both run in the client. Node Observer currently renders redacted built-in demos, Hermes synthetic handoff fixtures, published redacted snapshots, and redacted near-live adapter snapshots, not raw live AI-node telemetry.
 
+Technical development for the agreed internal scope is complete at the current
+checkpoint. Public release is deferred until domain, npm, GitHub organization,
+and GitHub Pages custom-domain gates are completed. See
+[Phosphene Release Status](./docs/launch/phosphene-release-status.md).
+
 Currently working:
 
 - Bioluminescent dark UI shell (mode switch, graph canvas, detail panel, legend)
@@ -270,6 +275,12 @@ Gebaut für:
 ### Status
 
 > **🚧 Frühe Entwicklung — v0.1 Foundation.** Reasoning Lab und Node Observer laufen im Client. Node Observer rendert aktuell redigierte Built-in-Demos, Hermes Synthetic Handoff Fixtures, veröffentlichte redigierte Snapshots und redigierte Near-Live-Adapter-Snapshots, keine rohe Live-AI-Node-Telemetrie.
+
+Die technische Entwicklung für den vereinbarten internen Scope ist am aktuellen
+Checkpoint abgeschlossen. Die öffentliche Veröffentlichung ist zurückgestellt,
+bis Domain-, npm-, GitHub-Organization- und GitHub-Pages-Custom-Domain-Gates
+erledigt sind. Siehe
+[Phosphene Release Status](./docs/launch/phosphene-release-status.md).
 
 Funktioniert bereits:
 
