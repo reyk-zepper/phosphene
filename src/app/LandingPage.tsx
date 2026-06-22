@@ -514,7 +514,7 @@ pnpm dev`}</code></pre>
 
       <footer className="landing-footer">
         <div className="landing-footer-inner">
-          <span>Phosphene v0.1.42</span>
+          <span>Phosphene v0.1.43</span>
           <span>MIT licensed. Client-only by default.</span>
         </div>
       </footer>

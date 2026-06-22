@@ -1,4 +1,5 @@
 import type { ModelIdentifier } from '@/core/parser/types';
+import { formatAdapterHttpError, sanitizeAdapterErrorText } from './errors';
 import type { LLMAdapter, PromptParams, ReasoningChunk } from './types';
 
 const API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
@@ -113,7 +114,7 @@ export async function* parseGeminiStream(
     if (payload.error) {
       yield {
         type: 'error',
-        content: payload.error.message ?? payload.error.status ?? 'Gemini stream error',
+        content: sanitizeAdapterErrorText(payload.error.message ?? payload.error.status ?? 'Gemini stream error'),
         timestamp: Date.now(),
       };
       return;
@@ -178,7 +179,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
   } catch (err) {
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Network error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Network error',
       timestamp: Date.now(),
     };
     return;
@@ -188,7 +189,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     const text = await response.text().catch(() => response.statusText);
     yield {
       type: 'error',
-      content: `Gemini API ${response.status}: ${text.slice(0, 500)}`,
+      content: formatAdapterHttpError('Gemini API', response.status, text),
       timestamp: Date.now(),
     };
     return;
@@ -200,7 +201,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     if (err instanceof DOMException && err.name === 'AbortError') return;
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Gemini stream error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Gemini stream error',
       timestamp: Date.now(),
     };
   }

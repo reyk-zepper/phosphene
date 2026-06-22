@@ -90,7 +90,7 @@ Currently working:
 - Portable Reasoning Lab session bundles: export/import local JSON files with the same secret-like-content guardrail as Session History
 - Static hosted Reasoning Lab session workflow: `/sessions/hosted/latest.json` points to a public portable session bundle, the browser verifies SHA-256 and portable-session guardrails, and loading remains an explicit user action
 - Source-level public parser and graph entry points via `@reyk-zepper/phosphene/parser` and `@reyk-zepper/phosphene/graph` exports, importable ESM/declaration package builds, a publish-safe dry-run pack manifest, real tarball consumer smokes, scoped npm metadata, and a dry-run publish gate for future standalone extraction
-- Prompt input with Anthropic/OpenAI/Gemini/Ollama/custom API model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, custom Responses-compatible adapter, and API key/profile modal
+- Prompt input with Anthropic/OpenAI/Gemini/Ollama/custom API model picker, Claude streaming adapter, OpenAI Responses adapter, Gemini streaming adapter, Ollama reasoning adapter, custom Responses-compatible adapter, API key/profile modal, and redacted provider error messages
 - CLI Boundary validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI snapshot publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI AI Node canary generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -224,7 +224,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI shell, demo prompts, node types, detail panel ✅
-- **v0.2** — Side-by-side graph comparison ✅; adapter hardening continues
+- **v0.2** — Side-by-side graph comparison ✅; adapter API-error redaction ✅
 - **v0.3** — AI-node live adapters; generic, Hermes, multi-service marker, and redacted side-effect intent adapters ✅; raw side-effect execution observation remains non-scope
 - **v0.4** — Portable session bundles and static hosted session workflow ✅; account-backed/collaborative hosting remains non-scope/open
 - **v0.5+** — Scoped parser/graph package surface plus ESM/declaration builds, pack dry-run, runtime/type tarball smokes, scoped npm metadata, and dry-run publish gate ✅; real npm publish remains manual
@@ -301,7 +301,7 @@ Funktioniert bereits:
 - Portable Reasoning-Lab-Session-Bundles: lokale JSON-Dateien exportieren/importieren, mit derselben Secret-Muster-Guardrail wie die Session History
 - Statischer gehosteter Reasoning-Lab-Session-Workflow: `/sessions/hosted/latest.json` verweist auf ein oeffentliches Portable-Session-Bundle, der Browser prueft SHA-256 und Portable-Session-Guardrails, und Laden bleibt eine explizite User-Aktion
 - Source-Level Public Entry Points fuer Parser und Graph via `@reyk-zepper/phosphene/parser` und `@reyk-zepper/phosphene/graph`, importierbare ESM-/Declaration-Package-Builds, ein publish-sicheres Pack-Dry-Run-Manifest, echte Tarball-Consumer-Smokes, scoped npm-Metadaten und ein Dry-Run-Publish-Gate als Vorbereitung fuer spaetere Standalone-Packages
-- Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama/Custom-API-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter, Custom-Responses-kompatiblem Adapter und API-Key-/Profil-Modal
+- Prompt-Input mit Anthropic/OpenAI/Gemini/Ollama/Custom-API-Model-Picker, Claude-Streaming-Adapter, OpenAI-Responses-Adapter, Gemini-Streaming-Adapter, Ollama-Reasoning-Adapter, Custom-Responses-kompatiblem Adapter, API-Key-/Profil-Modal und redigierten Provider-Fehlermeldungen
 - CLI-Boundary-Validator via `pnpm validate:traces -- <files-or-directories>`
 - CLI-Snapshot-Publisher via `pnpm publish:snapshot -- --source <boundary-pack-dir> --target dist/snapshots/current`
 - CLI-AI-Node-Canary-Generator via `pnpm generate:canary -- --target <boundary-pack-dir>`
@@ -436,7 +436,7 @@ phosphene/
 ### Roadmap
 
 - **v0.1** — UI-Shell, Demo-Prompts, Node-Typen, Detail-Panel ✅
-- **v0.2** — Side-by-side-Graph-Vergleich ✅; Adapter-Haertung laeuft weiter
+- **v0.2** — Side-by-side-Graph-Vergleich ✅; API-Fehler-Redaction fuer Adapter ✅
 - **v0.3** — AI-Node-Live-Adapter; generischer, Hermes-, Multi-Service-Marker- und redigierter Side-Effect-Intent-Adapter ✅; rohe Side-Effect-Ausfuehrungsbeobachtung bleibt Non-Scope
 - **v0.4** — Portable Session-Bundles und statischer gehosteter Session-Workflow ✅; accountbasierte/kollaborative Hosting-Flows bleiben Non-Scope/offen
 - **v0.5+** — Scoped Parser/Graph Package Surface plus ESM-/Declaration-Builds, Pack-Dry-Run, Runtime-/Type-Tarball-Smokes, scoped npm-Metadaten und Dry-Run-Publish-Gate ✅; realer npm Publish bleibt manuell

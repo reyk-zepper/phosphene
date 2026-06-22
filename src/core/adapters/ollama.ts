@@ -1,4 +1,5 @@
 import type { ModelIdentifier } from '@/core/parser/types';
+import { formatAdapterHttpError, sanitizeAdapterErrorText } from './errors';
 import type { LLMAdapter, PromptParams, ReasoningChunk } from './types';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
@@ -51,7 +52,7 @@ export async function probeOllama(signal?: AbortSignal): Promise<OllamaReachabil
     return {
       status: 'unreachable',
       hint: looksLikeCors ? 'cors' : 'not-running',
-      message: msg,
+      message: sanitizeAdapterErrorText(msg),
     };
   }
 }
@@ -158,7 +159,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
       type: 'error',
       content: looksLikeCors
         ? 'Cannot reach Ollama. Start it with: OLLAMA_ORIGINS=http://localhost:5173 ollama serve'
-        : msg,
+        : sanitizeAdapterErrorText(msg),
       timestamp: Date.now(),
     };
     return;
@@ -168,7 +169,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     const text = await response.text().catch(() => response.statusText);
     yield {
       type: 'error',
-      content: `Ollama ${response.status}: ${text.slice(0, 500)}`,
+      content: formatAdapterHttpError('Ollama', response.status, text),
       timestamp: Date.now(),
     };
     return;
@@ -209,7 +210,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     if (err instanceof DOMException && err.name === 'AbortError') return;
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Stream error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Stream error',
       timestamp: Date.now(),
     };
   }

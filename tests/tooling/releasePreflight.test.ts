@@ -67,9 +67,9 @@ describe('release preflight summary', () => {
         id: 'npm_package',
         label: 'npm package',
         status: 'ready',
-        reason: '@reyk-zepper/phosphene@0.1.42 is published',
+        reason: '@reyk-zepper/phosphene@0.1.43 is published',
         action: null,
-        evidence: ['0.1.42'],
+        evidence: ['0.1.43'],
       },
     ]);
 

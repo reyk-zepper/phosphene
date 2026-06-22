@@ -1,4 +1,5 @@
 import type { ModelIdentifier } from '@/core/parser/types';
+import { formatAdapterHttpError, sanitizeAdapterErrorText } from './errors';
 import type { LLMAdapter, PromptParams, ReasoningChunk } from './types';
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
@@ -116,7 +117,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
   } catch (err) {
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Network error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Network error',
       timestamp: Date.now(),
     };
     return;
@@ -126,7 +127,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     const text = await response.text().catch(() => response.statusText);
     yield {
       type: 'error',
-      content: `Claude API ${response.status}: ${text.slice(0, 500)}`,
+      content: formatAdapterHttpError('Claude API', response.status, text),
       timestamp: Date.now(),
     };
     return;
@@ -160,7 +161,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     if (err instanceof DOMException && err.name === 'AbortError') return;
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Stream error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Stream error',
       timestamp: Date.now(),
     };
   }

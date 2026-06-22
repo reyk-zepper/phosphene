@@ -1,4 +1,5 @@
 import type { LLMAdapter, PromptParams, ReasoningChunk } from './types';
+import { formatAdapterHttpError, sanitizeAdapterErrorText } from './errors';
 import { parseOpenAIResponsesStream } from './openai';
 import { CUSTOM_OPENAI_PROVIDER_ID, isSafeCustomResponsesUrl } from '@/core/settings/customApiProfiles';
 
@@ -58,7 +59,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
   } catch (err) {
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Custom OpenAI network error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Custom OpenAI network error',
       timestamp: Date.now(),
     };
     return;
@@ -68,7 +69,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     const text = await response.text().catch(() => response.statusText);
     yield {
       type: 'error',
-      content: `Custom OpenAI API ${response.status}: ${text.slice(0, 500)}`,
+      content: formatAdapterHttpError('Custom OpenAI API', response.status, text),
       timestamp: Date.now(),
     };
     return;
@@ -80,7 +81,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     if (err instanceof DOMException && err.name === 'AbortError') return;
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Custom OpenAI stream error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Custom OpenAI stream error',
       timestamp: Date.now(),
     };
   }

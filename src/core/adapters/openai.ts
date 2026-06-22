@@ -1,4 +1,5 @@
 import type { ModelIdentifier } from '@/core/parser/types';
+import { formatAdapterHttpError, sanitizeAdapterErrorText } from './errors';
 import type { LLMAdapter, PromptParams, ReasoningChunk } from './types';
 
 const API_URL = 'https://api.openai.com/v1/responses';
@@ -147,13 +148,14 @@ function readDeltaText(delta: unknown): string {
 }
 
 function readErrorMessage(payload: ResponsesPayload): string {
-  return (
+  const message =
     payload.error?.message ??
     payload.response?.error?.message ??
     payload.error?.code ??
     payload.response?.error?.code ??
-    'OpenAI stream error'
-  );
+    'OpenAI stream error';
+
+  return sanitizeAdapterErrorText(message);
 }
 
 function reasoningEffort(thinkingBudget?: number): 'low' | 'medium' | 'high' {
@@ -192,7 +194,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
   } catch (err) {
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'Network error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'Network error',
       timestamp: Date.now(),
     };
     return;
@@ -202,7 +204,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     const text = await response.text().catch(() => response.statusText);
     yield {
       type: 'error',
-      content: `OpenAI API ${response.status}: ${text.slice(0, 500)}`,
+      content: formatAdapterHttpError('OpenAI API', response.status, text),
       timestamp: Date.now(),
     };
     return;
@@ -214,7 +216,7 @@ async function* sendPrompt(params: PromptParams): AsyncGenerator<ReasoningChunk>
     if (err instanceof DOMException && err.name === 'AbortError') return;
     yield {
       type: 'error',
-      content: err instanceof Error ? err.message : 'OpenAI stream error',
+      content: err instanceof Error ? sanitizeAdapterErrorText(err.message) : 'OpenAI stream error',
       timestamp: Date.now(),
     };
   }

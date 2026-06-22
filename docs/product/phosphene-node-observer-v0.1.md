@@ -389,6 +389,7 @@ Allowed proof values should be synthetic and visibly redacted, e.g. `sha256:reda
 - v0.1.40 keeps Reasoning Lab and Node Observer minimally viewable on mobile by wrapping the top shell, hiding nonessential tagline copy, and capping the control overlay to a scrollable mobile sheet.
 - v0.1.41 makes graph traversal stack-safe for very deep graphs and removes a duplicate flatten pass from Graph Canvas hover lookup by reusing laid-out nodes.
 - v0.1.42 keeps tablet-width prompt/demo controls clickable by reserving the interactive analysis side rail for xl viewports and wider.
+- v0.1.43 hardens model adapters by redacting secret-like API keys, bearer tokens, local filesystem paths, and private URLs from user-facing HTTP, network, and stream error messages.
 - Tests validate ids, root events, parent references, allowed enum values, redaction hygiene, and adapter conversion.
 - Node Observer Bar and Detail Panel expose the redacted-demo nature and relevant event fields.
 - Local verification runs Vitest, ESLint, TypeScript build, and production build before any deployment claim.
