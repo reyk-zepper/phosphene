@@ -7,7 +7,7 @@ test('serves the Node Observer app shell without browser runtime errors', async 
   });
   page.on('pageerror', (error) => runtimeErrors.push(error.message));
 
-  await page.goto('/?mode=observer');
+  await page.goto('./?mode=observer');
   await expect(page).toHaveTitle(/Phosphene/);
   await expect(page.getByText('Node Observer', { exact: true })).toBeVisible();
   await expect(page.locator('select[aria-label="Select AI node trace"]')).toBeVisible();
@@ -30,7 +30,7 @@ test('serves the landing route as a built Vite page', async ({ page }) => {
   });
   page.on('pageerror', (error) => runtimeErrors.push(error.message));
 
-  await page.goto('/landing/');
+  await page.goto('./landing/');
   await expect(page).toHaveTitle(/Phosphene/);
   await expect(page.getByRole('heading', { name: /Phosphene/ })).toBeVisible();
   await expect(page.getByRole('link', { name: /Open the app/i })).toBeVisible();

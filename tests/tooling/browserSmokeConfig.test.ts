@@ -19,13 +19,20 @@ describe('browser smoke configuration', () => {
     const devDependencies = packageJson.devDependencies as Record<string, string>;
     const workflow = read(resolve(root, '.github/workflows/pages.yml'));
     const config = read(resolve(root, 'playwright.config.ts'));
+    const smokeSpec = read(resolve(root, 'tests/browser/appSmoke.spec.ts'));
 
     expect(scripts['smoke:app']).toBe('playwright test');
     expect(devDependencies).toHaveProperty('@playwright/test');
     expect(statSync(resolve(root, 'tests/browser/appSmoke.spec.ts')).isFile()).toBe(true);
     expect(config).toContain("testDir: './tests/browser'");
     expect(config).toContain('pnpm preview --host 127.0.0.1 --port 4173');
-    expect(config).toContain("baseURL: 'http://127.0.0.1:4173'");
+    expect(config).toContain('process.env.VITE_BASE_PATH');
+    expect(config).toContain('normalizedBasePath');
+    expect(config).toContain('baseURL: `http://127.0.0.1:4173${normalizedBasePath}`');
+    expect(smokeSpec).toContain("page.goto('./?mode=observer')");
+    expect(smokeSpec).toContain("page.goto('./landing/')");
+    expect(smokeSpec).not.toContain("page.goto('/?mode=observer')");
+    expect(smokeSpec).not.toContain("page.goto('/landing/')");
 
     expect(workflow).toContain('name: Install app-smoke browser');
     expect(workflow).toContain('pnpm exec playwright install --with-deps chromium');
