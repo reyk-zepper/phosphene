@@ -29,6 +29,11 @@ describe('GitHub Pages deployment configuration', () => {
     expect(workflow).toContain('package-manager-cache: false');
     expect(workflow).not.toContain('cache: pnpm');
     expect(workflow).toContain('pnpm install --frozen-lockfile');
+    expect(workflow).toContain('name: Lint');
+    expect(workflow).toContain('pnpm lint');
+    expect(workflow.indexOf('pnpm install --frozen-lockfile')).toBeLessThan(workflow.indexOf('pnpm lint'));
+    expect(workflow.indexOf('pnpm lint')).toBeLessThan(workflow.indexOf('pnpm vitest run'));
+    expect(workflow.indexOf('pnpm vitest run')).toBeLessThan(workflow.indexOf('pnpm build'));
     expect(workflow).toContain('pnpm build');
     expect(workflow).toContain('actions/configure-pages@v6');
     expect(workflow).toContain('actions/upload-pages-artifact@v5');
