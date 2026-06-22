@@ -63,4 +63,4 @@ corepack pnpm publish:snapshot -- --source /Users/raik./ai-stack/data/hermes/hom
 - [x] Run `corepack pnpm tsc -b --pretty false`.
 - [x] Run `corepack pnpm lint`.
 - [x] Run `corepack pnpm build`.
-- [ ] Commit, push, deploy with `ssh rAIk.mini /Users/raik./ai-stack/scripts/update-phosphene.sh`, and verify `node-deploy.json`, HTTP 200, `/snapshots/current/manifest.json`, and `corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run` on the AI Node.
+- [x] Commit, push, deploy with `ssh rAIk.mini /Users/raik./ai-stack/scripts/update-phosphene.sh`, and verify `node-deploy.json`, HTTP 200, `/snapshots/current/manifest.json`, and `corepack pnpm publish:snapshot -- --source public/snapshots/current --target /tmp/phosphene-publish-ai-node-check --dry-run` on the AI Node.
