@@ -1,0 +1,14 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "created_at": "2026-06-22T00:06:56.415Z",
+  "source_agent": "ai_node_live_adapter",
+  "data_classification": "redacted_live_adapter",
+  "files": [
+    {
+      "file": "ai-node-live-adapter.boundary.json",
+      "description": "Redacted near-live AI Node adapter Boundary output."
+    }
+  ],
+  "import_contract": "phosphene.boundary.v0.1.2-importable",
+  "notes": "Near-live adapter snapshot generated on the AI Node. Redacted Boundary output only; no raw live telemetry, secrets, private URLs, provider payloads, or user content."
+}

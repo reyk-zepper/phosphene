@@ -1,0 +1,11 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "overall_status": "passed",
+  "data_source": "redacted_live_adapter_output_only_no_provider_reads",
+  "trace_results": [
+    {
+      "file": "ai-node-live-adapter.boundary.json",
+      "status": "passed"
+    }
+  ]
+}

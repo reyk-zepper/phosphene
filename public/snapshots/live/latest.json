@@ -1,0 +1,11 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "updated_at": "2026-06-22T00:06:56.415Z",
+  "source_agent": "ai_node_live_adapter",
+  "data_classification": "redacted_live_adapter",
+  "latest_pack": "ai-node-live-20260622T000656Z",
+  "adapter_status": "succeeded",
+  "manifest_file": "ai-node-live-20260622T000656Z/manifest.json",
+  "manifest_sha256": "sha256:7f098925de4820cd58c01923631b7498a6665a70d221876a06f100567794a211",
+  "retention_count": 24
+}

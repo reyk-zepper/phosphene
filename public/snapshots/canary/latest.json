@@ -1,0 +1,11 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "updated_at": "2026-06-22T00:29:13.903Z",
+  "source_agent": "ai_node_canary",
+  "data_classification": "redacted_operational_canary",
+  "latest_pack": "ai-node-canary-20260622T002913Z",
+  "canary_status": "succeeded",
+  "manifest_file": "ai-node-canary-20260622T002913Z/manifest.json",
+  "manifest_sha256": "sha256:167189b3577222d1a40905f19f3ce46a0551a9e7fdf57579e79b36851e4d75a6",
+  "retention_count": 48
+}

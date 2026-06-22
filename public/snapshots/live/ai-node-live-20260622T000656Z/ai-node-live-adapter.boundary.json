@@ -1,0 +1,89 @@
+{
+  "schema_version": "phosphene.boundary.v0.1.2",
+  "metadata": {
+    "id": "run-ai-node-live-20260622000656",
+    "title": "AI Node live adapter redacted output",
+    "subtitle": "Near-live Boundary adapter output with private runtime details removed",
+    "status": "succeeded"
+  },
+  "events": [
+    {
+      "trace_id": "evt-live-adapter-root",
+      "run_id": "run-ai-node-live-20260622000656",
+      "source": "sentinel",
+      "event_type": "adapter.tick",
+      "actor": "ai-node-live-adapter",
+      "risk": "low",
+      "status": "running",
+      "timestamp": "2026-06-22T00:06:56.415Z",
+      "summary": "AI Node live adapter emitted a redacted heartbeat from served operational markers.",
+      "redacted_payload_hash": "sha256:redacted-live-adapter-root",
+      "parent_event_id": null,
+      "links": [
+        {
+          "label": "Adapter heartbeat",
+          "href": "trace://ai-node-live/heartbeat"
+        }
+      ]
+    },
+    {
+      "trace_id": "evt-live-adapter-deploy-boundary",
+      "run_id": "run-ai-node-live-20260622000656",
+      "source": "sentinel",
+      "event_type": "adapter.redacted_boundary",
+      "actor": "ai-node-live-adapter",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-22T00:06:56.415Z",
+      "summary": "Deploy marker boundary was succeeded; short commit fingerprint is 38896ce.",
+      "redacted_payload_hash": "sha256:redacted-live-adapter-deploy-boundary",
+      "parent_event_id": "evt-live-adapter-root",
+      "decision": "deploy_marker_redacted",
+      "tool": "node-deploy-json-reader"
+    },
+    {
+      "trace_id": "evt-live-adapter-snapshot-boundary",
+      "run_id": "run-ai-node-live-20260622000656",
+      "source": "aag",
+      "event_type": "adapter.redacted_boundary",
+      "actor": "ai-node-live-adapter",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-22T00:06:56.415Z",
+      "summary": "Published snapshot boundary was succeeded; classification label is synthetic_redacted.",
+      "redacted_payload_hash": "sha256:redacted-live-adapter-snapshot-boundary",
+      "parent_event_id": "evt-live-adapter-deploy-boundary",
+      "decision": "snapshot_boundary_redacted",
+      "tool": "published-snapshot-manifest-reader"
+    },
+    {
+      "trace_id": "evt-live-adapter-canary-boundary",
+      "run_id": "run-ai-node-live-20260622000656",
+      "source": "sentinel",
+      "event_type": "adapter.redacted_boundary",
+      "actor": "ai-node-live-adapter",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-22T00:06:56.415Z",
+      "summary": "Canary marker boundary was succeeded; canary status label is succeeded.",
+      "redacted_payload_hash": "sha256:redacted-live-adapter-canary-boundary",
+      "parent_event_id": "evt-live-adapter-snapshot-boundary",
+      "decision": "canary_boundary_redacted",
+      "tool": "canary-latest-marker-reader"
+    },
+    {
+      "trace_id": "evt-live-adapter-completed",
+      "run_id": "run-ai-node-live-20260622000656",
+      "source": "sentinel",
+      "event_type": "run.completed",
+      "actor": "ai-node-live-adapter",
+      "risk": "low",
+      "status": "succeeded",
+      "timestamp": "2026-06-22T00:06:56.415Z",
+      "summary": "AI Node live adapter completed with succeeded status using redacted adapter output only.",
+      "redacted_payload_hash": "sha256:redacted-live-adapter-completed",
+      "parent_event_id": "evt-live-adapter-canary-boundary",
+      "decision": "adapter_output_ready"
+    }
+  ]
+}
