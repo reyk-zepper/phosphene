@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
@@ -26,8 +26,21 @@ describe('generate-phosphene-canary-snapshot wrapper', () => {
     const outputRoot = path.join(tempRoot, 'handoffs/boundary-canary');
     const targetDir = path.join(outputRoot, 'ai-node-canary-20260620T230000Z');
     const servedDir = path.join(tempRoot, 'service/dist/snapshots/canary');
+    const aagStatusFile = path.join(tempRoot, 'state/aag-live-status.env');
 
     await mkdir(servedDir, { recursive: true });
+    await mkdir(path.dirname(aagStatusFile), { recursive: true });
+    await writeFile(aagStatusFile, [
+      'STATUS=ok',
+      'AAG_HEALTH=ok',
+      'MCP_TOOL_COUNT=13',
+      'HERMES_MCP_ENABLED=true',
+      'HERMES_MCP_TOOL_COUNT=13',
+      'AUDIT_SMOKE=skipped_interval',
+      'BASE_URL=http://127.0.0.1:8787',
+      'CHECKED_AT=2026-06-22T14:16:31Z',
+      '',
+    ].join('\n'));
 
     const result = await execFileAsync('bash', [
       scriptPath,
@@ -53,8 +66,11 @@ describe('generate-phosphene-canary-snapshot wrapper', () => {
 
     expect(servedLatest).toBe(sourceLatest);
     expect(servedLatest).toContain('"latest_pack": "ai-node-canary-20260620T230000Z"');
+    expect(servedLatest).toContain('"aag_live"');
+    expect(servedLatest).toContain('"mcp_tool_count": 13');
     expect(servedLatest).not.toContain(tempRoot);
     expect(servedLatest).not.toContain(rootDir);
+    expect(servedLatest).not.toContain('127.0.0.1');
 
     await rm(tempRoot, { recursive: true, force: true });
   });

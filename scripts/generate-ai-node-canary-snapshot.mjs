@@ -33,6 +33,7 @@ function usage() {
     '  --observed-at <iso>        Observation timestamp (default: current UTC time)',
     '  --latest-file <file>       Write a redacted latest marker without absolute paths',
     '  --retention-count <count>  Keep only the newest matching ai-node-canary-* packs',
+    '  --aag-status-file <file>   Optional AAG live sentinel status.env file to redact into latest.json',
     '  --help                    Show this help',
   ].join('\n');
 }
@@ -46,6 +47,7 @@ function parseArgs(argv) {
     observedAt: new Date().toISOString(),
     latestFile: '',
     retentionCount: undefined,
+    aagStatusFile: '',
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -64,6 +66,7 @@ function parseArgs(argv) {
       || arg === '--observed-at'
       || arg === '--latest-file'
       || arg === '--retention-count'
+      || arg === '--aag-status-file'
     ) {
       const value = argv[index + 1];
       if (!value || value.startsWith('--')) {
@@ -76,6 +79,7 @@ function parseArgs(argv) {
       if (arg === '--observed-at') options.observedAt = value;
       if (arg === '--latest-file') options.latestFile = value;
       if (arg === '--retention-count') options.retentionCount = Number(value);
+      if (arg === '--aag-status-file') options.aagStatusFile = value;
       index += 1;
       continue;
     }
@@ -102,6 +106,7 @@ function parseArgs(argv) {
     target: path.resolve(options.target),
     serviceDir: path.resolve(options.serviceDir),
     latestFile: options.latestFile ? path.resolve(options.latestFile) : '',
+    aagStatusFile: options.aagStatusFile ? path.resolve(options.aagStatusFile) : '',
   };
 }
 
@@ -111,6 +116,55 @@ async function readJson(filePath) {
   } catch {
     return undefined;
   }
+}
+
+function parseEnvFile(text) {
+  const values = {};
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#') || !line.includes('=')) continue;
+    const [key, ...valueParts] = line.split('=');
+    values[key.trim()] = valueParts.join('=').trim().replace(/^['"]|['"]$/g, '');
+  }
+  return values;
+}
+
+function enumValue(value, allowed, fallback = 'unknown') {
+  return typeof value === 'string' && allowed.has(value) ? value : fallback;
+}
+
+function integerValue(value) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
+}
+
+function booleanValue(value) {
+  return String(value).toLowerCase() === 'true';
+}
+
+async function readAagLiveStatus(statusFile, observedAt) {
+  if (!statusFile) return undefined;
+
+  let values;
+  try {
+    values = parseEnvFile(await readFile(statusFile, 'utf8'));
+  } catch {
+    return undefined;
+  }
+
+  const checkedAt = Number.isNaN(Date.parse(values.CHECKED_AT ?? ''))
+    ? observedAt
+    : values.CHECKED_AT;
+
+  return {
+    status: enumValue(values.STATUS, new Set(['ok', 'action_required', 'unknown'])),
+    health: enumValue(values.AAG_HEALTH, new Set(['ok', 'failed', 'unknown'])),
+    mcp_tool_count: integerValue(values.MCP_TOOL_COUNT),
+    hermes_mcp_enabled: booleanValue(values.HERMES_MCP_ENABLED),
+    hermes_mcp_tool_count: integerValue(values.HERMES_MCP_TOOL_COUNT),
+    audit_smoke: enumValue(values.AUDIT_SMOKE, new Set(['executed', 'skipped_interval', 'disabled', 'failed', 'unknown'])),
+    checked_at: checkedAt,
+  };
 }
 
 function statusFromHttpCode(code) {
@@ -178,12 +232,13 @@ function event({
   return result;
 }
 
-function buildTrace({ observedAt, httpCode, deployMarker, snapshotManifest }) {
+function buildTrace({ observedAt, httpCode, deployMarker, snapshotManifest, aagLive }) {
   const runId = `run-ai-node-canary-${observedAt.replace(/[^0-9]/g, '').slice(0, 14)}`;
   const serviceStatus = statusFromHttpCode(httpCode);
   const deployStatus = deployMarker ? 'succeeded' : 'failed';
   const snapshotStatus = snapshotManifest ? 'succeeded' : 'failed';
-  const overallStatus = [serviceStatus, deployStatus, snapshotStatus].every((status) => status === 'succeeded')
+  const aagStatus = aagLive ? (aagLive.status === 'ok' ? 'succeeded' : 'failed') : 'succeeded';
+  const overallStatus = [serviceStatus, deployStatus, snapshotStatus, aagStatus].every((status) => status === 'succeeded')
     ? 'succeeded'
     : 'failed';
   const deployFingerprint = typeof deployMarker?.short_commit === 'string' && deployMarker.short_commit
@@ -196,6 +251,78 @@ function buildTrace({ observedAt, httpCode, deployMarker, snapshotManifest }) {
     ? snapshotManifest.data_classification
     : 'unavailable';
 
+  const events = [
+    event({
+      traceId: 'evt-canary-root',
+      runId,
+      eventType: 'run.started',
+      status: 'running',
+      timestamp: observedAt,
+      summary: 'AI Node canary started with redacted operational probes only.',
+      parentEventId: null,
+      links: [{ label: 'Canary service check', href: 'trace://ai-node-canary/phosphene-service' }],
+    }),
+    event({
+      traceId: 'evt-canary-service-health',
+      runId,
+      eventType: 'health.check',
+      status: serviceStatus,
+      timestamp: observedAt,
+      summary: `Phosphene public service health check returned redacted HTTP status class ${httpStatusClass(httpCode)}.`,
+      parentEventId: 'evt-canary-root',
+      tool: 'phosphene-service-http-probe',
+      decision: serviceStatus === 'succeeded' ? 'service_reachable' : 'service_not_reachable',
+      links: [{ label: 'Canary service check', href: 'trace://ai-node-canary/phosphene-service' }],
+    }),
+    event({
+      traceId: 'evt-canary-deploy-marker',
+      runId,
+      eventType: 'health.check',
+      status: deployStatus,
+      timestamp: observedAt,
+      summary: `Deploy marker was ${deployStatus === 'succeeded' ? 'readable' : 'not readable'}; short commit fingerprint is ${deployFingerprint}.`,
+      parentEventId: 'evt-canary-service-health',
+      tool: 'node-deploy-json-reader',
+      decision: deployStatus === 'succeeded' ? 'deploy_marker_present' : 'deploy_marker_missing',
+    }),
+    event({
+      traceId: 'evt-canary-snapshot-marker',
+      runId,
+      eventType: 'health.check',
+      status: snapshotStatus,
+      timestamp: observedAt,
+      summary: `Published snapshot marker was ${snapshotStatus === 'succeeded' ? 'readable' : 'not readable'}; source label ${snapshotSource}, classification ${snapshotClassification}.`,
+      parentEventId: 'evt-canary-deploy-marker',
+      tool: 'published-snapshot-manifest-reader',
+      decision: snapshotStatus === 'succeeded' ? 'snapshot_marker_present' : 'snapshot_marker_missing',
+    }),
+  ];
+
+  if (aagLive) {
+    events.push(event({
+      traceId: 'evt-canary-aag-live-sentinel',
+      runId,
+      eventType: 'health.check',
+      status: aagStatus,
+      timestamp: aagLive.checked_at,
+      summary: `AAG live sentinel reported ${aagLive.status} with ${aagLive.mcp_tool_count} governed MCP tools and Hermes route ${aagLive.hermes_mcp_enabled ? 'enabled' : 'missing'}.`,
+      parentEventId: 'evt-canary-snapshot-marker',
+      tool: 'aag-live-sentinel-status-reader',
+      decision: aagStatus === 'succeeded' ? 'aag_live_ok' : 'aag_live_attention',
+    }));
+  }
+
+  events.push(event({
+    traceId: 'evt-canary-completed',
+    runId,
+    eventType: 'run.completed',
+    status: overallStatus,
+    timestamp: observedAt,
+    summary: `AI Node canary completed with ${overallStatus} status using redacted operational markers only.`,
+    parentEventId: aagLive ? 'evt-canary-aag-live-sentinel' : 'evt-canary-snapshot-marker',
+    decision: overallStatus === 'succeeded' ? 'canary_passed' : 'canary_failed',
+  }));
+
   return {
     schema_version: SCHEMA_VERSION,
     metadata: {
@@ -204,62 +331,7 @@ function buildTrace({ observedAt, httpCode, deployMarker, snapshotManifest }) {
       subtitle: 'Redacted health marker for Phosphene service and published snapshot boundary',
       status: overallStatus,
     },
-    events: [
-      event({
-        traceId: 'evt-canary-root',
-        runId,
-        eventType: 'run.started',
-        status: 'running',
-        timestamp: observedAt,
-        summary: 'AI Node canary started with redacted operational probes only.',
-        parentEventId: null,
-        links: [{ label: 'Canary service check', href: 'trace://ai-node-canary/phosphene-service' }],
-      }),
-      event({
-        traceId: 'evt-canary-service-health',
-        runId,
-        eventType: 'health.check',
-        status: serviceStatus,
-        timestamp: observedAt,
-        summary: `Phosphene public service health check returned redacted HTTP status class ${httpStatusClass(httpCode)}.`,
-        parentEventId: 'evt-canary-root',
-        tool: 'phosphene-service-http-probe',
-        decision: serviceStatus === 'succeeded' ? 'service_reachable' : 'service_not_reachable',
-        links: [{ label: 'Canary service check', href: 'trace://ai-node-canary/phosphene-service' }],
-      }),
-      event({
-        traceId: 'evt-canary-deploy-marker',
-        runId,
-        eventType: 'health.check',
-        status: deployStatus,
-        timestamp: observedAt,
-        summary: `Deploy marker was ${deployStatus === 'succeeded' ? 'readable' : 'not readable'}; short commit fingerprint is ${deployFingerprint}.`,
-        parentEventId: 'evt-canary-service-health',
-        tool: 'node-deploy-json-reader',
-        decision: deployStatus === 'succeeded' ? 'deploy_marker_present' : 'deploy_marker_missing',
-      }),
-      event({
-        traceId: 'evt-canary-snapshot-marker',
-        runId,
-        eventType: 'health.check',
-        status: snapshotStatus,
-        timestamp: observedAt,
-        summary: `Published snapshot marker was ${snapshotStatus === 'succeeded' ? 'readable' : 'not readable'}; source label ${snapshotSource}, classification ${snapshotClassification}.`,
-        parentEventId: 'evt-canary-deploy-marker',
-        tool: 'published-snapshot-manifest-reader',
-        decision: snapshotStatus === 'succeeded' ? 'snapshot_marker_present' : 'snapshot_marker_missing',
-      }),
-      event({
-        traceId: 'evt-canary-completed',
-        runId,
-        eventType: 'run.completed',
-        status: overallStatus,
-        timestamp: observedAt,
-        summary: `AI Node canary completed with ${overallStatus} status using redacted operational markers only.`,
-        parentEventId: 'evt-canary-snapshot-marker',
-        decision: overallStatus === 'succeeded' ? 'canary_passed' : 'canary_failed',
-      }),
-    ],
+    events,
   };
 }
 
@@ -319,9 +391,10 @@ function buildLatestMarker({
   status,
   manifestSha256,
   retentionCount,
+  aagLive,
 }) {
   const latestPack = path.basename(target);
-  return {
+  const marker = {
     schema_version: SCHEMA_VERSION,
     updated_at: observedAt,
     source_agent: 'ai_node_canary',
@@ -332,9 +405,11 @@ function buildLatestMarker({
     manifest_sha256: manifestSha256,
     retention_count: retentionCount ?? null,
   };
+  if (aagLive) marker.aag_live = aagLive;
+  return marker;
 }
 
-async function writeLatestMarker(options, { status, manifestPath }) {
+async function writeLatestMarker(options, { status, manifestPath, aagLive }) {
   if (!options.latestFile) return;
 
   await mkdir(path.dirname(options.latestFile), { recursive: true });
@@ -344,6 +419,7 @@ async function writeLatestMarker(options, { status, manifestPath }) {
     status,
     manifestSha256: await sha256File(manifestPath),
     retentionCount: options.retentionCount,
+    aagLive,
   }));
 }
 
@@ -368,11 +444,13 @@ async function generate(options) {
   const httpCode = options.serviceHttpCode ?? await probeHttpCode(options.serviceUrl);
   const deployMarker = await readJson(path.join(options.serviceDir, 'dist/node-deploy.json'));
   const snapshotManifest = await readJson(path.join(options.serviceDir, 'dist/snapshots/current/manifest.json'));
+  const aagLive = await readAagLiveStatus(options.aagStatusFile, options.observedAt);
   const trace = buildTrace({
     observedAt: options.observedAt,
     httpCode,
     deployMarker,
     snapshotManifest,
+    aagLive,
   });
 
   await rm(options.target, { recursive: true, force: true });
@@ -382,7 +460,7 @@ async function generate(options) {
   await writeJson(manifestPath, buildManifest(options.observedAt));
   await writeJson(path.join(options.target, 'validation-report.json'), buildValidationReport());
   await writeFile(path.join(options.target, 'README.md'), buildReadme({ observedAt: options.observedAt }));
-  await writeLatestMarker(options, { status: trace.metadata.status, manifestPath });
+  await writeLatestMarker(options, { status: trace.metadata.status, manifestPath, aagLive });
   await pruneCanaryPacks({
     root: options.latestFile ? path.dirname(options.latestFile) : path.dirname(options.target),
     keep: options.retentionCount,

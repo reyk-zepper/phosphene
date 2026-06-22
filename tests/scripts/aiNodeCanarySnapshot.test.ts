@@ -34,9 +34,31 @@ async function createServiceFixture(): Promise<string> {
   return serviceDir;
 }
 
+async function createAagStatusFixture(): Promise<string> {
+  const statusDir = await tempPath('aag-status');
+  const statusFile = path.join(statusDir, 'aag-live-status.env');
+  await writeFile(statusFile, [
+    'STATUS=ok',
+    'REASON=all_checks_passed',
+    'DETAIL=none',
+    'AAG_HEALTH=ok',
+    'MCP_SERVER=server_everything',
+    'MCP_TOOL_COUNT=13',
+    'HERMES_MCP_ENABLED=true',
+    'HERMES_MCP_TOOL_COUNT=13',
+    'AUDIT_SMOKE=skipped_interval',
+    'AUDIT_ACTION_ID=act_667f684f1e5a432f871ef48337283d0e',
+    'BASE_URL=http://127.0.0.1:8787',
+    'CHECKED_AT=2026-06-22T14:16:31Z',
+    '',
+  ].join('\n'));
+  return statusFile;
+}
+
 describe('generate-ai-node-canary-snapshot CLI', () => {
   it('writes a redacted operational canary Boundary pack that passes validation', async () => {
     const serviceDir = await createServiceFixture();
+    const aagStatusFile = await createAagStatusFixture();
     const targetDir = await tempPath('canary-pack');
 
     const result = await execFileAsync(process.execPath, [
@@ -49,6 +71,8 @@ describe('generate-ai-node-canary-snapshot CLI', () => {
       '2026-06-20T22:00:00Z',
       '--service-http-code',
       '200',
+      '--aag-status-file',
+      aagStatusFile,
     ], {
       cwd: rootDir,
       maxBuffer: 1024 * 1024,
@@ -85,20 +109,30 @@ describe('generate-ai-node-canary-snapshot CLI', () => {
       events: Array<Record<string, unknown>>;
     };
     expect(trace.metadata.status).toBe('succeeded');
-    expect(trace.events).toHaveLength(5);
+    expect(trace.events).toHaveLength(6);
     expect(trace.events.every((event) => event.run_id === trace.metadata.id)).toBe(true);
     expect(trace.events.some((event) => event.event_type === 'health.check')).toBe(true);
+    expect(trace.events).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        trace_id: 'evt-canary-aag-live-sentinel',
+        tool: 'aag-live-sentinel-status-reader',
+        decision: 'aag_live_ok',
+        summary: 'AAG live sentinel reported ok with 13 governed MCP tools and Hermes route enabled.',
+      }),
+    ]));
     expect(trace.events.every((event) => !('event_id' in event) && !('type' in event))).toBe(true);
     expect(trace.events.flatMap((event) => event.links ?? [])).toEqual(expect.arrayContaining([
       expect.objectContaining({ href: 'trace://ai-node-canary/phosphene-service' }),
     ]));
 
     await rm(serviceDir, { recursive: true, force: true });
+    await rm(path.dirname(aagStatusFile), { recursive: true, force: true });
     await rm(targetDir, { recursive: true, force: true });
   });
 
   it('updates a redacted latest marker and prunes older canary packs', async () => {
     const serviceDir = await createServiceFixture();
+    const aagStatusFile = await createAagStatusFixture();
     const outputRoot = await tempPath('canary-output-root');
     const oldPack = path.join(outputRoot, 'ai-node-canary-20260620T210000Z');
     const retainedPack = path.join(outputRoot, 'ai-node-canary-20260620T220000Z');
@@ -125,6 +159,8 @@ describe('generate-ai-node-canary-snapshot CLI', () => {
       latestFile,
       '--retention-count',
       '2',
+      '--aag-status-file',
+      aagStatusFile,
     ], {
       cwd: rootDir,
       maxBuffer: 1024 * 1024,
@@ -148,6 +184,15 @@ describe('generate-ai-node-canary-snapshot CLI', () => {
       manifest_file: string;
       manifest_sha256: string;
       retention_count: number;
+      aag_live: {
+        status: string;
+        health: string;
+        mcp_tool_count: number;
+        hermes_mcp_enabled: boolean;
+        hermes_mcp_tool_count: number;
+        audit_smoke: string;
+        checked_at: string;
+      };
     };
 
     expect(latest).toEqual({
@@ -160,11 +205,25 @@ describe('generate-ai-node-canary-snapshot CLI', () => {
       manifest_file: 'ai-node-canary-20260620T230000Z/manifest.json',
       manifest_sha256: expect.stringMatching(/^sha256:[a-f0-9]{64}$/),
       retention_count: 2,
+      aag_live: {
+        status: 'ok',
+        health: 'ok',
+        mcp_tool_count: 13,
+        hermes_mcp_enabled: true,
+        hermes_mcp_tool_count: 13,
+        audit_smoke: 'skipped_interval',
+        checked_at: '2026-06-22T14:16:31Z',
+      },
     });
     expect(rawLatest).not.toContain(outputRoot);
     expect(rawLatest).not.toContain(serviceDir);
+    expect(rawLatest).not.toContain('BASE_URL');
+    expect(rawLatest).not.toContain('AUDIT_ACTION_ID');
+    expect(rawLatest).not.toContain('127.0.0.1');
+    expect(rawLatest).not.toContain('act_667f684f1e5a432f871ef48337283d0e');
 
     await rm(serviceDir, { recursive: true, force: true });
+    await rm(path.dirname(aagStatusFile), { recursive: true, force: true });
     await rm(outputRoot, { recursive: true, force: true });
   });
 });

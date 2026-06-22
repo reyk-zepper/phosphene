@@ -7,5 +7,14 @@
   "canary_status": "succeeded",
   "manifest_file": "ai-node-canary-20260622T002913Z/manifest.json",
   "manifest_sha256": "sha256:167189b3577222d1a40905f19f3ce46a0551a9e7fdf57579e79b36851e4d75a6",
-  "retention_count": 48
+  "retention_count": 48,
+  "aag_live": {
+    "status": "ok",
+    "health": "ok",
+    "mcp_tool_count": 13,
+    "hermes_mcp_enabled": true,
+    "hermes_mcp_tool_count": 13,
+    "audit_smoke": "skipped_interval",
+    "checked_at": "2026-06-22T14:16:31Z"
+  }
 }

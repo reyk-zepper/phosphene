@@ -16,6 +16,15 @@ const validLatest = {
   manifest_file: 'ai-node-canary-20260620T223459Z/manifest.json',
   manifest_sha256: 'sha256:6a6e49ebecec000fc07dcd3da5631ed792ce5439381fa763623ffdcb767a340a',
   retention_count: 48,
+  aag_live: {
+    status: 'ok',
+    health: 'ok',
+    mcp_tool_count: 13,
+    hermes_mcp_enabled: true,
+    hermes_mcp_tool_count: 13,
+    audit_smoke: 'skipped_interval',
+    checked_at: '2026-06-22T14:16:31Z',
+  },
 };
 
 function jsonResponse(value: unknown, status = 200): Response {
@@ -45,6 +54,15 @@ describe('loadCanaryStatus', () => {
       latestPack: 'ai-node-canary-20260620T223459Z',
       canaryStatus: 'succeeded',
       retentionCount: 48,
+      aagLive: {
+        status: 'ok',
+        health: 'ok',
+        mcpToolCount: 13,
+        hermesMcpEnabled: true,
+        hermesMcpToolCount: 13,
+        auditSmoke: 'skipped_interval',
+        checkedAt: '2026-06-22T14:16:31Z',
+      },
     });
     expect(result.errors).toEqual([]);
   });
@@ -80,6 +98,20 @@ describe('loadCanaryStatus', () => {
     expect(result.marker).toBeUndefined();
     expect(result.errors).toContain('latest.json: manifest_file must be a relative canary manifest reference');
   });
+
+  it('blocks AAG live markers that expose raw endpoint details', async () => {
+    const result = await loadCanaryStatus(async () => jsonResponse({
+      ...validLatest,
+      aag_live: {
+        ...validLatest.aag_live,
+        base_url: 'http://127.0.0.1:8787',
+      },
+    }));
+
+    expect(result.status).toBe('blocked');
+    expect(result.marker).toBeUndefined();
+    expect(result.errors).toContain('latest.json: aag_live must only contain redacted status fields');
+  });
 });
 
 describe('createCanaryStatusDisplayState', () => {
@@ -100,6 +132,10 @@ describe('createCanaryStatusDisplayState', () => {
     expect(display.meta).toEqual([
       { label: 'Freshness', value: 'Fresh' },
       { label: 'Age', value: '4m' },
+      { label: 'AAG', value: 'ok' },
+      { label: 'AAG tools', value: '13 / 13' },
+      { label: 'Hermes route', value: 'enabled' },
+      { label: 'Audit smoke', value: 'skipped_interval' },
       { label: 'Latest pack', value: 'ai-node-canary-20260620T223459Z' },
       { label: 'Manifest hash', value: 'sha256:6a6e49eb...' },
       { label: 'Retention', value: '48 packs' },

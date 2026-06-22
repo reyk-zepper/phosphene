@@ -8,6 +8,16 @@ export type CanaryStatusLoadStatus = 'available' | 'blocked' | 'unavailable';
 export type CanaryStatusDisplayStatus = CanaryStatusLoadStatus | 'checking';
 export type CanaryStatusFreshness = 'fresh' | 'stale' | 'unknown';
 
+export interface AagLiveStatusMarker {
+  status: string;
+  health: string;
+  mcpToolCount: number;
+  hermesMcpEnabled: boolean;
+  hermesMcpToolCount: number;
+  auditSmoke: string;
+  checkedAt: string;
+}
+
 export interface CanaryStatusMarker {
   updatedAt: string;
   sourceAgent: string;
@@ -17,6 +27,7 @@ export interface CanaryStatusMarker {
   manifestFile: string;
   manifestSha256: string;
   retentionCount?: number;
+  aagLive?: AagLiveStatusMarker;
 }
 
 export interface CanaryStatusLoadResult {
@@ -52,6 +63,18 @@ export interface CanaryStatusRefreshOptions {
 const PACK_PATTERN = /^ai-node-canary-\d{8}T\d{6}Z$/;
 const MANIFEST_SHA_PATTERN = /^sha256:[a-f0-9]{64}$/;
 const FORBIDDEN_TEXT = /(?:\/Users\/|https?:\/\/|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|\b(?:bearer|oauth|api[_-]?key|client[_-]?secret|access[_-]?token|refresh[_-]?token|session[_-]?cookie)\b|sk-[A-Za-z0-9_-]{12,})/i;
+const AAG_LIVE_KEYS = new Set([
+  'status',
+  'health',
+  'mcp_tool_count',
+  'hermes_mcp_enabled',
+  'hermes_mcp_tool_count',
+  'audit_smoke',
+  'checked_at',
+]);
+const AAG_STATUS_VALUES = new Set(['ok', 'action_required', 'unknown']);
+const AAG_HEALTH_VALUES = new Set(['ok', 'failed', 'unknown']);
+const AAG_AUDIT_SMOKE_VALUES = new Set(['executed', 'skipped_interval', 'disabled', 'failed', 'unknown']);
 
 function joinStatusPath(basePath: string, fileName: string): string {
   const base = basePath.replace(/\/+$/, '');
@@ -65,6 +88,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isNonNegativeInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 0;
 }
 
 async function fetchText(fetcher: CanaryStatusFetcher, url: string): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
@@ -89,6 +116,75 @@ function manifestReferenceForPack(pack: string): string {
   return `${pack}/manifest.json`;
 }
 
+function validateAagEnum(
+  value: unknown,
+  allowedValues: Set<string>,
+  field: string,
+  errors: string[]
+): string {
+  if (!isNonEmptyString(value) || !allowedValues.has(value)) {
+    errors.push(`latest.json: aag_live.${field} must be a redacted status value`);
+    return '';
+  }
+  return value;
+}
+
+function validateAagLiveMarker(value: unknown, errors: string[]): AagLiveStatusMarker | undefined {
+  if (value == null) return undefined;
+  if (!isRecord(value)) {
+    errors.push('latest.json: aag_live must be a JSON object');
+    return undefined;
+  }
+
+  const unexpectedKeys = Object.keys(value).filter((key) => !AAG_LIVE_KEYS.has(key));
+  if (unexpectedKeys.length > 0) {
+    errors.push('latest.json: aag_live must only contain redacted status fields');
+  }
+
+  const status = validateAagEnum(value.status, AAG_STATUS_VALUES, 'status', errors);
+  const health = validateAagEnum(value.health, AAG_HEALTH_VALUES, 'health', errors);
+  const auditSmoke = validateAagEnum(value.audit_smoke, AAG_AUDIT_SMOKE_VALUES, 'audit_smoke', errors);
+  const checkedAt = isNonEmptyString(value.checked_at) && !Number.isNaN(Date.parse(value.checked_at))
+    ? value.checked_at
+    : '';
+
+  if (!isNonNegativeInteger(value.mcp_tool_count)) {
+    errors.push('latest.json: aag_live.mcp_tool_count must be a non-negative integer');
+  }
+  if (typeof value.hermes_mcp_enabled !== 'boolean') {
+    errors.push('latest.json: aag_live.hermes_mcp_enabled must be a boolean');
+  }
+  if (!isNonNegativeInteger(value.hermes_mcp_tool_count)) {
+    errors.push('latest.json: aag_live.hermes_mcp_tool_count must be a non-negative integer');
+  }
+  if (!checkedAt) {
+    errors.push('latest.json: aag_live.checked_at must be a valid ISO timestamp');
+  }
+
+  if (
+    !status
+    || !health
+    || !auditSmoke
+    || !checkedAt
+    || !isNonNegativeInteger(value.mcp_tool_count)
+    || typeof value.hermes_mcp_enabled !== 'boolean'
+    || !isNonNegativeInteger(value.hermes_mcp_tool_count)
+    || unexpectedKeys.length > 0
+  ) {
+    return undefined;
+  }
+
+  return {
+    status,
+    health,
+    mcpToolCount: value.mcp_tool_count,
+    hermesMcpEnabled: value.hermes_mcp_enabled,
+    hermesMcpToolCount: value.hermes_mcp_tool_count,
+    auditSmoke,
+    checkedAt,
+  };
+}
+
 function validateLatestMarker(text: string): { marker?: CanaryStatusMarker; errors: string[] } {
   const hasForbiddenText = FORBIDDEN_TEXT.test(text);
 
@@ -109,6 +205,7 @@ function validateLatestMarker(text: string): { marker?: CanaryStatusMarker; erro
   let manifestFile = '';
   let manifestSha256 = '';
   let retentionCount: number | undefined;
+  const aagLive = validateAagLiveMarker(parsed.aag_live, errors);
 
   if (parsed.schema_version !== BOUNDARY_TRACE_SCHEMA_VERSION) {
     errors.push(`latest.json: schema_version must be ${BOUNDARY_TRACE_SCHEMA_VERSION}`);
@@ -169,6 +266,7 @@ function validateLatestMarker(text: string): { marker?: CanaryStatusMarker; erro
       manifestFile,
       manifestSha256,
       retentionCount,
+      aagLive,
     },
     errors: [],
   };
@@ -232,6 +330,12 @@ export function createCanaryStatusDisplayState(
     meta.push({ label: 'Freshness', value: freshness === 'stale' ? 'Stale' : 'Fresh' });
     if (age !== undefined) meta.push({ label: 'Age', value: ageLabel(age) });
     if (freshness === 'stale') meta.push({ label: 'Canary', value: marker.canaryStatus });
+    if (marker.aagLive) {
+      meta.push({ label: 'AAG', value: marker.aagLive.status });
+      meta.push({ label: 'AAG tools', value: `${marker.aagLive.mcpToolCount} / ${marker.aagLive.hermesMcpToolCount}` });
+      meta.push({ label: 'Hermes route', value: marker.aagLive.hermesMcpEnabled ? 'enabled' : 'missing' });
+      meta.push({ label: 'Audit smoke', value: marker.aagLive.auditSmoke });
+    }
     meta.push({ label: 'Latest pack', value: marker.latestPack });
     meta.push({ label: 'Manifest hash', value: shortenSha(marker.manifestSha256) });
     if (marker.retentionCount) meta.push({ label: 'Retention', value: `${marker.retentionCount} packs` });

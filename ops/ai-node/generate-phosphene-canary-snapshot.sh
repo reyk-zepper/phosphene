@@ -10,6 +10,7 @@ PUBLISH_HELPER="${PHOSPHENE_PUBLISH_HELPER:-$AI_STACK_ROOT/scripts/publish-phosp
 LATEST_FILE="${PHOSPHENE_CANARY_LATEST_FILE:-$OUTPUT_ROOT/latest.json}"
 RETENTION_COUNT="${PHOSPHENE_CANARY_RETENTION_COUNT:-48}"
 SERVED_STATUS_DIR="${PHOSPHENE_CANARY_SERVED_DIR:-$SERVICE_DIR/dist/snapshots/canary}"
+AAG_STATUS_FILE="${PHOSPHENE_AAG_STATUS_FILE:-$AI_STACK_ROOT/state/aag-live-status.env}"
 RUN_DRY_RUN=1
 TARGET=""
 
@@ -28,6 +29,9 @@ It never publishes or deploys the generated pack.
 The script updates:
   $LATEST_FILE
   $SERVED_STATUS_DIR/latest.json
+
+Optional redacted AAG live sentinel source:
+  $AAG_STATUS_FILE
 
 Retention keeps the newest $RETENTION_COUNT ai-node-canary-* packs.
 USAGE
@@ -76,7 +80,8 @@ node scripts/generate-ai-node-canary-snapshot.mjs \
   --target "$TARGET" \
   --service-dir "$SERVICE_DIR" \
   --latest-file "$LATEST_FILE" \
-  --retention-count "$RETENTION_COUNT"
+  --retention-count "$RETENTION_COUNT" \
+  --aag-status-file "$AAG_STATUS_FILE"
 
 mkdir -p "$SERVED_STATUS_DIR"
 cp "$LATEST_FILE" "$SERVED_STATUS_DIR/latest.json"
