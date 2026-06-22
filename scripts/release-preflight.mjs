@@ -10,6 +10,13 @@ function summarizeReleasePreflight(gates) {
   const nextActions = gates
     .filter((gate) => gate.status === 'blocked' && gate.action)
     .map((gate) => gate.action);
+  const manualCommands = Array.from(
+    new Set(
+      gates
+        .filter((gate) => gate.status === 'blocked')
+        .flatMap((gate) => gate.commands ?? []),
+    ),
+  );
 
   return {
     status: blockers.length > 0 ? 'blocked' : 'ready',
@@ -17,6 +24,7 @@ function summarizeReleasePreflight(gates) {
     blocked: blockers.length,
     blockers,
     nextActions,
+    manualCommands,
     gates,
   };
 }
@@ -98,6 +106,7 @@ function launchGate(launch) {
     status: isReady ? 'ready' : 'blocked',
     reason: isReady ? `${summary.primaryUrl} is serving Phosphene` : 'no public Phosphene URL is serving the app',
     action: isReady ? null : 'Restore a public Phosphene URL, then rerun pnpm --silent launch:preflight.',
+    commands: isReady ? [] : ['pnpm --silent launch:preflight'],
     evidence: [summary.status, summary.primaryUrl ?? 'no primaryUrl', ...summary.blockers],
   };
 }
@@ -126,6 +135,7 @@ function customDomainGate(launch) {
     action: isReady
       ? null
       : 'Move phosphene.dev DNS/hosting to the Phosphene build, then rerun pnpm --silent launch:preflight.',
+    commands: isReady ? [] : ['pnpm --silent launch:preflight'],
     evidence: domainTarget ? [domainTarget.reason, ...domainTarget.evidence] : ['missing phosphene.dev target'],
   };
 }
@@ -139,6 +149,7 @@ async function npmAuthGate() {
     status: result.ok ? 'ready' : 'blocked',
     reason: result.ok ? `logged in as ${result.stdout}` : 'npm CLI is not logged in',
     action: result.ok ? null : 'Run npm adduser or npm login with the intended publishing account.',
+    commands: result.ok ? [] : ['npm login'],
     evidence: [result.ok ? result.stdout : result.stderr || result.stdout],
   };
 }
@@ -154,6 +165,9 @@ async function npmPackageGate() {
       ? `@reyk-zepper/phosphene@${JSON.parse(result.stdout)} is published`
       : '@reyk-zepper/phosphene is not published',
     action: result.ok ? null : 'After npm auth is ready, run pnpm --silent publish:packages:dry-run and publish manually.',
+    commands: result.ok
+      ? []
+      : ['pnpm --silent publish:packages:dry-run', 'npm publish --access public', 'npm view @reyk-zepper/phosphene version --json'],
     evidence: [result.ok ? result.stdout : result.stderr || result.stdout],
   };
 }
@@ -169,6 +183,14 @@ async function githubOrgGate() {
     action: result.ok
       ? null
       : 'Create phosphene-ai in GitHub UI or refresh gh auth with admin:org, then create/push org repos.',
+    commands: result.ok
+      ? []
+      : [
+          'gh auth refresh -h github.com -s admin:org',
+          'gh api orgs/phosphene-ai --jq .login',
+          'gh repo create phosphene-ai/phosphene --public --source /Users/reykz/repositorys/phosphene --remote phosphene-ai',
+          'gh repo create phosphene-ai/constitution --public --source /Users/reykz/repositorys/constitution --remote phosphene-ai',
+        ],
     evidence: [result.ok ? result.stdout : result.stderr || result.stdout],
   };
 }
@@ -203,6 +225,12 @@ async function pagesCustomDomainGate() {
     action: hasDomain
       ? null
       : 'After DNS points at GitHub Pages, configure phosphene.dev as the Pages custom domain.',
+    commands: hasDomain
+      ? []
+      : [
+          "gh api repos/reyk-zepper/phosphene/pages --jq '{cname:.cname,html_url:.html_url,https_enforced:.https_enforced}'",
+          'pnpm --silent launch:preflight',
+        ],
     evidence: [`cname=${pages.cname ?? 'null'}`, `html_url=${pages.html_url}`, `https_enforced=${pages.https_enforced}`],
   };
 }

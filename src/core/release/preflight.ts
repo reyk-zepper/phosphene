@@ -6,6 +6,7 @@ export interface ReleaseGate {
   status: ReleaseGateStatus;
   reason: string;
   action: string | null;
+  commands?: string[];
   evidence: string[];
 }
 
@@ -15,6 +16,7 @@ export interface ReleasePreflightSummary {
   blocked: number;
   blockers: string[];
   nextActions: string[];
+  manualCommands: string[];
   gates: ReleaseGate[];
 }
 
@@ -29,6 +31,13 @@ export function summarizeReleasePreflight(gates: ReleaseGate[]): ReleasePrefligh
   const nextActions = gates
     .filter((gate) => gate.status === 'blocked' && gate.action)
     .map((gate) => gate.action as string);
+  const manualCommands = Array.from(
+    new Set(
+      gates
+        .filter((gate) => gate.status === 'blocked')
+        .flatMap((gate) => gate.commands ?? []),
+    ),
+  );
 
   return {
     status: blockers.length > 0 ? 'blocked' : 'ready',
@@ -36,6 +45,7 @@ export function summarizeReleasePreflight(gates: ReleaseGate[]): ReleasePrefligh
     blocked: blockers.length,
     blockers,
     nextActions,
+    manualCommands,
     gates,
   };
 }

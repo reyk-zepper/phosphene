@@ -31,6 +31,7 @@ describe('release preflight summary', () => {
         status: 'blocked',
         reason: 'reachable but not serving Phosphene',
         action: 'Move phosphene.dev DNS/hosting to the Phosphene build, then rerun launch preflight.',
+        commands: ['pnpm --silent launch:preflight'],
         evidence: ['Geiss-web - Phase 0 spike'],
       },
       {
@@ -39,6 +40,7 @@ describe('release preflight summary', () => {
         status: 'blocked',
         reason: '@reyk-zepper/phosphene is not published',
         action: 'Log in with npm adduser and run npm publish after the dry-run gate passes.',
+        commands: ['pnpm --silent publish:packages:dry-run', 'npm publish --access public'],
         evidence: ['npm view returned E404'],
       },
     ]);
@@ -51,6 +53,11 @@ describe('release preflight summary', () => {
     expect(summary.nextActions).toContain(
       'Move phosphene.dev DNS/hosting to the Phosphene build, then rerun launch preflight.',
     );
+    expect(summary.manualCommands).toEqual([
+      'pnpm --silent launch:preflight',
+      'pnpm --silent publish:packages:dry-run',
+      'npm publish --access public',
+    ]);
   });
 
   it('marks the release ready only when every gate is ready', () => {
@@ -76,6 +83,7 @@ describe('release preflight summary', () => {
     expect(summary.status).toBe('ready');
     expect(summary.blockers).toEqual([]);
     expect(summary.nextActions).toEqual([]);
+    expect(summary.manualCommands).toEqual([]);
   });
 
   it('exposes release preflight as a package script', () => {
@@ -191,6 +199,7 @@ process.exit(1);
 
     const launchCount = readFileSync(launchCountFile, 'utf8').trim().split('\n').filter(Boolean).length;
     const summary = JSON.parse(stdout) as {
+      manualCommands: string[];
       gates: Array<{ id: string; status: string; reason: string }>;
     };
 
@@ -203,5 +212,12 @@ process.exit(1);
       status: 'blocked',
       reason: 'reachable but not serving Phosphene',
     });
+    expect(summary.manualCommands).toContain('npm login');
+    expect(summary.manualCommands).toContain('pnpm --silent publish:packages:dry-run');
+    expect(summary.manualCommands).toContain('gh auth refresh -h github.com -s admin:org');
+    expect(summary.manualCommands).toContain(
+      'gh repo create phosphene-ai/constitution --public --source /Users/reykz/repositorys/constitution --remote phosphene-ai',
+    );
+    expect(summary.manualCommands).toContain('pnpm --silent launch:preflight');
   });
 });

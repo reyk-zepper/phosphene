@@ -64,6 +64,10 @@ open:
 - GitHub org `phosphene-ai` is missing or the token lacks `admin:org`.
 - GitHub Pages has no `phosphene.dev` CNAME.
 
+The JSON output also includes `manualCommands`, a deduplicated copy-paste list
+for the currently blocked gates. Keep the status blocked until the follow-up
+`release:preflight` run reports `ready`.
+
 ## Hacker News
 
 HN submission URL:
