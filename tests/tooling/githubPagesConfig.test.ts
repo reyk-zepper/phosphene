@@ -30,9 +30,12 @@ describe('GitHub Pages deployment configuration', () => {
     expect(workflow).not.toContain('cache: pnpm');
     expect(workflow).toContain('pnpm install --frozen-lockfile');
     expect(workflow).toContain('pnpm build');
-    expect(workflow).toContain('actions/configure-pages@v5');
-    expect(workflow).toContain('actions/upload-pages-artifact@v4');
-    expect(workflow).toContain('actions/deploy-pages@v4');
+    expect(workflow).toContain('actions/configure-pages@v6');
+    expect(workflow).toContain('actions/upload-pages-artifact@v5');
+    expect(workflow).toContain('actions/deploy-pages@v5');
+    expect(workflow).not.toContain('actions/configure-pages@v5');
+    expect(workflow).not.toContain('actions/upload-pages-artifact@v4');
+    expect(workflow).not.toContain('actions/deploy-pages@v4');
     expect(workflow).toContain('path: dist');
     expect(workflow).toContain('pages: write');
     expect(workflow).toContain('id-token: write');
