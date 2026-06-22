@@ -331,8 +331,22 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 
 - [x] Parser als public Package Entry Point (`@reyk-zepper/phosphene/parser`)
 - [x] Graph als public Package Entry Point (`@reyk-zepper/phosphene/graph`)
-- [ ] Constitution-Repo aufsetzen, Phosphene-Engine einbinden
+- [x] Constitution-Repo aufsetzen, Phosphene-Engine einbinden
 - [x] "Rule-Testing-Mode": Reasoning gegen Regeln visualisieren
+
+Constitution-Status am 2026-06-22:
+
+- Lokales Repo: `/Users/reykz/repositorys/constitution`
+- Initialer Commit: `805e152` (`feat: scaffold constitution policy builder`)
+- Stack: Vite + React + TypeScript + Vitest
+- Engine-Binding: `@reyk-zepper/phosphene` via `file:../phosphene`, mit
+  direkten Imports aus `@reyk-zepper/phosphene/parser` und
+  `@reyk-zepper/phosphene/graph`
+- Verifikation: `pnpm test`, `pnpm build` und Playwright-Smoke fuer Desktop und
+  Mobile erfolgreich
+- Noch extern: GitHub-Org `phosphene-ai` und Remote-Publikation sind
+  account-gated; lokales `gh` hat `repo`, `workflow`, `read:org`, aber kein
+  `admin:org`.
 
 ---
 
