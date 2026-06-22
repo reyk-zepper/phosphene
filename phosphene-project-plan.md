@@ -314,6 +314,14 @@ Tiefseewesen. Neuronale Aktivität in der Nacht.
 - [x] Open Source License (MIT)
 - [ ] Launch: HackerNews, Reddit r/MachineLearning, Twitter/X
 
+Launch-Status am 2026-06-22:
+
+- Launch-Kit liegt unter `docs/launch/phosphene-launch-kit.md`.
+- Enthalten: Show HN-Titel/Kommentar, r/MachineLearning-Post, X-Post/Thread,
+  Quellenlinks, GitHub-Org-Handoff und aktuelle Blocker.
+- Noch nicht erledigt: oeffentliche Posts und `phosphene.dev`-DNS/Hosting sind
+  externe Account-/Publikationsschritte.
+
 ### Phase 4: Differentiator Features (Wochen 11-16)
 **Ziel:** Multi-Model, Community-Features
 
