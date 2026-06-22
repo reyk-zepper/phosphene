@@ -12,5 +12,6 @@ describe('vitest shared artifact configuration', () => {
     expect(source).toContain('type VitestConfig');
     expect(source).toContain('fileParallelism: false');
     expect(source).toContain('testTimeout: 60_000');
+    expect(source).toContain("'tests/browser/**'");
   });
 });

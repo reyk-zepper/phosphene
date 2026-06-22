@@ -10,6 +10,7 @@ dist-ssr
 .env.local
 .env.*.local
 coverage
+test-results
 *.log
 *.tsbuildinfo
 .vscode/*

@@ -7,6 +7,7 @@ type VitestConfig = UserConfig & {
   test: {
     fileParallelism: boolean;
     testTimeout: number;
+    exclude: string[];
   };
 };
 
@@ -72,6 +73,7 @@ const config = {
   test: {
     fileParallelism: false,
     testTimeout: 60_000,
+    exclude: ['node_modules/**', 'dist/**', 'dist-packages/**', 'dist-types/**', 'tests/browser/**'],
   },
 } satisfies VitestConfig;
 

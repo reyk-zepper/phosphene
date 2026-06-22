@@ -47,6 +47,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install app-smoke browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: App smoke
+        run: pnpm smoke:app
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 

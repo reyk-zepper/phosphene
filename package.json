@@ -64,6 +64,7 @@
     "publish:packages:dry-run": "pnpm --silent verify:packages 1>&2 && npm publish --dry-run --ignore-scripts --access public --json",
     "prepublishOnly": "pnpm --silent verify:packages",
     "preview": "vite preview",
+    "smoke:app": "playwright test",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest",
@@ -90,6 +91,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/d3": "^7.4.3",
     "@types/dagre": "^0.7.52",
