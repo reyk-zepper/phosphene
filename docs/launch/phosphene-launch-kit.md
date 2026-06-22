@@ -49,6 +49,21 @@ pnpm --silent launch:preflight
 Expected current status: `fallback_ready` with `phosphene.dev: reachable but not
 serving Phosphene` as the remaining URL blocker.
 
+Release preflight:
+
+```bash
+pnpm --silent release:preflight
+```
+
+Expected current status: non-zero/`blocked`, with these external gates still
+open:
+
+- `phosphene.dev` is reachable but not serving Phosphene.
+- npm CLI is not logged in.
+- `@reyk-zepper/phosphene` is not published.
+- GitHub org `phosphene-ai` is missing or the token lacks `admin:org`.
+- GitHub Pages has no `phosphene.dev` CNAME.
+
 ## Hacker News
 
 HN submission URL:

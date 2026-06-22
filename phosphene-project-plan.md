@@ -326,6 +326,10 @@ Launch-Status am 2026-06-22:
   Aktueller Status am 2026-06-22: `fallback_ready`; Pages ist launchfaehig,
   `phosphene.dev` ist erreichbar, serviert aber noch `Geiss-web - Phase 0
   spike` statt Phosphene.
+- `pnpm --silent release:preflight` prueft die finalen externen Release-Gates.
+  Aktueller Status am 2026-06-22: `blocked`; offen sind `phosphene.dev`,
+  npm-Login, realer npm-Publish, GitHub-Org `phosphene-ai` und die
+  Pages-Custom-Domain.
 - Noch nicht erledigt: oeffentliche Posts, GitHub-Org `phosphene-ai` und
   `phosphene.dev`-DNS/Hosting sind externe Account-/Publikationsschritte.
 

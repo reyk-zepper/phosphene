@@ -178,6 +178,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm generate:live-adapter -- --target <dir>` | Generate a redacted near-live AI Node adapter Boundary pack; supports `--latest-file` and `--retention-count` for served `/snapshots/live/` output |
 | `pnpm generate:hermes-live-adapter -- --target <dir>` | Generate a redacted near-live Hermes adapter Boundary pack from coarse Hermes operational markers only |
 | `pnpm --silent launch:preflight` | Check whether the public Pages fallback and `phosphene.dev` are serving the Phosphene app shell before posting launch copy |
+| `pnpm --silent release:preflight` | Check final external release gates: public URL, `phosphene.dev`, npm auth/package state, GitHub org, and Pages custom domain |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Install the non-publishing AI Node canary LaunchAgent |
 | `pnpm format` | Format with Prettier |
 
@@ -389,6 +390,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm generate:live-adapter -- --target <dir>` | Redigierten Near-Live-AI-Node-Adapter-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für served `/snapshots/live/` output |
 | `pnpm generate:hermes-live-adapter -- --target <dir>` | Redigierten Near-Live-Hermes-Adapter-Boundary-Pack nur aus groben Hermes-Operational-Markern erzeugen |
 | `pnpm --silent launch:preflight` | Pruefen, ob der oeffentliche Pages-Fallback und `phosphene.dev` vor Launch-Posts wirklich die Phosphene-App-Shell ausliefern |
+| `pnpm --silent release:preflight` | Finale externe Release-Gates pruefen: oeffentliche URL, `phosphene.dev`, npm-Auth/-Package-Status, GitHub-Org und Pages-Custom-Domain |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Nicht-publizierenden AI-Node-Canary-LaunchAgent installieren |
 | `pnpm format` | Mit Prettier formatieren |
 
