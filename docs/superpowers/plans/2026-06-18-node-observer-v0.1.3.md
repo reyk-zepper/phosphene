@@ -64,10 +64,10 @@
 
 ### Task 5: Verification And Deploy
 
-- [ ] Run `vitest run`.
-- [ ] Run `eslint .`.
-- [ ] Run `tsc -b --pretty false`.
-- [ ] Run `vite build`.
-- [ ] Run CLI validator against demo and handoff fixtures.
-- [ ] Run desktop and mobile Browser QA for group selection and upload validation.
-- [ ] Commit, push, deploy on Mac mini, and verify `node-deploy.json`.
+- [x] Run `vitest run`.
+- [x] Run `eslint .`.
+- [x] Run `tsc -b --pretty false`.
+- [x] Run `vite build`.
+- [x] Run CLI validator against demo and handoff fixtures.
+- [x] Run desktop and mobile Browser QA for group selection and upload validation.
+- [x] Commit, push, deploy on Mac mini, and verify `node-deploy.json`.

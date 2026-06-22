@@ -34,6 +34,7 @@ import { buildShareUrl, parseShareLinkState, type ShareLinkState } from '@/core/
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
+import { createObserverTraceCatalog } from './observerCatalog';
 import {
   getCanaryStatusBasePath,
   getLiveAdapterBasePath,
@@ -92,24 +93,16 @@ export function App() {
       traces: snapshotResult.traces,
     };
   }, [snapshotResult]);
-  const observerTraceGroups = useMemo(() => {
-    const dynamicGroups = [liveAdapterGroup, snapshotGroup].filter((group): group is ObserverTraceGroup => Boolean(group));
-    if (dynamicGroups.length === 0) return OBSERVER_TRACE_GROUPS;
-
-    const dynamicTraceIds = new Set(dynamicGroups.flatMap((group) => group.traces.map((trace) => trace.id)));
-    const staticGroups = OBSERVER_TRACE_GROUPS
-      .map((group) => ({
-        ...group,
-        traces: group.traces.filter((trace) => !dynamicTraceIds.has(trace.id)),
-      }))
-      .filter((group) => group.traces.length > 0);
-
-    return [...dynamicGroups, ...staticGroups];
-  }, [liveAdapterGroup, snapshotGroup]);
-  const observerTraces = useMemo(
-    () => [...importedTraces, ...observerTraceGroups.flatMap((group) => group.traces)],
-    [importedTraces, observerTraceGroups]
+  const observerTraceCatalog = useMemo(
+    () => createObserverTraceCatalog({
+      importedTraces,
+      dynamicGroups: [liveAdapterGroup, snapshotGroup],
+      staticGroups: OBSERVER_TRACE_GROUPS,
+    }),
+    [importedTraces, liveAdapterGroup, snapshotGroup]
   );
+  const observerTraceGroups = observerTraceCatalog.traceGroups;
+  const observerTraces = observerTraceCatalog.traces;
   const publishedSnapshotReadiness = useMemo(() => {
     if (!snapshotResult) return undefined;
     return {

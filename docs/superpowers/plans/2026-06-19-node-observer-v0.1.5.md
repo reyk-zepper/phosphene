@@ -47,10 +47,10 @@
 
 ### Task 4: Verification and Deploy
 
-- [ ] Run `vitest run`.
-- [ ] Run `pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18`.
-- [ ] Run `eslint .`.
-- [ ] Run `tsc -b --pretty false`.
-- [ ] Run `pnpm build`.
-- [ ] Run browser QA for readiness strip and no-live-adapter status.
-- [ ] Commit, push, deploy, and verify `node-deploy.json`.
+- [x] Run `vitest run`.
+- [x] Run `pnpm validate:traces -- src/core/traces/handoffs/hermes-synthetic-2026-06-18`.
+- [x] Run `eslint .`.
+- [x] Run `tsc -b --pretty false`.
+- [x] Run `pnpm build`.
+- [x] Run browser QA for readiness strip and no-live-adapter status.
+- [x] Commit, push, deploy, and verify `node-deploy.json`.

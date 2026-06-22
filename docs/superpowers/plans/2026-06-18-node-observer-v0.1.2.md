@@ -67,4 +67,4 @@
 - [x] Bump package version to `0.1.2`.
 - [x] Run `vitest`, `eslint`, `tsc -b`, and `vite build`.
 - [x] Run browser QA for desktop and mobile import/summary flows.
-- [ ] Commit, push `main`, deploy with `ssh rAIk.mini /Users/raik./ai-stack/scripts/update-phosphene.sh`, and verify `node-deploy.json` reports the new commit.
+- [x] Commit, push `main`, deploy with `ssh rAIk.mini /Users/raik./ai-stack/scripts/update-phosphene.sh`, and verify `node-deploy.json` reports the new commit.

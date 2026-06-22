@@ -57,10 +57,10 @@
 
 ### Task 5: Verification and Deploy
 
-- [ ] Run `vitest run`.
-- [ ] Run `pnpm validate:traces -- <handoff-directory-with-support-files>`.
-- [ ] Run `eslint .`.
-- [ ] Run `tsc -b --pretty false`.
-- [ ] Run `pnpm build`.
-- [ ] Run browser QA for multi-file upload and intake table.
-- [ ] Commit, push, deploy on Mac mini, and verify `node-deploy.json`.
+- [x] Run `vitest run`.
+- [x] Run `pnpm validate:traces -- <handoff-directory-with-support-files>`.
+- [x] Run `eslint .`.
+- [x] Run `tsc -b --pretty false`.
+- [x] Run `pnpm build`.
+- [x] Run browser QA for multi-file upload and intake table.
+- [x] Commit, push, deploy on Mac mini, and verify `node-deploy.json`.
