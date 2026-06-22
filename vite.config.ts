@@ -11,6 +11,7 @@ type VitestConfig = UserConfig & {
 };
 
 const config = {
+  base: process.env.VITE_BASE_PATH ?? '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

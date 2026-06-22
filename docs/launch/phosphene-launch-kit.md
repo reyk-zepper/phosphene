@@ -7,9 +7,11 @@ Checked: 2026-06-22.
 
 - GitHub org `phosphene-ai` is not created.
 - Local `gh` auth has `repo`, `workflow`, and `read:org`, but not `admin:org`.
-- `phosphene.dev` is implemented as `/landing/` in the app, but no public
-  domain DNS/hosting handoff is confirmed in this repo.
-- Public launch posts should wait until the public try-it URL is reachable
+- GitHub Pages workflow exists and builds with `VITE_BASE_PATH=/phosphene/`,
+  but the live Pages deployment still needs to run successfully after push.
+- `phosphene.dev` is implemented as `/landing/` in the app, but no custom-domain
+  DNS/hosting handoff is confirmed in this repo.
+- Public launch posts should wait until the final try-it URL is reachable
   without SSH, localhost, or account barriers.
 
 ## Source Checks
@@ -26,11 +28,13 @@ Checked: 2026-06-22.
 Use the final public URL when available:
 
 - Public demo: `https://phosphene.dev/`
+- GitHub Pages fallback: `https://reyk-zepper.github.io/phosphene/`
 - GitHub repo: `https://github.com/reyk-zepper/phosphene`
 - NPM package target: `@reyk-zepper/phosphene`
 
-Until `https://phosphene.dev/` is live, prefer the GitHub repo and README demo
-media. Do not submit a landing page alone to Show HN.
+Until `https://phosphene.dev/` is live, use the GitHub Pages fallback only after
+the Pages workflow has completed successfully. Do not submit a landing page
+alone to Show HN.
 
 ## Hacker News
 

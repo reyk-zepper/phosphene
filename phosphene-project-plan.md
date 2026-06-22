@@ -319,6 +319,9 @@ Launch-Status am 2026-06-22:
 - Launch-Kit liegt unter `docs/launch/phosphene-launch-kit.md`.
 - Enthalten: Show HN-Titel/Kommentar, r/MachineLearning-Post, X-Post/Thread,
   Quellenlinks, GitHub-Org-Handoff und aktuelle Blocker.
+- GitHub-Pages-Workflow liegt unter `.github/workflows/pages.yml` und baut mit
+  `VITE_BASE_PATH=/phosphene/`; erwarteter Fallback-Demo-URL:
+  `https://reyk-zepper.github.io/phosphene/`.
 - Noch nicht erledigt: oeffentliche Posts und `phosphene.dev`-DNS/Hosting sind
   externe Account-/Publikationsschritte.
 

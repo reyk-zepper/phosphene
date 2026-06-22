@@ -1,4 +1,13 @@
+import { withBasePath } from './routing';
+
 export function LandingPage() {
+  const appUrl = withBasePath('/', import.meta.env.BASE_URL);
+  const heroImageUrl = withBasePath(
+    '/landing/assets/phosphene-reasoning-lab-v0.1.42.png',
+    import.meta.env.BASE_URL
+  );
+  const demoMediaUrl = withBasePath('/landing/assets/phosphene-demo-v0.1.42.gif', import.meta.env.BASE_URL);
+
   return (
     <main className="landing-shell">
       <style>{`
@@ -33,7 +42,7 @@ export function LandingPage() {
           background:
             linear-gradient(90deg, rgba(2, 8, 13, 0.92) 0%, rgba(2, 8, 13, 0.74) 35%, rgba(2, 8, 13, 0.18) 100%),
             linear-gradient(0deg, rgba(2, 8, 13, 0.9) 0%, rgba(2, 8, 13, 0.18) 46%, rgba(2, 8, 13, 0.6) 100%),
-            url(/landing/assets/phosphene-reasoning-lab-v0.1.42.png) center / cover no-repeat;
+            url(${heroImageUrl}) center / cover no-repeat;
           filter: saturate(1.08);
         }
 
@@ -369,7 +378,7 @@ export function LandingPage() {
           .landing-hero::before {
             background:
               linear-gradient(90deg, rgba(2, 8, 13, 0.96) 0%, rgba(2, 8, 13, 0.82) 100%),
-              url(/landing/assets/phosphene-reasoning-lab-v0.1.42.png) 60% 50% / cover no-repeat;
+              url(${heroImageUrl}) 60% 50% / cover no-repeat;
           }
 
           .landing-proof-grid {
@@ -401,7 +410,7 @@ export function LandingPage() {
 
       <section className="landing-hero" aria-label="Phosphene landing hero">
         <nav className="landing-nav" aria-label="Primary navigation">
-          <a className="landing-brand" href="/">
+          <a className="landing-brand" href={appUrl}>
             <span className="landing-brand-mark" aria-hidden="true" />
             <span>Phosphene</span>
           </a>
@@ -422,7 +431,7 @@ export function LandingPage() {
             exposing private payloads.
           </p>
           <div className="landing-actions" aria-label="Primary actions">
-            <a className="landing-button landing-button-primary" href="/">
+            <a className="landing-button landing-button-primary" href={appUrl}>
               Open the app
             </a>
             <a className="landing-button landing-button-secondary" href="https://github.com/reyk-zepper/phosphene">
@@ -464,7 +473,7 @@ export function LandingPage() {
       <section id="boundary" className="landing-section landing-media-band" aria-labelledby="boundary-title">
         <img
           className="landing-demo-media"
-          src="/landing/assets/phosphene-demo-v0.1.42.gif"
+          src={demoMediaUrl}
           alt="Phosphene demo showing answer review, side-by-side comparison, and AI-node observability demo graphs."
         />
 

@@ -28,12 +28,17 @@ import {
 } from '@/core/traces/intake';
 import { createObserverReadiness } from '@/core/traces/readiness';
 import { loadPublishedSnapshot, type PublishedSnapshotLoadResult } from '@/core/traces/snapshot';
-import { startCanaryStatusRefresh, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
-import { startLiveAdapterRefresh, type LiveAdapterLoadResult } from '@/core/traces/liveAdapter';
+import { loadCanaryStatus, startCanaryStatusRefresh, type CanaryStatusLoadResult } from '@/core/traces/canaryStatus';
+import { loadLiveAdapterSnapshot, startLiveAdapterRefresh, type LiveAdapterLoadResult } from '@/core/traces/liveAdapter';
 import { buildShareUrl, parseShareLinkState, type ShareLinkState } from '@/core/share/shareLink';
 import type { NodeTrace } from '@/core/traces/types';
 import { ModeSwitch, type AppMode } from '@/components/shell/ModeSwitch';
 import { NodeObserverBar } from '@/components/observer/NodeObserverBar';
+import {
+  getCanaryStatusBasePath,
+  getLiveAdapterBasePath,
+  getPublishedSnapshotBasePath,
+} from './publicPaths';
 
 function readInitialShareState(): ShareLinkState {
   if (typeof window === 'undefined') return {};
@@ -41,6 +46,7 @@ function readInitialShareState(): ShareLinkState {
 }
 
 export function App() {
+  const publicBasePath = import.meta.env.BASE_URL;
   const graph = useSessionStore((s) => s.currentGraph);
   const liveComparisonGraph = useSessionStore((s) => s.comparisonGraph);
   const setGraph = useSessionStore((s) => s.setGraph);
@@ -174,7 +180,7 @@ export function App() {
   useEffect(() => {
     let cancelled = false;
 
-    void loadPublishedSnapshot().then((result) => {
+    void loadPublishedSnapshot(fetch, getPublishedSnapshotBasePath(publicBasePath)).then((result) => {
       if (cancelled) return;
       setSnapshotResult(result);
       if (pendingSharedTraceId.current) return;
@@ -188,15 +194,21 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [publicBasePath]);
 
   useEffect(() => {
-    return startCanaryStatusRefresh({ onResult: setCanaryStatus });
-  }, []);
+    return startCanaryStatusRefresh({
+      load: () => loadCanaryStatus(fetch, getCanaryStatusBasePath(publicBasePath)),
+      onResult: setCanaryStatus,
+    });
+  }, [publicBasePath]);
 
   useEffect(() => {
-    return startLiveAdapterRefresh({ onResult: setLiveAdapterResult });
-  }, []);
+    return startLiveAdapterRefresh({
+      load: () => loadLiveAdapterSnapshot(fetch, getLiveAdapterBasePath(publicBasePath)),
+      onResult: setLiveAdapterResult,
+    });
+  }, [publicBasePath]);
 
   useEffect(() => {
     if (!liveAdapterResult || liveAdapterResult.traces.length === 0) return;

@@ -10,8 +10,10 @@ import {
 } from '@/core/history/sessionBundle';
 import { useSessionStore } from '@/core/store/sessionStore';
 import type { SessionHistoryEntry } from '@/core/history/sessionHistory';
+import { getHostedSessionBasePath } from '@/app/publicPaths';
 
 export function SessionHistoryPanel() {
+  const publicBasePath = import.meta.env.BASE_URL;
   const history = useSessionStore((s) => s.history);
   const currentGraph = useSessionStore((s) => s.currentGraph);
   const currentGraphId = currentGraph?.id ?? null;
@@ -25,14 +27,14 @@ export function SessionHistoryPanel() {
   useEffect(() => {
     let cancelled = false;
 
-    void loadHostedSessionBundle().then((result) => {
+    void loadHostedSessionBundle(fetch, getHostedSessionBasePath(publicBasePath)).then((result) => {
       if (!cancelled) setHostedSession(result);
     });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [publicBasePath]);
 
   const handleExportSession = () => {
     if (!currentGraph) return;

@@ -132,11 +132,16 @@ Phosphene is a **client-only SPA**. No backend, no database, no server. Everythi
 - API calls go **directly** from the client to LLM providers (using CORS-enabled headers where supported)
 - API keys are stored in `localStorage` (base64-encoded, never leave the machine)
 - Deployment is a static build — Vercel, Netlify, GitHub Pages, anything
+- GitHub Pages builds use `VITE_BASE_PATH=/phosphene/` via
+  `.github/workflows/pages.yml`, so `/`, `/landing/`, public snapshots, hosted
+  sessions, and landing media stay valid under the project-site path
 - Contribution barrier is minimal: `git clone && pnpm install && pnpm dev`
 
 For Node Observer, Hermes and live adapters run on the **AI Node**, not on the local development machine. Phosphene consumes redacted Boundary bundles, manifests, validation reports, AI-node-published snapshots, or served redacted adapter markers. See [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) and [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 The phosphene.dev-ready landing page is served at `/landing/`, while `/` stays the actual app.
+Until `phosphene.dev` DNS is connected, the expected GitHub Pages demo URL is
+`https://reyk-zepper.github.io/phosphene/`.
 
 ### Quick Start
 
@@ -336,11 +341,17 @@ Phosphene ist eine **Client-Only SPA**. Kein Backend, keine Datenbank, kein Serv
 - API-Calls gehen **direkt** vom Client zu den LLM-Anbietern (mit CORS-Headern, wo unterstützt)
 - API-Keys liegen in `localStorage` (base64-kodiert, verlassen nie die Maschine)
 - Deployment ist ein statischer Build — Vercel, Netlify, GitHub Pages, egal was
+- GitHub-Pages-Builds nutzen `VITE_BASE_PATH=/phosphene/` ueber
+  `.github/workflows/pages.yml`, damit `/`, `/landing/`, oeffentliche
+  Snapshots, Hosted Sessions und Landing-Medien unter dem Project-Site-Pfad
+  gueltig bleiben
 - Die Einstiegshürde für Contributions ist minimal: `git clone && pnpm install && pnpm dev`
 
 Für den Node Observer laufen Hermes und Live-Adapter auf dem **AI Node**, nicht auf der lokalen Entwicklungsmaschine. Phosphene konsumiert redigierte Boundary Bundles, Manifeste, Validation Reports, AI-Node-publizierte Snapshots oder served redigierte Adapter-Marker. Siehe [AI Node Integration Boundary](./docs/product/phosphene-ai-node-integration-boundary.md) und [Node Observer Demo](./docs/demo/phosphene-node-observer-demo.md).
 
 Die phosphene.dev-faehige Landing Page wird unter `/landing/` ausgeliefert, waehrend `/` die eigentliche App bleibt.
+Bis `phosphene.dev` per DNS verbunden ist, ist die erwartete GitHub-Pages-Demo
+`https://reyk-zepper.github.io/phosphene/`.
 
 ### Schnellstart
 
