@@ -177,6 +177,7 @@ Then open [http://localhost:5173](http://localhost:5173). The demo reasoning gra
 | `pnpm generate:canary -- --target <dir>` | Generate a redacted AI Node operational canary Boundary pack; supports `--latest-file` and `--retention-count` for AI-Node status tracking |
 | `pnpm generate:live-adapter -- --target <dir>` | Generate a redacted near-live AI Node adapter Boundary pack; supports `--latest-file` and `--retention-count` for served `/snapshots/live/` output |
 | `pnpm generate:hermes-live-adapter -- --target <dir>` | Generate a redacted near-live Hermes adapter Boundary pack from coarse Hermes operational markers only |
+| `pnpm --silent launch:preflight` | Check whether the public Pages fallback and `phosphene.dev` are serving the Phosphene app shell before posting launch copy |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Install the non-publishing AI Node canary LaunchAgent |
 | `pnpm format` | Format with Prettier |
 
@@ -387,6 +388,7 @@ Dann [http://localhost:5173](http://localhost:5173) öffnen. Der Demo-Reasoning-
 | `pnpm generate:canary -- --target <dir>` | Redigierten AI-Node-Operational-Canary-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für AI-Node-Status-Tracking |
 | `pnpm generate:live-adapter -- --target <dir>` | Redigierten Near-Live-AI-Node-Adapter-Boundary-Pack erzeugen; unterstützt `--latest-file` und `--retention-count` für served `/snapshots/live/` output |
 | `pnpm generate:hermes-live-adapter -- --target <dir>` | Redigierten Near-Live-Hermes-Adapter-Boundary-Pack nur aus groben Hermes-Operational-Markern erzeugen |
+| `pnpm --silent launch:preflight` | Pruefen, ob der oeffentliche Pages-Fallback und `phosphene.dev` vor Launch-Posts wirklich die Phosphene-App-Shell ausliefern |
 | `/Users/raik./ai-stack/services/phosphene/ops/ai-node/install-phosphene-canary-launchagent.sh` | Nicht-publizierenden AI-Node-Canary-LaunchAgent installieren |
 | `pnpm format` | Mit Prettier formatieren |
 

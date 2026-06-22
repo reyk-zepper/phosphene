@@ -322,8 +322,12 @@ Launch-Status am 2026-06-22:
 - GitHub-Pages-Workflow liegt unter `.github/workflows/pages.yml` und baut mit
   `VITE_BASE_PATH=/phosphene/`; erwarteter Fallback-Demo-URL:
   `https://reyk-zepper.github.io/phosphene/`.
-- Noch nicht erledigt: oeffentliche Posts und `phosphene.dev`-DNS/Hosting sind
-  externe Account-/Publikationsschritte.
+- `pnpm --silent launch:preflight` prueft die oeffentlichen Launch-Ziele.
+  Aktueller Status am 2026-06-22: `fallback_ready`; Pages ist launchfaehig,
+  `phosphene.dev` ist erreichbar, serviert aber noch `Geiss-web - Phase 0
+  spike` statt Phosphene.
+- Noch nicht erledigt: oeffentliche Posts, GitHub-Org `phosphene-ai` und
+  `phosphene.dev`-DNS/Hosting sind externe Account-/Publikationsschritte.
 
 ### Phase 4: Differentiator Features (Wochen 11-16)
 **Ziel:** Multi-Model, Community-Features

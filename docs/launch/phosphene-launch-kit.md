@@ -8,11 +8,14 @@ Checked: 2026-06-22.
 - GitHub org `phosphene-ai` is not created.
 - Local `gh` auth has `repo`, `workflow`, and `read:org`, but not `admin:org`.
 - GitHub Pages workflow exists and builds with `VITE_BASE_PATH=/phosphene/`,
-  but the live Pages deployment still needs to run successfully after push.
-- `phosphene.dev` is implemented as `/landing/` in the app, but no custom-domain
-  DNS/hosting handoff is confirmed in this repo.
-- Public launch posts should wait until the final try-it URL is reachable
-  without SSH, localhost, or account barriers.
+  and the live Pages fallback is verified at
+  `https://reyk-zepper.github.io/phosphene/`.
+- `phosphene.dev` currently resolves behind Cloudflare, but serves
+  `Geiss-web - Phase 0 spike`, not Phosphene. Treat it as blocked until DNS or
+  hosting is moved to the Phosphene build.
+- Public launch posts can use the GitHub Pages fallback now. Switch copy to
+  `https://phosphene.dev/` only after `pnpm --silent launch:preflight` reports
+  `ready`.
 
 ## Source Checks
 
@@ -32,9 +35,19 @@ Use the final public URL when available:
 - GitHub repo: `https://github.com/reyk-zepper/phosphene`
 - NPM package target: `@reyk-zepper/phosphene`
 
-Until `https://phosphene.dev/` is live, use the GitHub Pages fallback only after
-the Pages workflow has completed successfully. Do not submit a landing page
-alone to Show HN.
+Current launch URL: `https://reyk-zepper.github.io/phosphene/`
+
+Until `https://phosphene.dev/` is live, use the GitHub Pages fallback. Do not
+submit a landing page alone to Show HN.
+
+Launch preflight:
+
+```bash
+pnpm --silent launch:preflight
+```
+
+Expected current status: `fallback_ready` with `phosphene.dev: reachable but not
+serving Phosphene` as the remaining URL blocker.
 
 ## Hacker News
 
@@ -53,7 +66,7 @@ Show HN: Phosphene - visualize AI reasoning traces as interactive graphs
 URL:
 
 ```text
-https://github.com/reyk-zepper/phosphene
+https://reyk-zepper.github.io/phosphene/
 ```
 
 First comment:
@@ -99,6 +112,7 @@ Body:
 ```text
 I built Phosphene, an open-source browser tool for inspecting AI reasoning traces as interactive graphs.
 
+Demo: https://reyk-zepper.github.io/phosphene/
 Repo: https://github.com/reyk-zepper/phosphene
 
 What it does:
@@ -136,7 +150,8 @@ I built Phosphene: an open-source visual debugger for AI reasoning traces.
 
 It turns prompt runs into navigable graphs with compare, stats, search, exports, annotations, and rule checks.
 
-Repo/demo: https://github.com/reyk-zepper/phosphene
+Demo: https://reyk-zepper.github.io/phosphene/
+Repo: https://github.com/reyk-zepper/phosphene
 ```
 
 Thread:
@@ -162,6 +177,7 @@ The useful surface is observable agent behavior, redacted traces, tool boundarie
 ```text
 4/ It now exposes parser and graph package entries, plus a local Constitution bridge prototype for testing rules against reasoning traces.
 
+Demo: https://reyk-zepper.github.io/phosphene/
 Repo: https://github.com/reyk-zepper/phosphene
 ```
 
