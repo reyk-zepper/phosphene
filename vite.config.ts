@@ -21,6 +21,14 @@ const config = {
     port: 5173,
     host: true,
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        landing: path.resolve(__dirname, 'landing/index.html'),
+      },
+    },
+  },
   test: {
     fileParallelism: false,
     testTimeout: 60_000,
