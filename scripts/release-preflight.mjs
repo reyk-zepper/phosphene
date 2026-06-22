@@ -33,6 +33,15 @@ function sanitizeReleaseEvidence(value) {
   return value.replace(/\/Users\/[^\s]+\/\.npm\/_logs\/[^\s]+/g, '[local npm log path redacted]');
 }
 
+function compactReleaseEvidence(value) {
+  const sanitized = sanitizeReleaseEvidence(value.trim());
+  if (sanitized.length <= 1200) {
+    return sanitized;
+  }
+
+  return `${sanitized.slice(0, 1200)}\n[release evidence truncated]`;
+}
+
 async function run(command, args) {
   try {
     const result = await execFileAsync(command, args, {
@@ -60,6 +69,22 @@ async function run(command, args) {
             : '',
     };
   }
+}
+
+async function packageDryRunGate() {
+  const result = await run('pnpm', ['--silent', 'publish:packages:dry-run']);
+
+  return {
+    id: 'package_dry_run',
+    label: 'Package publish dry-run',
+    status: result.ok ? 'ready' : 'blocked',
+    reason: result.ok ? 'package publish dry-run passed' : 'package publish dry-run failed',
+    action: result.ok ? null : 'Fix pnpm --silent publish:packages:dry-run before attempting npm publish.',
+    commands: result.ok ? [] : ['pnpm --silent publish:packages:dry-run'],
+    evidence: result.ok
+      ? ['pnpm --silent publish:packages:dry-run exited 0']
+      : [compactReleaseEvidence(result.stderr || result.stdout)],
+  };
 }
 
 async function readLaunchPreflight() {
@@ -240,6 +265,7 @@ const launchPreflight = readLaunchPreflight();
 const gates = await Promise.all([
   launchPreflight.then(launchGate),
   launchPreflight.then(customDomainGate),
+  packageDryRunGate(),
   npmAuthGate(),
   npmPackageGate(),
   githubOrgGate(),

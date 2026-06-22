@@ -55,8 +55,8 @@ Release preflight:
 pnpm --silent release:preflight
 ```
 
-Expected current status: non-zero/`blocked`, with these external gates still
-open:
+Expected current status: non-zero/`blocked`. The public demo and package
+publish dry-run gates should be `ready`, with these external gates still open:
 
 - `phosphene.dev` is reachable but not serving Phosphene.
 - npm CLI is not logged in.

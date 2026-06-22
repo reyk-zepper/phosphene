@@ -107,13 +107,18 @@ describe('release preflight summary', () => {
   it('reuses one launch preflight snapshot for public-demo and custom-domain gates', async () => {
     const binDir = mkdtempSync(resolve(tmpdir(), 'phosphene-release-preflight-'));
     const launchCountFile = resolve(binDir, 'launch-count.txt');
+    const packageDryRunCountFile = resolve(binDir, 'package-dry-run-count.txt');
     writeFileSync(launchCountFile, '');
+    writeFileSync(packageDryRunCountFile, '');
 
     writeExecutable(
       resolve(binDir, 'pnpm'),
       `#!/usr/bin/env node
 const { appendFileSync } = require('node:fs');
+const args = process.argv.slice(2);
 const countFile = ${JSON.stringify(launchCountFile)};
+const packageDryRunCountFile = ${JSON.stringify(packageDryRunCountFile)};
+if (args.includes('launch:preflight')) {
 appendFileSync(countFile, 'launch\\n');
 console.log(JSON.stringify({
   status: 'fallback_ready',
@@ -136,6 +141,14 @@ console.log(JSON.stringify({
     }
   ]
 }));
+process.exit(0);
+}
+if (args.includes('publish:packages:dry-run')) {
+  appendFileSync(packageDryRunCountFile, 'package-dry-run\\n');
+  console.log(JSON.stringify([{ name: '@reyk-zepper/phosphene', version: '0.1.43' }]));
+  process.exit(0);
+}
+process.exit(1);
 `,
     );
 
@@ -198,12 +211,14 @@ process.exit(1);
     }
 
     const launchCount = readFileSync(launchCountFile, 'utf8').trim().split('\n').filter(Boolean).length;
+    const packageDryRunCount = readFileSync(packageDryRunCountFile, 'utf8').trim().split('\n').filter(Boolean).length;
     const summary = JSON.parse(stdout) as {
       manualCommands: string[];
       gates: Array<{ id: string; status: string; reason: string }>;
     };
 
     expect(launchCount).toBe(1);
+    expect(packageDryRunCount).toBe(1);
     expect(summary.gates.find((gate) => gate.id === 'public_demo')).toMatchObject({
       status: 'ready',
       reason: 'https://reyk-zepper.github.io/phosphene/ is serving Phosphene',
@@ -211,6 +226,10 @@ process.exit(1);
     expect(summary.gates.find((gate) => gate.id === 'custom_domain')).toMatchObject({
       status: 'blocked',
       reason: 'reachable but not serving Phosphene',
+    });
+    expect(summary.gates.find((gate) => gate.id === 'package_dry_run')).toMatchObject({
+      status: 'ready',
+      reason: 'package publish dry-run passed',
     });
     expect(summary.manualCommands).toContain('npm login');
     expect(summary.manualCommands).toContain('pnpm --silent publish:packages:dry-run');
