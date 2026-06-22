@@ -26,6 +26,7 @@ describe('GitHub Pages deployment configuration', () => {
 
     expect(workflow).toContain('name: Deploy Phosphene to GitHub Pages');
     expect(workflow).toContain('VITE_BASE_PATH: /phosphene/');
+    expect(workflow).toContain('package-manager-cache: false');
     expect(workflow).not.toContain('cache: pnpm');
     expect(workflow).toContain('pnpm install --frozen-lockfile');
     expect(workflow).toContain('pnpm build');
