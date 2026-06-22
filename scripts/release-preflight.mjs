@@ -54,21 +54,42 @@ async function run(command, args) {
   }
 }
 
-async function launchGate() {
+async function readLaunchPreflight() {
   const result = await run('pnpm', ['--silent', 'launch:preflight']);
 
   if (!result.ok) {
+    return {
+      ok: false,
+      evidence: result.stderr || result.stdout,
+    };
+  }
+
+  try {
+    return {
+      ok: true,
+      summary: JSON.parse(result.stdout),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      evidence: error instanceof Error ? error.message : 'could not parse launch preflight output',
+    };
+  }
+}
+
+function launchGate(launch) {
+  if (!launch.ok) {
     return {
       id: 'public_demo',
       label: 'Public demo',
       status: 'blocked',
       reason: 'launch preflight failed',
       action: 'Fix the public Pages or custom-domain launch target, then rerun pnpm --silent launch:preflight.',
-      evidence: [result.stderr || result.stdout],
+      evidence: [launch.evidence],
     };
   }
 
-  const summary = JSON.parse(result.stdout);
+  const summary = launch.summary;
   const isReady = summary.status === 'ready' || summary.status === 'fallback_ready';
 
   return {
@@ -81,21 +102,19 @@ async function launchGate() {
   };
 }
 
-async function customDomainGate() {
-  const result = await run('pnpm', ['--silent', 'launch:preflight']);
-
-  if (!result.ok) {
+function customDomainGate(launch) {
+  if (!launch.ok) {
     return {
       id: 'custom_domain',
       label: 'phosphene.dev',
       status: 'blocked',
       reason: 'launch preflight failed before custom-domain classification',
       action: 'Fix launch preflight, then point phosphene.dev at the Phosphene build.',
-      evidence: [result.stderr || result.stdout],
+      evidence: [launch.evidence],
     };
   }
 
-  const summary = JSON.parse(result.stdout);
+  const summary = launch.summary;
   const domainTarget = summary.targets.find((target) => target.url === 'https://phosphene.dev/');
   const isReady = domainTarget?.status === 'ready';
 
@@ -188,9 +207,11 @@ async function pagesCustomDomainGate() {
   };
 }
 
+const launchPreflight = readLaunchPreflight();
+
 const gates = await Promise.all([
-  launchGate(),
-  customDomainGate(),
+  launchPreflight.then(launchGate),
+  launchPreflight.then(customDomainGate),
   npmAuthGate(),
   npmPackageGate(),
   githubOrgGate(),

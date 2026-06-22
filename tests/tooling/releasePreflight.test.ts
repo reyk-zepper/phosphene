@@ -1,8 +1,18 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { execFile } from 'node:child_process';
+import { chmodSync, existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { promisify } from 'node:util';
 import { describe, expect, it } from 'vitest';
 
 import { sanitizeReleaseEvidence, summarizeReleasePreflight } from '../../src/core/release/preflight';
+
+const execFileAsync = promisify(execFile);
+
+function writeExecutable(path: string, source: string) {
+  writeFileSync(path, source);
+  chmodSync(path, 0o755);
+}
 
 describe('release preflight summary', () => {
   it('keeps external blockers explicit while preserving the fallback launch URL', () => {
@@ -84,5 +94,114 @@ describe('release preflight summary', () => {
     expect(sanitizeReleaseEvidence(evidence)).toBe(
       'npm error A complete log of this run can be found in: [local npm log path redacted]',
     );
+  });
+
+  it('reuses one launch preflight snapshot for public-demo and custom-domain gates', async () => {
+    const binDir = mkdtempSync(resolve(tmpdir(), 'phosphene-release-preflight-'));
+    const launchCountFile = resolve(binDir, 'launch-count.txt');
+    writeFileSync(launchCountFile, '');
+
+    writeExecutable(
+      resolve(binDir, 'pnpm'),
+      `#!/usr/bin/env node
+const { appendFileSync } = require('node:fs');
+const countFile = ${JSON.stringify(launchCountFile)};
+appendFileSync(countFile, 'launch\\n');
+console.log(JSON.stringify({
+  status: 'fallback_ready',
+  primaryUrl: 'https://reyk-zepper.github.io/phosphene/',
+  blockers: ['phosphene.dev: reachable but not serving Phosphene'],
+  targets: [
+    {
+      label: 'GitHub Pages fallback',
+      url: 'https://reyk-zepper.github.io/phosphene/',
+      status: 'ready',
+      reason: 'serving Phosphene',
+      evidence: ['Phosphene title', 'reasoning visualizer metadata', 'React root']
+    },
+    {
+      label: 'phosphene.dev',
+      url: 'https://phosphene.dev/',
+      status: 'blocked',
+      reason: 'reachable but not serving Phosphene',
+      evidence: []
+    }
+  ]
+}));
+`,
+    );
+
+    writeExecutable(
+      resolve(binDir, 'npm'),
+      `#!/usr/bin/env node
+const args = process.argv.slice(2);
+if (args[0] === 'whoami') {
+  console.error('npm error code ENEEDAUTH');
+  process.exit(1);
+}
+if (args[0] === 'view') {
+  console.error('npm error code E404');
+  process.exit(1);
+}
+process.exit(1);
+`,
+    );
+
+    writeExecutable(
+      resolve(binDir, 'gh'),
+      `#!/usr/bin/env node
+const args = process.argv.slice(2);
+if (args.includes('orgs/phosphene-ai')) {
+  console.error('gh: Not Found (HTTP 404)');
+  process.exit(1);
+}
+if (args.includes('repos/reyk-zepper/phosphene/pages')) {
+  console.log(JSON.stringify({
+    cname: null,
+    html_url: 'https://reyk-zepper.github.io/phosphene/',
+    https_enforced: true
+  }));
+  process.exit(0);
+}
+process.exit(1);
+`,
+    );
+
+    let stdout = '';
+    try {
+      await execFileAsync('node', ['scripts/release-preflight.mjs'], {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          PATH: `${binDir}:${process.env.PATH ?? ''}`,
+        },
+      });
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'stdout' in error &&
+        typeof (error as { stdout?: unknown }).stdout === 'string'
+      ) {
+        stdout = (error as { stdout: string }).stdout;
+      } else {
+        throw error;
+      }
+    }
+
+    const launchCount = readFileSync(launchCountFile, 'utf8').trim().split('\n').filter(Boolean).length;
+    const summary = JSON.parse(stdout) as {
+      gates: Array<{ id: string; status: string; reason: string }>;
+    };
+
+    expect(launchCount).toBe(1);
+    expect(summary.gates.find((gate) => gate.id === 'public_demo')).toMatchObject({
+      status: 'ready',
+      reason: 'https://reyk-zepper.github.io/phosphene/ is serving Phosphene',
+    });
+    expect(summary.gates.find((gate) => gate.id === 'custom_domain')).toMatchObject({
+      status: 'blocked',
+      reason: 'reachable but not serving Phosphene',
+    });
   });
 });
